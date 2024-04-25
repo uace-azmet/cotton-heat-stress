@@ -104,8 +104,18 @@ server <- function(input, output, session) {
   #  fxnFigLine(inData = figLineData, station = input$azmetStation)
   #})
   
-  figureTitle <- eventReactive(input$viewHeatStressData, {
-    HTML("<h3 style='color:#343a40; font-weight:bold'>Cotton Heat Stress Zones and Estimated Canopy Temperatures (°F)</h3>")
+  # Build figure title
+  figureTitle <- eventReactive(input$calculateHeatAccumulation, {
+    #validate(
+    #  need(
+    #    expr = input$plantingDate <= input$endDate, 
+    #    message = "Please select a 'Planting Date' that is earlier than or the same as the 'End Date'."
+    #  ),
+    #  errorClass = "datepicker"
+    #)
+    
+    #fxnFigureTitle(inData = dataAZMetDataSumHUs(), endDate = input$endDate)
+    fxnFigureTitle(azmetStation = input$azmetStation)
   })
   
   # Outputs -----
