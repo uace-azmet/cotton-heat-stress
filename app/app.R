@@ -66,6 +66,10 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, htmlOutput("figureTitle"))
       ), 
       
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, htmlOutput("figureSubtitle"))
+      ), 
+      
       #fluidRow(
       #  column(width = 11, align = "left", offset = 1, plotOutput("figLine"))
       #),
@@ -74,6 +78,16 @@ ui <- htmltools::htmlTemplate(
       #fluidRow(
       #  column(width = 11, align = "left", offset = 1, htmlOutput("figCaption"))
       #)
+      
+      br(), br(),
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureFooterHelpText"))
+      ),
+      
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureFooter"))
+      ),
+      br()
     ) # mainPanel()
   ) # sidebarLayout()
 ) # htmltools::htmlTemplate()
@@ -104,8 +118,25 @@ server <- function(input, output, session) {
   #  fxnFigLine(inData = figLineData, station = input$azmetStation)
   #})
   
+  # Build figure footer
+  #figureFooter <- eventReactive(dataAZMetDataMerge(), {
+  figureFooter <- eventReactive(input$viewHeatStressData, {
+    fxnFigureFooter(timeStep = "Daily")
+  })
+  
+  # Build figure footer help text
+  #figureFooterHelpText <- eventReactive(dataAZMetDataMerge(), {
+  figureFooterHelpText <- eventReactive(input$viewHeatStressData, {
+    fxnFigureFooterHelpText()
+  })
+  
+  # Build figure subtitle
+  figureSubtitle <- eventReactive(input$viewHeatStressData, {
+    fxnFigureSubtitle(azmetStation = input$azmetStation)
+  })
+  
   # Build figure title
-  figureTitle <- eventReactive(input$calculateHeatAccumulation, {
+  figureTitle <- eventReactive(input$viewHeatStressData, {
     #validate(
     #  need(
     #    expr = input$plantingDate <= input$endDate, 
@@ -115,7 +146,7 @@ server <- function(input, output, session) {
     #)
     
     #fxnFigureTitle(inData = dataAZMetDataSumHUs(), endDate = input$endDate)
-    fxnFigureTitle(azmetStation = input$azmetStation)
+    fxnFigureTitle()
   })
   
   # Outputs -----
@@ -127,6 +158,18 @@ server <- function(input, output, session) {
   #output$figLine <- renderPlot({
   #  figLine()
   #}, res = 96)
+  
+  output$figureFooter <- renderUI({
+    figureFooter()
+  })
+  
+  output$figureFooterHelpText <- renderUI({
+    figureFooterHelpText()
+  })
+  
+  output$figureSubtitle <- renderUI(
+    figureSubtitle()
+  )
   
   output$figureTitle <- renderUI(
     figureTitle()
