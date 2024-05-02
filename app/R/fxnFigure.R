@@ -1,43 +1,76 @@
-#' fxnFigLine: generates line graph of estimated canopy temperature values from current/recent years with cotton heat stress categories
+#' fxnFigure: generates line graph of estimated canopy temperature values from current/recent years with cotton heat stress categories
 #' 
-#' @param: inData - data table of seasonal heat accumulation values by year
-#' @param: station - AZMet station input from sidebar panel
-#' @return: figLine - ggplot line graph of time series of estimated canopy temperatures
-#' 
-fxnFigLine <- function(inData, station) {
+#' @param: inData - data table of seasonal cotton heat stress values by year
+#' @param: azmetStation - AZMet station selection by user
+#' @return: `figure` - png of figure
+
+
+fxnFigure <- function(inData, azmetStation) {
   
   # Adjust day-of-year values for leap years to correctly line up month and day values on plot
   for (yr in unique(inData$date_year)) {
     if (lubridate::leap_year(yr) == TRUE) {
-      inData$date_doy[which(inData$date_year == yr)] <- inData$date_doy[which(inData$date_year == yr)] - 1
+      inData$date_doy[which(inData$date_year == yr)] <- 
+        inData$date_doy[which(inData$date_year == yr)] - 1
     }
   }
   
-  #subtitleEndDate <- max(inData$datetime)
   xAxisBreaks <- c(121, 152, 182, 213, 244, 274)
   xAxisLabels <- c("May", "Jun", "Jul", "Aug", "Sep", "Oct")
   
-  figLine <- ggplot2::ggplot(data = inData) +
+  figure <- ggplot2::ggplot(data = inData) +
     
     # Heat stress zones: shading -----
     
     # Level 1
-    annotate(geom = "rect", xmin = min(inData$date_doy), xmax = Inf, ymin = 82.4, ymax = 86.0, fill = "#9EABAE", alpha = 0.2) +
+    annotate(
+      geom = "rect", 
+      xmin = min(inData$date_doy), 
+      xmax = Inf, 
+      ymin = 82.4, 
+      ymax = 86.0, 
+      fill = "#9EABAE", 
+      alpha = 0.2
+    ) +
     
     # Level 2
-    annotate(geom = "rect", xmin = min(inData$date_doy), xmax = Inf, ymin = 86.0, ymax = Inf, fill = "#9EABAE", alpha = 0.5) + # Level 2
+    annotate(
+      geom = "rect", 
+      xmin = min(inData$date_doy), 
+      xmax = Inf, 
+      ymin = 86.0, 
+      ymax = Inf, 
+      fill = "#9EABAE", 
+      alpha = 0.5
+    ) +
     
     # Heat stress time series -----
     
-    # Previous year
-    geom_line(data = dplyr::filter(inData, date_year == min(date_year)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), color = "#378DBD", linewidth = 0.5, alpha = 1.0) +
-    geom_point(data = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), shape = 21, color = "#FFFFFF", fill = "#378DBD", size = 2, stroke = 0.5) +
-    annotate(geom = "text", label = min(inData$date_year), x = (dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$date_doy + 2.0), y = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, color = "#378DBD", size = 3, fontface = "plain", hjust = 0.0) +
+    # Previous years
+    #geom_line(data = dplyr::filter(inData, date_year == min(date_year)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), color = "#378DBD", linewidth = 0.5, alpha = 1.0) +
+    #geom_point(data = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), shape = 21, color = "#FFFFFF", fill = "#378DBD", size = 2, stroke = 0.5) +
+    #annotate(geom = "text", label = min(inData$date_year), x = (dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$date_doy + 2.0), y = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, color = "#378DBD", size = 3, fontface = "plain", hjust = 0.0) +
     
     # Current year
-    geom_line(data = dplyr::filter(inData, date_year == max(date_year)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), color = "#1E5288", linewidth = 1.0) +
-    geom_point(data = dplyr::filter(inData, datetime == max(datetime)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), shape = 21, color = "#FFFFFF", fill = "#1E5288", size = 4, stroke = 0.5) +
-    annotate(geom = "text", label = max(inData$date_year), x = (dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0), y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, color = "#1E5288", size = 4, fontface = "bold", hjust = 0.0) +
+    geom_line(
+      data = dplyr::filter(inData, date_year == max(date_year)),
+      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
+      color = "#1E5288", linewidth = 1.0
+    ) +
+    
+    geom_point(
+      data = dplyr::filter(inData, datetime == max(datetime)), 
+      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
+      color = "#FFFFFF", fill = "#1E5288", shape = 21, size = 4, stroke = 0.5
+    ) +
+    
+    annotate(
+      geom = "text", 
+      label = max(inData$date_year), 
+      x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
+      y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, 
+      color = "#1E5288", fontface = "bold", hjust = 0.0, size = 4
+    ) +
     
     # Heat stress zones: labels -----
   
@@ -161,5 +194,5 @@ fxnFigLine <- function(inData, station) {
       #validate = TRUE
     )
   
-  return(figLine)
+  return(figure)
 }

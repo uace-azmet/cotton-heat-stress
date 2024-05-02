@@ -1,30 +1,32 @@
 #' fxnAZMetDataMerge: downloads and merges individual-year data based on user-defined station
 #' 
-#' @param: station - AZMet station name
-#' @return: dfDailyMerge - merged data tables from individual years
-#' 
-fxnAZMetDataMerge <- function(station) {
-  start <- seasonStartDate
-  end <- seasonEndDate
+#' @param: azmetStation - AZMet station selection by user
+#' @return: dataAZMetDataMerge - merged data tables from individual years
+
+
+fxnAZMetDataMerge <- function(azmetStation) {
+  azmetStationStartDate <- lubridate::as_date("2021-01-01") # Placeholder for station start date
+  startDate <- seasonStartDate
+  endDate <- seasonEndDate
   
-  while (start >= min(seq(seasonStartDate, length = 2, by = "-1 year"))) {
-    dfDaily <- fxnAZMetDataELT(station = station, startDate = start, endDate = end)
+  while (startDate >= azmetStationStartDate) {
+    dataAZMetDataELT <- fxnAZMetDataELT(azmetStation = azmetStation, timeStep = "Daily", startDate = startDate, endDate = endDate)
     
     # For case of empty data return
-    if (nrow(dfDaily) == 0) {
-      start <- min(seq(startDate, length = 2, by = "-1 year"))
-      end <- min(seq(endDate, length = 2, by = "-1 year"))
+    if (nrow(dataAZMetDataELT) == 0) {
+      startDate <- min(seq(startDate, length = 2, by = "-1 year"))
+      endDate <- min(seq(endDate, length = 2, by = "-1 year"))
     } else {
-      if (exists("dfDailyMerge") == FALSE) {
-        dfDailyMerge <- dfDaily
+      if (exists("dataAZMetDataMerge") == FALSE) {
+        dataAZMetDataMerge <- dataAZMetDataELT
       } else {
-        dfDailyMerge <- rbind(dfDailyMerge, dfDaily)
+        dataAZMetDataMerge <- rbind(dataAZMetDataMerge, dataAZMetDataELT)
       }
       
-      start <- min(seq(start, length = 2, by = "-1 year"))
-      end <- min(seq(end, length = 2, by = "-1 year"))
+      startDate <- min(seq(start, length = 2, by = "-1 year"))
+      endDate <- min(seq(end, length = 2, by = "-1 year"))
     }
   }
   
-  return(dfDailyMerge)
+  return(dataAZMetDataMerge)
 }

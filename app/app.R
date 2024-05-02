@@ -70,9 +70,9 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, htmlOutput("figureSubtitle"))
       ), 
       
-      #fluidRow(
-      #  column(width = 11, align = "left", offset = 1, plotOutput("figLine"))
-      #),
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, plotOutput("figure"))
+      ),
       
       #br(),
       #fluidRow(
@@ -99,24 +99,25 @@ server <- function(input, output, session) {
   
   # Reactive events -----
   
-  # Download/load and prep AZMet data
-  #dfAZMetDaily <- eventReactive(input$calculate, {
-    # User feedback
-  #  id <- showNotification(ui = "Retrieving heat stress data . . .", action = NULL, duration = NULL, closeButton = FALSE, type = "message")
-  #  on.exit(removeNotification(id), add = TRUE)
+  # Download and prep AZMet data
+  dataAZMetDataMerge <- eventReactive(input$viewHeatStressData, {
+  # User feedback
+    id <- showNotification(ui = "Retrieving heat stress data . . .", action = NULL, duration = NULL, closeButton = FALSE, type = "message")
+    on.exit(removeNotification(id), add = TRUE)
     
     # Calls 'fxnAZMetDataELT()' and returns tidy data over multiple years
-  #  fxnAZMetDataMerge(station = input$station)
-  #})
+    fxnAZMetDataMerge(azmetStation = input$azmetStation)
+  })
   
   #figCaption <- eventReactive(input$calculate, {
   #  fxnFigCaption(station = input$station)
   #})
   
-  #figLine <- eventReactive(input$calculate, {
-  #  figLineData = dfAZMetDaily()
-  #  fxnFigLine(inData = figLineData, station = input$azmetStation)
-  #})
+  figure <- eventReactive(input$viewHeatStressData, {
+    dataFigure <- dataAZMetDataMerge()
+    fxnFigure(inData = dataFigure, azmetStation = input$azmetStation)
+    #fxnFigure(inData = dataAZMetDataMerge(), station = input$azmetStation) ???
+  })
   
   # Build figure footer
   #figureFooter <- eventReactive(dataAZMetDataMerge(), {
@@ -155,9 +156,9 @@ server <- function(input, output, session) {
   #  figCaption()
   #)
   
-  #output$figLine <- renderPlot({
-  #  figLine()
-  #}, res = 96)
+  output$figure <- renderPlot({
+    figure()
+  }, res = 96)
   
   output$figureFooter <- renderUI({
     figureFooter()

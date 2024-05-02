@@ -1,11 +1,11 @@
-# Growing season start date
+# Cotton heat stress season start date
 if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
   seasonStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-04-24"))
 } else {
   seasonStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-04-24"))
 }
 
-# Growing season end date
+# Cotton heat stress season end date
 if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
   seasonEndDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-10-07"))
 } else {
