@@ -10,7 +10,12 @@ fxnAZMetDataMerge <- function(azmetStation) {
   endDate <- seasonEndDate
   
   while (startDate >= azmetStationStartDate) {
-    dataAZMetDataELT <- fxnAZMetDataELT(azmetStation = azmetStation, timeStep = "Daily", startDate = startDate, endDate = endDate)
+    dataAZMetDataELT <- fxnAZMetDataELT(
+      azmetStation = azmetStation, 
+      timeStep = "Daily", 
+      startDate = startDate, 
+      endDate = endDate
+    )
     
     # For case of empty data return
     if (nrow(dataAZMetDataELT) == 0) {
@@ -23,8 +28,8 @@ fxnAZMetDataMerge <- function(azmetStation) {
         dataAZMetDataMerge <- rbind(dataAZMetDataMerge, dataAZMetDataELT)
       }
       
-      startDate <- min(seq(start, length = 2, by = "-1 year"))
-      endDate <- min(seq(end, length = 2, by = "-1 year"))
+      startDate <- min(seq(startDate, length = 2, by = "-1 year"))
+      endDate <- min(seq(endDate, length = 2, by = "-1 year"))
     }
   }
   

@@ -47,8 +47,21 @@ fxnFigure <- function(inData, azmetStation) {
     # Heat stress time series -----
     
     # Previous years
-    #geom_line(data = dplyr::filter(inData, date_year == min(date_year)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), color = "#378DBD", linewidth = 0.5, alpha = 1.0) +
+    geom_line(
+      data = dplyr::filter(inData, date_year < (max(date_year) - 1)), 
+      mapping = aes(x = date_doy, y = heatstress_cotton_meanF, group = date_year), 
+      color = "#bdbdbd", linewidth = 0.5, alpha = 1.0
+    ) +
+  
+  
+    geom_line(
+      data = dplyr::filter(inData, date_year == (max(date_year) - 1)), 
+      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
+      color = "#378DBD", linewidth = 0.5, alpha = 1.0
+    ) +
+    
     #geom_point(data = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), shape = 21, color = "#FFFFFF", fill = "#378DBD", size = 2, stroke = 0.5) +
+    
     #annotate(geom = "text", label = min(inData$date_year), x = (dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$date_doy + 2.0), y = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, color = "#378DBD", size = 3, fontface = "plain", hjust = 0.0) +
     
     # Current year
@@ -74,24 +87,66 @@ fxnFigure <- function(inData, azmetStation) {
     
     # Heat stress zones: labels -----
   
-    annotate(geom = "text", label = "NO HEAT STRESS", x = (min(inData$date_doy) + 2), y = (78.8 + 0.5), color = "#343a40", size = 3, fontface = "plain", hjust = 0.0, vjust = 0.0) +
-    annotate(geom = "text", label = "LEVEL 1 HEAT STRESS", x = (min(inData$date_doy) + 2), y = (82.4 + 0.5), color = "#343a40", size = 3, fontface = "plain", hjust = 0.0, vjust = 0.0) +
-    annotate(geom = "text", label = "LEVEL 2 HEAT STRESS", x = (min(inData$date_doy) + 2), y = (86.0 + 0.5), color = "#343a40", size = 3, fontface = "plain", hjust = 0.0, vjust = 0.0) +
+    annotate(
+      geom = "text", 
+      label = "NO HEAT STRESS", 
+      x = (min(inData$date_doy) + 2), 
+      y = (78.8 + 0.5), 
+      color = "#343a40", 
+      size = 3, 
+      fontface = "plain", 
+      hjust = 0.0, 
+      vjust = 0.0
+    ) +
+    
+    annotate(
+      geom = "text", 
+      label = "LEVEL 1 HEAT STRESS", 
+      x = (min(inData$date_doy) + 2), 
+      y = (82.4 + 0.5), 
+      color = "#343a40", 
+      size = 3, 
+      fontface = "plain", 
+      hjust = 0.0, 
+      vjust = 0.0
+    ) +
+    
+    annotate(
+      geom = "text", 
+      label = "LEVEL 2 HEAT STRESS", 
+      x = (min(inData$date_doy) + 2), 
+      y = (86.0 + 0.5), 
+      color = "#343a40", 
+      size = 3, 
+      fontface = "plain", 
+      hjust = 0.0, 
+      vjust = 0.0
+    ) +
     
     # Graph appearance -----
     
-    labs(subtitle = paste0("AZMet ", station, " station", "\n", "Data through ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")), "\n"),
-         x = "Month",
-         y = "°F") +
+    labs(
+      subtitle = 
+        paste0(
+          "AZMet ", azmetStation, " station", "\n", 
+          "Data through ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")), "\n"
+        ),
+      x = "Month",
+      y = "°F"
+    ) +
     
-    scale_x_continuous(breaks = xAxisBreaks, 
-                       labels = xAxisLabels,
-                       expand = expansion(mult = c(0.00, 0.08))) +
+    scale_x_continuous(
+      breaks = xAxisBreaks, 
+      labels = xAxisLabels,
+      expand = expansion(mult = c(0.00, 0.08))
+    ) +
     
-    scale_y_continuous(breaks = seq(from = 0, to = 150, by = 10), 
-                       labels = seq(from = 0, to = 150, by = 10),
-                       #limits = c(min(inData$heatstress_cotton_meanF), max(inData$heatstress_cotton_meanF)),
-                       expand = expansion(mult = c(0.05, 0.05))) +
+    scale_y_continuous(
+      breaks = seq(from = 0, to = 150, by = 10), 
+      labels = seq(from = 0, to = 150, by = 10),
+      #limits = c(min(inData$heatstress_cotton_meanF), max(inData$heatstress_cotton_meanF)),
+      expand = expansion(mult = c(0.05, 0.05))
+    ) +
     
     theme_minimal() +
     
@@ -118,9 +173,15 @@ fxnFigure <- function(inData, azmetStation) {
       #axis.ticks,
       #axis.ticks.x,
       #axis.ticks.x.top,
-      axis.ticks.x.bottom = element_line(color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE),
+      axis.ticks.x.bottom = 
+        element_line(
+          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+        ),
       #axis.ticks.y,
-      axis.ticks.y.left = element_line(color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE),
+      axis.ticks.y.left = 
+        element_line(
+          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+        ),
       #axis.ticks.y.right,
       #axis.ticks.length,
       #axis.ticks.length.x,
@@ -132,9 +193,15 @@ fxnFigure <- function(inData, azmetStation) {
       #axis.line,
       #axis.line.x,
       #axis.line.x.top,
-      axis.line.x.bottom = element_line(color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE),
+      axis.line.x.bottom = 
+        element_line(
+          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+        ),
       #axis.line.y,
-      axis.line.y.left = element_line(color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE),
+      axis.line.y.left = 
+        element_line(
+          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+        ),
       #axis.line.y.right,
       #legend.background,
       #legend.margin,
