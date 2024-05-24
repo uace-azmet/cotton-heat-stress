@@ -100,7 +100,10 @@ server <- function(input, output, session) {
   # Download and prep AZMet data
   dataAZMetDataMerge <- eventReactive(input$viewHeatStressData, {
   # User feedback
-    id <- showNotification(ui = "Retrieving heat stress data . . .", action = NULL, duration = NULL, closeButton = FALSE, type = "message")
+    id <- showNotification(
+      ui = "Retrieving heat stress data . . .", 
+      action = NULL, duration = NULL, closeButton = FALSE, type = "message"
+    )
     on.exit(removeNotification(id), add = TRUE)
     
     # Calls 'fxnAZMetDataELT()' and returns tidy data over multiple years

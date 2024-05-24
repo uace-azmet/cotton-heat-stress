@@ -52,7 +52,7 @@ fxnFigure <- function(inData, azmetStation) {
     geom_line(
       data = dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF, group = date_year), 
-      color = "#bdbdbd", lineend = "round", linejoin = "round", linewidth = 0.7, alpha = 1.0
+      color = "#bdbdbd", lineend = "round", linejoin = "round", linewidth = 0.8, alpha = 1.0
     ) +
   
   
@@ -169,12 +169,14 @@ fxnFigure <- function(inData, azmetStation) {
       #axis.ticks.x.top,
       axis.ticks.x.bottom = 
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y,
       axis.ticks.y.left = 
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y.right,
       #axis.ticks.length,
@@ -226,7 +228,8 @@ fxnFigure <- function(inData, azmetStation) {
       #panel.grid,
       panel.grid.major =
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          arrow = NULL, inherit.blank = FALSE
         ),
       panel.grid.minor = element_blank(),
       #panel.grid.major.x,
