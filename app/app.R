@@ -1,5 +1,3 @@
-
-
 # View time series and statistics of cotton heat stress by station during the growing season
 
 # Add code for the following
@@ -133,7 +131,7 @@ server <- function(input, output, session) {
   
   # Build figure subtitle
   figureSubtitle <- eventReactive(input$viewHeatStressData, {
-    fxnFigureSubtitle(azmetStation = input$azmetStation)
+    fxnFigureSubtitle(azmetStation = input$azmetStation, inData = dataAZMetDataMerge())
   })
   
   # Build figure title

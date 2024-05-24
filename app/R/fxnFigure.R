@@ -1,7 +1,7 @@
-#' fxnFigure: generates line graph of estimated canopy temperature values from current/recent years with cotton heat stress categories
+#' `fxnFigure` generates line graph of estimated canopy temperature values from current/recent years with cotton heat stress categories
 #' 
-#' @param: inData - data table of seasonal cotton heat stress values by year
-#' @param: azmetStation - AZMet station selection by user
+#' @param inData - data table of seasonal cotton heat stress values by year
+#' @param azmetStation - AZMet station selection by user
 #' @return: `figure` - png of figure
 
 
@@ -29,8 +29,9 @@ fxnFigure <- function(inData, azmetStation) {
       xmax = Inf, 
       ymin = 82.4, 
       ymax = 86.0, 
-      fill = "#9EABAE", 
-      alpha = 0.2
+      #fill = "#9EABAE", 
+      fill = "#e0e0e0", 
+      alpha = 0.5
     ) +
     
     # Level 2
@@ -40,7 +41,8 @@ fxnFigure <- function(inData, azmetStation) {
       xmax = Inf, 
       ymin = 86.0, 
       ymax = Inf, 
-      fill = "#9EABAE", 
+      #fill = "#9EABAE", 
+      fill = "#bdbdbd",
       alpha = 0.5
     ) +
     
@@ -48,17 +50,17 @@ fxnFigure <- function(inData, azmetStation) {
     
     # Previous years
     geom_line(
-      data = dplyr::filter(inData, date_year < (max(date_year) - 1)), 
+      data = dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF, group = date_year), 
-      color = "#bdbdbd", linewidth = 0.5, alpha = 1.0
+      color = "#bdbdbd", lineend = "round", linejoin = "round", linewidth = 0.7, alpha = 1.0
     ) +
   
   
-    geom_line(
-      data = dplyr::filter(inData, date_year == (max(date_year) - 1)), 
-      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#378DBD", linewidth = 0.5, alpha = 1.0
-    ) +
+    #geom_line(
+    #  data = dplyr::filter(inData, date_year == (max(date_year) - 1)), 
+    #  mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
+    #  color = "#378DBD", linewidth = 0.5, alpha = 1.0
+    #) +
     
     #geom_point(data = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), shape = 21, color = "#FFFFFF", fill = "#378DBD", size = 2, stroke = 0.5) +
     
@@ -68,13 +70,13 @@ fxnFigure <- function(inData, azmetStation) {
     geom_line(
       data = dplyr::filter(inData, date_year == max(date_year)),
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#1E5288", linewidth = 1.0
+      color = "#343a40", linewidth = 1.0
     ) +
     
     geom_point(
       data = dplyr::filter(inData, datetime == max(datetime)), 
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#FFFFFF", fill = "#1E5288", shape = 21, size = 4, stroke = 0.5
+      color = "#FFFFFF", fill = "#343a40", shape = 21, size = 4, stroke = 0.5
     ) +
     
     annotate(
@@ -82,7 +84,7 @@ fxnFigure <- function(inData, azmetStation) {
       label = max(inData$date_year), 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, 
-      color = "#1E5288", fontface = "bold", hjust = 0.0, size = 4
+      color = "#343a40", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Heat stress zones: labels -----
@@ -92,9 +94,9 @@ fxnFigure <- function(inData, azmetStation) {
       label = "NO HEAT STRESS", 
       x = (min(inData$date_doy) + 2), 
       y = (78.8 + 0.5), 
-      color = "#343a40", 
+      color = "#757575", 
       size = 3, 
-      fontface = "plain", 
+      fontface = "bold", 
       hjust = 0.0, 
       vjust = 0.0
     ) +
@@ -104,9 +106,9 @@ fxnFigure <- function(inData, azmetStation) {
       label = "LEVEL 1 HEAT STRESS", 
       x = (min(inData$date_doy) + 2), 
       y = (82.4 + 0.5), 
-      color = "#343a40", 
+      color = "#757575", 
       size = 3, 
-      fontface = "plain", 
+      fontface = "bold", 
       hjust = 0.0, 
       vjust = 0.0
     ) +
@@ -116,24 +118,16 @@ fxnFigure <- function(inData, azmetStation) {
       label = "LEVEL 2 HEAT STRESS", 
       x = (min(inData$date_doy) + 2), 
       y = (86.0 + 0.5), 
-      color = "#343a40", 
+      color = "#757575", 
       size = 3, 
-      fontface = "plain", 
+      fontface = "bold", 
       hjust = 0.0, 
       vjust = 0.0
     ) +
     
     # Graph appearance -----
     
-    labs(
-      subtitle = 
-        paste0(
-          "AZMet ", azmetStation, " station", "\n", 
-          "Data through ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")), "\n"
-        ),
-      x = "Month",
-      y = "°F"
-    ) +
+    labs(x = "\nMonth", y = "°F  ") +
     
     scale_x_continuous(
       breaks = xAxisBreaks, 
@@ -157,17 +151,17 @@ fxnFigure <- function(inData, azmetStation) {
       #title,
       #aspect.ratio,
       #axis.title,
-      axis.title.x = element_text(color = "#343a40", face = "plain", size = 9, hjust = 0.0),
+      axis.title.x = element_text(color = "#757575", face = "plain", size = 9, hjust = 0.0),
       #axis.title.x.top,
       #axis.title.x.bottom,
-      axis.title.y = element_text(color = "#343a40", face = "plain", size = 9, angle = 0),
+      axis.title.y = element_text(color = "#757575", face = "plain", size = 9, angle = 0, vjust = 0.0),
       #axis.title.y.left,
       #axis.title.y.right,
       #axis.text,
-      axis.text.x = element_text(color = "#343a40", face = "plain", size = 9),
+      axis.text.x = element_text(color = "#757575", face = "plain", size = 9),
       #axis.text.x.top,
       #axis.text.x.bottom,
-      axis.text.y = element_text(color = "#343a40", face = "plain", size = 9),
+      axis.text.y = element_text(color = "#757575", face = "plain", size = 9),
       #axis.text.y.left,
       #axis.text.y.right,
       #axis.ticks,
@@ -175,12 +169,12 @@ fxnFigure <- function(inData, azmetStation) {
       #axis.ticks.x.top,
       axis.ticks.x.bottom = 
         element_line(
-          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y,
       axis.ticks.y.left = 
         element_line(
-          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y.right,
       #axis.ticks.length,
@@ -193,15 +187,15 @@ fxnFigure <- function(inData, azmetStation) {
       #axis.line,
       #axis.line.x,
       #axis.line.x.top,
-      axis.line.x.bottom = 
-        element_line(
-          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
-        ),
+      axis.line.x.bottom = element_blank(),
+        #element_line(
+        #  color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+        #),
       #axis.line.y,
-      axis.line.y.left = 
-        element_line(
-          color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
-        ),
+      axis.line.y.left = element_blank(),
+        #element_line(
+        #  color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+        #),
       #axis.line.y.right,
       #legend.background,
       #legend.margin,
@@ -230,7 +224,10 @@ fxnFigure <- function(inData, azmetStation) {
       #panel.spacing.x,
       #panel.spacing.y,
       #panel.grid,
-      panel.grid.major = element_blank(),
+      panel.grid.major =
+        element_line(
+          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
+        ),
       panel.grid.minor = element_blank(),
       #panel.grid.major.x,
       #panel.grid.major.y,
@@ -239,8 +236,8 @@ fxnFigure <- function(inData, azmetStation) {
       #panel.ontop,
       #plot.background,
       #plot.title,
-      plot.title.position = "plot",
-      plot.subtitle = element_text(family = "sans", face = "plain", color = "#343a40", size = 9)
+      #plot.title.position,
+      #plot.subtitle,
       #plot.caption,
       #plot.caption.position,
       #plot.tag,
