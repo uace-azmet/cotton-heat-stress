@@ -7,9 +7,9 @@ if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
 
 # Cotton heat stress season end date
 if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
-  seasonEndDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-10-07"))
+  seasonEndDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-10-15"))
 } else {
-  seasonEndDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-10-07"))
+  seasonEndDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-10-15"))
 }
 
 # Load auxilliary files

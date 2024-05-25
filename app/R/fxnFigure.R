@@ -31,7 +31,7 @@ fxnFigure <- function(inData, azmetStation) {
       ymax = 86.0, 
       #fill = "#9EABAE", 
       fill = "#e0e0e0", 
-      alpha = 0.5
+      alpha = 0.4
     ) +
     
     # Level 2
@@ -43,28 +43,42 @@ fxnFigure <- function(inData, azmetStation) {
       ymax = Inf, 
       #fill = "#9EABAE", 
       fill = "#bdbdbd",
-      alpha = 0.5
+      alpha = 0.4
     ) +
     
     # Heat stress time series -----
     
+    # Month-day marker
+    geom_vline(
+      xintercept = dplyr::filter(inData, datetime == max(datetime))$date_doy,
+      color = "#e0e0e0", linewidth = 0.6, linetype = "dotted", lineend = "round"
+    ) +
+  
     # Previous years
     geom_line(
       data = dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF, group = date_year), 
-      color = "#bdbdbd", lineend = "round", linejoin = "round", linewidth = 0.8, alpha = 1.0
+      color = "#bdbdbd", lineend = "round", linejoin = "round", linewidth = 0.6, alpha = 1.0
     ) +
   
-  
-    #geom_line(
-    #  data = dplyr::filter(inData, date_year == (max(date_year) - 1)), 
-    #  mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-    #  color = "#378DBD", linewidth = 0.5, alpha = 1.0
-    #) +
+    geom_point(
+      #data = dplyr::filter(dplyr::filter(inData, date_year <= (max(date_year) - 1)), date_doy == max(date_doy)), 
+      data = 
+        dplyr::filter(
+          dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
+          date_doy == max(dplyr::filter(inData, date_year == max(date_year))$date_doy)
+        ),
+      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
+      color = "#FFFFFF", fill = "#bdbdbd", shape = 21, size = 3, stroke = 0.5
+    ) +
     
-    #geom_point(data = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime)), mapping = aes(x = date_doy, y = heatstress_cotton_meanF), shape = 21, color = "#FFFFFF", fill = "#378DBD", size = 2, stroke = 0.5) +
-    
-    #annotate(geom = "text", label = min(inData$date_year), x = (dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$date_doy + 2.0), y = dplyr::filter(dplyr::filter(inData, date_year == min(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, color = "#378DBD", size = 3, fontface = "plain", hjust = 0.0) +
+    annotate(
+      geom = "label", 
+      label = paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-"), 
+      x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
+      y = (dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF) - 3, 
+      color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+    ) +
     
     # Current year
     geom_line(
@@ -80,11 +94,11 @@ fxnFigure <- function(inData, azmetStation) {
     ) +
     
     annotate(
-      geom = "text", 
+      geom = "label", 
       label = max(inData$date_year), 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, 
-      color = "#343a40", fontface = "bold", hjust = 0.0, size = 4
+      color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Heat stress zones: labels -----
@@ -96,7 +110,7 @@ fxnFigure <- function(inData, azmetStation) {
       y = (78.8 + 0.5), 
       color = "#757575", 
       size = 3, 
-      fontface = "bold", 
+      fontface = "plain", 
       hjust = 0.0, 
       vjust = 0.0
     ) +
@@ -108,7 +122,7 @@ fxnFigure <- function(inData, azmetStation) {
       y = (82.4 + 0.5), 
       color = "#757575", 
       size = 3, 
-      fontface = "bold", 
+      fontface = "plain", 
       hjust = 0.0, 
       vjust = 0.0
     ) +
@@ -120,7 +134,7 @@ fxnFigure <- function(inData, azmetStation) {
       y = (86.0 + 0.5), 
       color = "#757575", 
       size = 3, 
-      fontface = "bold", 
+      fontface = "plain", 
       hjust = 0.0, 
       vjust = 0.0
     ) +
@@ -132,7 +146,7 @@ fxnFigure <- function(inData, azmetStation) {
     scale_x_continuous(
       breaks = xAxisBreaks, 
       labels = xAxisLabels,
-      expand = expansion(mult = c(0.00, 0.08))
+      expand = expansion(mult = c(0.00, 0.00))
     ) +
     
     scale_y_continuous(
