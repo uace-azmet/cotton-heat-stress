@@ -8,12 +8,12 @@
   background-color: #fff !important; color: #343a40;
 }
 
-.figure-footer-help-text {
-  color: #828282; font-style: italic;
+.figure-footer {
+  color: #343a40;
 }
 
-.figure-subtitle {
-  color: #343a40; font-weight: plain; margin-top: 0;
+.figure-footer-help-text {
+  color: #828282; font-style: italic;
 }
 
 .figure-title {
@@ -22,6 +22,14 @@
 
 .help-block {
   color: #828282;
+}
+
+.histogram-caption {
+  color: #828282; font-weight: plain; margin-top: 0;
+}
+
+.histogram-subtitle {
+  color: #343a40; font-weight: plain; margin-top: 0;
 }
 
 .selectize-input.items.full.has-options.has-items {
@@ -34,6 +42,14 @@
 
 .shiny-notification {
   background-color: rgba(129,211,235,0.9) !important; border: none !important; box-shadow: 1px 2px rgba(0,0,0,0.1) !important; color: #1E5288 !important; font-style: italic !important; position: fixed !important; top: calc(50%) !important; left: calc(50% - 100px) !important;
+}
+
+.time-series-caption {
+  color: #828282; font-weight: plain; margin-top: 0;
+}
+
+.time-series-subtitle {
+  color: #343a40; font-weight: plain; margin-top: 0;
 }
 
 /* id */

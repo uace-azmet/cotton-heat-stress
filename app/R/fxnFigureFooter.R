@@ -1,7 +1,7 @@
-#' `fxnFigureFooter.R` - Build footer for figure based on user input
+#' `fxnFigureFooter.R` - Build footer for figure
 #' 
 #' @param timeStep - AZMet data time step
-#' @return `figureFooter` - Footer for figure based on user input
+#' @return `figureFooter` - Footer for figure
 
 
 fxnFigureFooter <- function(timeStep) {
@@ -77,7 +77,9 @@ fxnFigureFooter <- function(timeStep) {
           br(), br(),
           "For information on how this webpage is put together, please visit the", " ", webpageCode, " ", "for this tool."
         )
-      )
+      ),
+      
+      class = "figure-footer"
     )
   
   return(figureFooter)

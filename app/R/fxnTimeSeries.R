@@ -1,11 +1,11 @@
-#' `fxnFigure` generates line graph of estimated canopy temperature values from current/recent years with cotton heat stress categories
+#' `fxnTimeSeries` generates time series of estimated canopy temperature values from current/recent years with cotton heat stress categories
 #' 
 #' @param inData - data table of seasonal cotton heat stress values by year
 #' @param azmetStation - AZMet station selection by user
-#' @return: `figure` - png of figure
+#' @return: `timeSeries` - png of time series
 
 
-fxnFigure <- function(inData, azmetStation) {
+fxnTimeSeries <- function(inData, azmetStation) {
   
   # Adjust day-of-year values for leap years to correctly line up month and day values on plot
   for (yr in unique(inData$date_year)) {
@@ -18,7 +18,7 @@ fxnFigure <- function(inData, azmetStation) {
   xAxisBreaks <- c(121, 152, 182, 213, 244, 274)
   xAxisLabels <- c("May", "Jun", "Jul", "Aug", "Sep", "Oct")
   
-  figure <- ggplot2::ggplot(data = inData) +
+  timeSeries <- ggplot2::ggplot(data = inData) +
     
     # Heat stress zones: shading -----
     
@@ -275,5 +275,5 @@ fxnFigure <- function(inData, azmetStation) {
       #validate = TRUE
     )
   
-  return(figure)
+  return(timeSeries)
 }
