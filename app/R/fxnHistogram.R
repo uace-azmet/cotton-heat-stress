@@ -20,33 +20,7 @@ fxnHistogram <- function(inData, azmetStation) {
   
   histogram <- ggplot2::ggplot(data = inData) +
     
-    # Heat stress zones: shading -----
-    
-    # Level 1
-    annotate(
-      geom = "rect", 
-      xmin = min(inData$date_doy), 
-      xmax = Inf, 
-      ymin = 82.4, 
-      ymax = 86.0, 
-      #fill = "#9EABAE", 
-      fill = "#e0e0e0", 
-      alpha = 0.4
-    ) +
-    
-    # Level 2
-    annotate(
-      geom = "rect", 
-      xmin = min(inData$date_doy), 
-      xmax = Inf, 
-      ymin = 86.0, 
-      ymax = Inf, 
-      #fill = "#9EABAE", 
-      fill = "#bdbdbd",
-      alpha = 0.4
-    ) +
-    
-    # Heat stress time series -----
+    geom_histogram(mapping = aes(x = date_doy), binwidth = 1, center = 0, fill = "#bdbdbd", width = 0.5) +
     
     # Month-day marker
     geom_vline(
@@ -54,109 +28,15 @@ fxnHistogram <- function(inData, azmetStation) {
       color = "#e0e0e0", linewidth = 0.6, linetype = "dotted", lineend = "round"
     ) +
   
-    # Previous years
-    geom_line(
-      data = dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
-      mapping = aes(x = date_doy, y = heatstress_cotton_meanF, group = date_year), 
-      color = "#bdbdbd", lineend = "round", linejoin = "round", linewidth = 0.6, alpha = 1.0
-    ) +
-  
-    geom_point(
-      #data = dplyr::filter(dplyr::filter(inData, date_year <= (max(date_year) - 1)), date_doy == max(date_doy)), 
-      data = 
-        dplyr::filter(
-          dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
-          date_doy == max(dplyr::filter(inData, date_year == max(date_year))$date_doy)
-        ),
-      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#FFFFFF", fill = "#bdbdbd", shape = 21, size = 3, stroke = 0.5
-    ) +
+    facet_wrap(vars(heatstress_categories), ncol = 1, scales = "fixed", strip.position = "top") +
     
-    annotate(
-      geom = "label", 
-      label = paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-"), 
-      x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
-      y = (dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF) - 3, 
-      color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
-    ) +
-    
-    # Current year
-    geom_line(
-      data = dplyr::filter(inData, date_year == max(date_year)),
-      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#343a40", linewidth = 1.0
-    ) +
-    
-    geom_point(
-      data = dplyr::filter(inData, datetime == max(datetime)), 
-      mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#FFFFFF", fill = "#343a40", shape = 21, size = 4, stroke = 0.5
-    ) +
-    
-    annotate(
-      geom = "label", 
-      label = max(inData$date_year), 
-      x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
-      y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, 
-      color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
-    ) +
-    
-    # Heat stress zones: labels -----
-  
-    annotate(
-      geom = "text", 
-      label = "NO HEAT STRESS", 
-      x = (min(inData$date_doy) + 2), 
-      y = (78.8 + 0.5), 
-      color = "#757575", 
-      size = 3, 
-      fontface = "plain", 
-      hjust = 0.0, 
-      vjust = 0.0
-    ) +
-    
-    annotate(
-      geom = "text", 
-      label = "LEVEL 1 HEAT STRESS", 
-      x = (min(inData$date_doy) + 2), 
-      y = (82.4 + 0.5), 
-      color = "#757575", 
-      size = 3, 
-      fontface = "plain", 
-      hjust = 0.0, 
-      vjust = 0.0
-    ) +
-    
-    annotate(
-      geom = "text", 
-      label = "LEVEL 2 HEAT STRESS", 
-      x = (min(inData$date_doy) + 2), 
-      y = (86.0 + 0.5), 
-      color = "#757575", 
-      size = 3, 
-      fontface = "plain", 
-      hjust = 0.0, 
-      vjust = 0.0
-    ) +
-    
-    # Graph appearance -----
-    
-    labs(x = "\nMonth", y = "°F  ") +
+    labs(x = "\nMonth", y = "Number of Years\n") +
     
     scale_x_continuous(
       breaks = xAxisBreaks, 
       labels = xAxisLabels,
       expand = expansion(mult = c(0.00, 0.00))
     ) +
-    
-    scale_y_continuous(
-      breaks = seq(from = 0, to = 150, by = 10), 
-      labels = seq(from = 0, to = 150, by = 10),
-      #limits = c(min(inData$heatstress_cotton_meanF), max(inData$heatstress_cotton_meanF)),
-      expand = expansion(mult = c(0.05, 0.05))
-    ) +
-    
-    facet_wrap(vars(date_year), ncol = 1, scales = "fixed", strip.position = "top") +
     
     theme_minimal() +
     
@@ -170,7 +50,7 @@ fxnHistogram <- function(inData, azmetStation) {
       axis.title.x = element_text(color = "#757575", face = "plain", size = 9, hjust = 0.0),
       #axis.title.x.top,
       #axis.title.x.bottom,
-      axis.title.y = element_text(color = "#757575", face = "plain", size = 9, angle = 0, vjust = 0.0),
+      axis.title.y = element_text(color = "#757575", face = "plain", size = 9, hjust = 0.0),
       #axis.title.y.left,
       #axis.title.y.right,
       #axis.text,

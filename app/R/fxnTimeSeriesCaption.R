@@ -6,11 +6,39 @@
 
 
 fxnTimeSeriesCaption <- function(azmetStation, inData) {
+  
+  # Adjust day-of-year values for leap years to correctly line up month and day values on plot
+  for (yr in unique(inData$date_year)) {
+    if (lubridate::leap_year(yr) == TRUE) {
+      inData$date_doy[which(inData$date_year == yr)] <- 
+        inData$date_doy[which(inData$date_year == yr)] - 1
+    } else {
+      inData$date_doy[which(inData$date_year == yr)] <- 
+        inData$date_doy[which(inData$date_year == yr)]
+    }
+  }
+  
+  # Calculate average estimated canopy temperature for day of year of most recent date in data
+  doyMostRecentDate <- inData$date_doy[which(inData$datetime == max(inData$datetime))]
+  
+  doyAverage <- 
+    round(
+      mean(
+        dplyr::filter(inData, date_doy == doyMostRecentDate)$heatstress_cotton_meanF, 
+        na.rm = TRUE
+      ), 
+      digits = 1
+    )
+  
+  doyMinYear <- min(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
+  doyMaxYear <- max(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
+  
+ # Build caption text
   timeSeriesCaption <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "The average of estimated canopy temperatures at the AZMet ", azmetStation, " station on MONTH / DAY is VALUE °F. Values are based on data through ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")), "."
+          "The average estimated canopy temperature on ", format(as.Date(max(inData$datetime)), "%B"), " ", format(as.Date(max(inData$datetime)), "%d"), " (vertical dotted line) at the AZMet ", azmetStation, " station is ", doyAverage, " °F, based on data from ", doyMinYear, " through ", doyMaxYear, " (gray and black points)."
         ),
       ),
       
