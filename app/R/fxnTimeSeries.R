@@ -106,10 +106,10 @@ fxnTimeSeries <- function(inData, azmetStation) {
     annotate(
       geom = "text", 
       label = "NO HEAT STRESS", 
-      x = (min(inData$date_doy) + 2), 
+      x = (min(inData$date_doy) + 1.5), 
       y = (78.8 + 0.5), 
       color = "#757575", 
-      size = 3, 
+      size = 3.5, 
       fontface = "plain", 
       hjust = 0.0, 
       vjust = 0.0
@@ -118,10 +118,10 @@ fxnTimeSeries <- function(inData, azmetStation) {
     annotate(
       geom = "text", 
       label = "LEVEL 1 HEAT STRESS", 
-      x = (min(inData$date_doy) + 2), 
+      x = (min(inData$date_doy) + 1.5), 
       y = (82.4 + 0.5), 
       color = "#757575", 
-      size = 3, 
+      size = 3.5, 
       fontface = "plain", 
       hjust = 0.0, 
       vjust = 0.0
@@ -130,10 +130,10 @@ fxnTimeSeries <- function(inData, azmetStation) {
     annotate(
       geom = "text", 
       label = "LEVEL 2 HEAT STRESS", 
-      x = (min(inData$date_doy) + 2), 
+      x = (min(inData$date_doy) + 1.5), 
       y = (86.0 + 0.5), 
       color = "#757575", 
-      size = 3, 
+      size = 3.5, 
       fontface = "plain", 
       hjust = 0.0, 
       vjust = 0.0
@@ -141,7 +141,7 @@ fxnTimeSeries <- function(inData, azmetStation) {
     
     # Graph appearance -----
     
-    labs(x = "\nMonth", y = "°F  ") +
+    labs(x = "\nMonth\n", y = "°F  ") +
     
     scale_x_continuous(
       breaks = xAxisBreaks, 

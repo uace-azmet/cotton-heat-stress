@@ -11,7 +11,8 @@ fxnHistogramCaption <- function(azmetStation, inData) {
       htmltools::HTML(
         paste0(
           "Frequencies are based on data through ", 
-          gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")), "."
+          gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")),
+          " (vertical dotted line)."
         ),
       ),
       

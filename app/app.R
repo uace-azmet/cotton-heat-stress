@@ -74,7 +74,7 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, plotOutput("timeSeries"))
       ),
       
-      br(),
+      #br(),
       
       fluidRow(
         column(width = 11, align = "left", offset = 1, htmlOutput("timeSeriesCaption"))
@@ -90,7 +90,7 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, plotOutput("histogram"))
       ),
       
-      br(),
+      #br(),
       
       fluidRow(
         column(width = 11, align = "left", offset = 1, htmlOutput("histogramCaption"))

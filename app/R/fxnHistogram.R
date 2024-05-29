@@ -20,7 +20,7 @@ fxnHistogram <- function(inData, azmetStation) {
   
   histogram <- ggplot2::ggplot(data = inData) +
     
-    geom_histogram(mapping = aes(x = date_doy), binwidth = 1, center = 0, fill = "#bdbdbd", width = 0.5) +
+    geom_histogram(mapping = aes(x = date_doy), binwidth = 1, center = 0, fill = "#bdbdbd") +
     
     # Month-day marker
     geom_vline(
@@ -30,7 +30,7 @@ fxnHistogram <- function(inData, azmetStation) {
   
     facet_wrap(vars(heatstress_categories), ncol = 1, scales = "fixed", strip.position = "top") +
     
-    labs(x = "\nMonth", y = "Number of Years\n") +
+    labs(x = "\nMonth\n", y = "Number of Years\n") +
     
     scale_x_continuous(
       breaks = xAxisBreaks, 
@@ -148,7 +148,7 @@ fxnHistogram <- function(inData, azmetStation) {
       #strip.clip,
       #strip.placement,
       #strip.text,
-      #strip.text.x,
+      strip.text.x = element_text(color = "#757575", face = "plain", hjust = 0.0, size = 9)
       #strip.text.y,
       #strip.switch.pad.grid,
       #strip.switch.pad.wrap,

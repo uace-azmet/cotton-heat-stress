@@ -38,7 +38,7 @@ fxnTimeSeriesCaption <- function(azmetStation, inData) {
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "The average estimated canopy temperature on ", format(as.Date(max(inData$datetime)), "%B"), " ", format(as.Date(max(inData$datetime)), "%d"), " (vertical dotted line) at the AZMet ", azmetStation, " station is ", doyAverage, " °F, based on data from ", doyMinYear, " through ", doyMaxYear, " (gray and black points)."
+          "The average estimated canopy temperature on ", format(as.Date(max(inData$datetime)), "%B"), " ", format(as.Date(max(inData$datetime)), "%d"), " (vertical dotted line) at the AZMet ", azmetStation, " station is ", doyAverage, " °F, based on data from ", doyMinYear, " through ", doyMaxYear, " (black and gray points)."
         ),
       ),
       
