@@ -1,11 +1,10 @@
 #' `fxnHistogram` generates histogram of cotton heat stress categories
 #' 
 #' @param inData - data table of seasonal cotton heat stress values by year
-#' @param azmetStation - AZMet station selection by user
 #' @return: `histogram` - png of histogram
 
 
-fxnHistogram <- function(inData, azmetStation) {
+fxnHistogram <- function(inData) {
   
   # Adjust day-of-year values for leap years to correctly line up month and day values on plot
   for (yr in unique(inData$date_year)) {
@@ -21,7 +20,8 @@ fxnHistogram <- function(inData, azmetStation) {
   if (max(inData$date_year) - min(inData$date_year) == 1) {
     previousYearsLabel <- min(inData$date_year)
   } else {
-    previousYearsLabel <- paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
+    previousYearsLabel <- 
+      paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
   }
   
   xAxisBreaks <- c(121, 152, 182, 213, 244, 274)
@@ -30,7 +30,9 @@ fxnHistogram <- function(inData, azmetStation) {
   histogram <- ggplot2::ggplot(data = inData) +
     
     # All growing seasons
-    geom_histogram(mapping = aes(x = date_doy), binwidth = 1, center = 0, fill = "#bdbdbd") +
+    geom_histogram(
+      mapping = aes(x = date_doy), binwidth = 1, center = 0, fill = "#bdbdbd"
+    ) +
     
     geom_label(
       data = dplyr::filter(inData, datetime == max(datetime)),
@@ -61,7 +63,9 @@ fxnHistogram <- function(inData, azmetStation) {
       color = "#e0e0e0", linewidth = 0.6, linetype = "dotted", lineend = "round"
     ) +
   
-    facet_wrap(vars(heatstress_categories), ncol = 1, scales = "fixed", strip.position = "top") +
+    facet_wrap(
+      vars(heatstress_categories), ncol = 1, scales = "fixed", strip.position = "top"
+    ) +
     
     labs(x = "\nMonth\n", y = "Number of Times in Level\n") +
     
@@ -126,14 +130,8 @@ fxnHistogram <- function(inData, azmetStation) {
       #axis.line.x,
       #axis.line.x.top,
       axis.line.x.bottom = element_blank(),
-        #element_line(
-        #  color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
-        #),
       #axis.line.y,
       axis.line.y.left = element_blank(),
-        #element_line(
-        #  color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
-        #),
       #axis.line.y.right,
       #legend.background,
       #legend.margin,

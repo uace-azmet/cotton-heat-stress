@@ -1,11 +1,11 @@
 #' `fxnTimeSeries` generates time series of estimated canopy temperature values from current/recent years with cotton heat stress categories
 #' 
-#' @param inData - data table of seasonal cotton heat stress values by year
 #' @param azmetStation - AZMet station selection by user
+#' @param inData - data table of seasonal cotton heat stress values by year
 #' @return: `timeSeries` - png of time series
 
 
-fxnTimeSeries <- function(inData, azmetStation) {
+fxnTimeSeries <- function(azmetStation, inData) {
   
   # Adjust day-of-year values for leap years to correctly line up month and day values on plot
   for (yr in unique(inData$date_year)) {
@@ -18,7 +18,8 @@ fxnTimeSeries <- function(inData, azmetStation) {
   if (max(inData$date_year) - min(inData$date_year) == 1) {
     previousYearsLabel <- min(inData$date_year)
   } else {
-    previousYearsLabel <- paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
+    previousYearsLabel <- 
+      paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
   }
   
   xAxisBreaks <- c(121, 152, 182, 213, 244, 274)
@@ -35,7 +36,6 @@ fxnTimeSeries <- function(inData, azmetStation) {
       xmax = Inf, 
       ymin = 82.4, 
       ymax = 86.0, 
-      #fill = "#9EABAE", 
       fill = "#e0e0e0", 
       alpha = 0.4
     ) +
@@ -47,7 +47,6 @@ fxnTimeSeries <- function(inData, azmetStation) {
       xmax = Inf, 
       ymin = 86.0, 
       ymax = Inf, 
-      #fill = "#9EABAE", 
       fill = "#bdbdbd",
       alpha = 0.4
     ) +
@@ -68,7 +67,6 @@ fxnTimeSeries <- function(inData, azmetStation) {
     ) +
   
     geom_point(
-      #data = dplyr::filter(dplyr::filter(inData, date_year <= (max(date_year) - 1)), date_doy == max(date_doy)), 
       data = 
         dplyr::filter(
           dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
@@ -158,7 +156,6 @@ fxnTimeSeries <- function(inData, azmetStation) {
     scale_y_continuous(
       breaks = seq(from = 0, to = 150, by = 10), 
       labels = seq(from = 0, to = 150, by = 10),
-      #limits = c(min(inData$heatstress_cotton_meanF), max(inData$heatstress_cotton_meanF)),
       expand = expansion(mult = c(0.05, 0.05))
     ) +
     
@@ -210,14 +207,8 @@ fxnTimeSeries <- function(inData, azmetStation) {
       #axis.line.x,
       #axis.line.x.top,
       axis.line.x.bottom = element_blank(),
-        #element_line(
-        #  color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
-        #),
       #axis.line.y,
       axis.line.y.left = element_blank(),
-        #element_line(
-        #  color = "#343a40", linewidth = 0.25, linetype = "solid", lineend = "round", arrow = NULL, inherit.blank = FALSE
-        #),
       #axis.line.y.right,
       #legend.background,
       #legend.margin,

@@ -7,12 +7,14 @@
 
 fxnHistogramCaption <- function(azmetStation, inData) {
   
-  doyMostRecentDate <- inData$date_doy[which(inData$datetime == max(inData$datetime))]
+  doyMostRecentDate <- 
+    inData$date_doy[which(inData$datetime == max(inData$datetime))]
   
   doyMinYear <- min(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
   doyMaxYear <- max(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
   
-  doyMostRecentLevel <- inData$heatstress_categories[which(inData$datetime == max(inData$datetime))]
+  doyMostRecentLevel <- 
+    inData$heatstress_categories[which(inData$datetime == max(inData$datetime))]
   
   doyMostRecentLevelFreq <- 
     nrow(

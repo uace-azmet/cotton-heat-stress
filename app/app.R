@@ -3,7 +3,6 @@
 # Add code for the following
 # 
 # 'azmet-shiny-template.html': <!-- Google tag (gtag.js) -->
-# 'azmet-shiny-template.html': <!-- CSS specific to this AZMet Shiny app -->
 
 # Libraries
 library(azmetr)
@@ -75,8 +74,6 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, plotOutput("timeSeries"))
       ),
       
-      #br(),
-      
       fluidRow(
         column(width = 11, align = "left", offset = 1, htmlOutput("timeSeriesCaption"))
       ),
@@ -91,13 +88,11 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, plotOutput("histogram"))
       ),
       
-      #br(),
-      
       fluidRow(
         column(width = 11, align = "left", offset = 1, htmlOutput("histogramCaption"))
       ),
       
-      br(), br(),
+      br(), br(), br(),
       
       fluidRow(
         column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureFooterHelpText"))
@@ -133,40 +128,27 @@ server <- function(input, output, session) {
   })
   
   # Build figure footer
-  #figureFooter <- eventReactive(dataAZMetDataMerge(), {
-  figureFooter <- eventReactive(input$viewHeatStressData, {
+  figureFooter <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureFooter(timeStep = "Daily")
   })
   
   # Build footer help text
-  #figureFooterHelpText <- eventReactive(dataAZMetDataMerge(), {
-  figureFooterHelpText <- eventReactive(input$viewHeatStressData, {
+  figureFooterHelpText <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureFooterHelpText()
   })
   
   # Build figure title
-  figureTitle <- eventReactive(input$viewHeatStressData, {
-    #validate(
-    #  need(
-    #    expr = input$plantingDate <= input$endDate, 
-    #    message = "Please select a 'Planting Date' that is earlier than or the same as the 'End Date'."
-    #  ),
-    #  errorClass = "datepicker"
-    #)
-    
-    #fxnFigureTitle(inData = dataAZMetDataSumHUs(), endDate = input$endDate)
+  figureTitle <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureTitle(azmetStation = input$azmetStation)
   })
   
   # Build histogram
-  histogram <- eventReactive(input$viewHeatStressData, {
-    dataHistogram <- dataAZMetDataMerge()
-    fxnHistogram(inData = dataHistogram, azmetStation = input$azmetStation)
-    #fxnHistogram(inData = dataAZMetDataMerge(), station = input$azmetStation) ???
+  histogram <- eventReactive(dataAZMetDataMerge(), {
+    fxnHistogram(inData = dataAZMetDataMerge())
   })
   
   # Build histogram caption
-  histogramCaption <- eventReactive(input$viewHeatStressData, {
+  histogramCaption <- eventReactive(dataAZMetDataMerge(), {
     fxnHistogramCaption(
       azmetStation = input$azmetStation, 
       inData = dataAZMetDataMerge()
@@ -174,19 +156,17 @@ server <- function(input, output, session) {
   })
   
   # Build histogram subtitle
-  histogramSubtitle <- eventReactive(input$viewHeatStressData, {
-    fxnHistogramSubtitle(azmetStation = input$azmetStation, inData = dataAZMetDataMerge())
+  histogramSubtitle <- eventReactive(dataAZMetDataMerge(), {
+    fxnHistogramSubtitle()
   })
   
   # Build time series
-  timeSeries <- eventReactive(input$viewHeatStressData, {
-    dataTimeSeries <- dataAZMetDataMerge()
-    fxnTimeSeries(inData = dataTimeSeries, azmetStation = input$azmetStation)
-    #fxnFigure(inData = dataAZMetDataMerge(), station = input$azmetStation) ???
+  timeSeries <- eventReactive(dataAZMetDataMerge(), {
+    fxnTimeSeries(azmetStation = input$azmetStation, inData = dataAZMetDataMerge())
   })
   
   # Build time series caption
-  timeSeriesCaption <- eventReactive(input$viewHeatStressData, {
+  timeSeriesCaption <- eventReactive(dataAZMetDataMerge(), {
     fxnTimeSeriesCaption(
       azmetStation = input$azmetStation, 
       inData = dataAZMetDataMerge()
@@ -194,11 +174,8 @@ server <- function(input, output, session) {
   })
   
   # Build time series subtitle
-  timeSeriesSubtitle <- eventReactive(input$viewHeatStressData, {
-    fxnTimeSeriesSubtitle(
-      azmetStation = input$azmetStation, 
-      inData = dataAZMetDataMerge()
-    )
+  timeSeriesSubtitle <- eventReactive(dataAZMetDataMerge(), {
+    fxnTimeSeriesSubtitle()
   })
   
   # Outputs -----
