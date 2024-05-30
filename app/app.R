@@ -8,6 +8,7 @@
 # Libraries
 library(azmetr)
 library(dplyr)
+library(english)
 library(ggplot2)
 library(htmltools)
 library(lubridate)
@@ -64,20 +65,40 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, htmlOutput("figureTitle"))
       ), 
       
+      br(),
+      
       fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput("figureSubtitle"))
+        column(width = 11, align = "left", offset = 1, htmlOutput("timeSeriesSubtitle"))
       ), 
       
       fluidRow(
-        column(width = 11, align = "left", offset = 1, plotOutput("figure"))
+        column(width = 11, align = "left", offset = 1, plotOutput("timeSeries"))
       ),
       
       #br(),
-      #fluidRow(
-      #  column(width = 11, align = "left", offset = 1, htmlOutput("figCaption"))
-      #)
+      
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, htmlOutput("timeSeriesCaption"))
+      ),
+      
+      br(),
+      
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, htmlOutput("histogramSubtitle"))
+      ), 
+      
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, plotOutput("histogram"))
+      ),
+      
+      #br(),
+      
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, htmlOutput("histogramCaption"))
+      ),
       
       br(), br(),
+      
       fluidRow(
         column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureFooterHelpText"))
       ),
@@ -85,6 +106,7 @@ ui <- htmltools::htmlTemplate(
       fluidRow(
         column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureFooter"))
       ),
+     
       br()
     ) # mainPanel()
   ) # sidebarLayout()
@@ -110,31 +132,16 @@ server <- function(input, output, session) {
     fxnAZMetDataMerge(azmetStation = input$azmetStation)
   })
   
-  #figCaption <- eventReactive(input$calculate, {
-  #  fxnFigCaption(station = input$station)
-  #})
-  
-  figure <- eventReactive(input$viewHeatStressData, {
-    dataFigure <- dataAZMetDataMerge()
-    fxnFigure(inData = dataFigure, azmetStation = input$azmetStation)
-    #fxnFigure(inData = dataAZMetDataMerge(), station = input$azmetStation) ???
-  })
-  
   # Build figure footer
   #figureFooter <- eventReactive(dataAZMetDataMerge(), {
   figureFooter <- eventReactive(input$viewHeatStressData, {
     fxnFigureFooter(timeStep = "Daily")
   })
   
-  # Build figure footer help text
+  # Build footer help text
   #figureFooterHelpText <- eventReactive(dataAZMetDataMerge(), {
   figureFooterHelpText <- eventReactive(input$viewHeatStressData, {
     fxnFigureFooterHelpText()
-  })
-  
-  # Build figure subtitle
-  figureSubtitle <- eventReactive(input$viewHeatStressData, {
-    fxnFigureSubtitle(azmetStation = input$azmetStation, inData = dataAZMetDataMerge())
   })
   
   # Build figure title
@@ -148,18 +155,53 @@ server <- function(input, output, session) {
     #)
     
     #fxnFigureTitle(inData = dataAZMetDataSumHUs(), endDate = input$endDate)
-    fxnFigureTitle()
+    fxnFigureTitle(azmetStation = input$azmetStation)
+  })
+  
+  # Build histogram
+  histogram <- eventReactive(input$viewHeatStressData, {
+    dataHistogram <- dataAZMetDataMerge()
+    fxnHistogram(inData = dataHistogram, azmetStation = input$azmetStation)
+    #fxnHistogram(inData = dataAZMetDataMerge(), station = input$azmetStation) ???
+  })
+  
+  # Build histogram caption
+  histogramCaption <- eventReactive(input$viewHeatStressData, {
+    fxnHistogramCaption(
+      azmetStation = input$azmetStation, 
+      inData = dataAZMetDataMerge()
+    )
+  })
+  
+  # Build histogram subtitle
+  histogramSubtitle <- eventReactive(input$viewHeatStressData, {
+    fxnHistogramSubtitle(azmetStation = input$azmetStation, inData = dataAZMetDataMerge())
+  })
+  
+  # Build time series
+  timeSeries <- eventReactive(input$viewHeatStressData, {
+    dataTimeSeries <- dataAZMetDataMerge()
+    fxnTimeSeries(inData = dataTimeSeries, azmetStation = input$azmetStation)
+    #fxnFigure(inData = dataAZMetDataMerge(), station = input$azmetStation) ???
+  })
+  
+  # Build time series caption
+  timeSeriesCaption <- eventReactive(input$viewHeatStressData, {
+    fxnTimeSeriesCaption(
+      azmetStation = input$azmetStation, 
+      inData = dataAZMetDataMerge()
+    )
+  })
+  
+  # Build time series subtitle
+  timeSeriesSubtitle <- eventReactive(input$viewHeatStressData, {
+    fxnTimeSeriesSubtitle(
+      azmetStation = input$azmetStation, 
+      inData = dataAZMetDataMerge()
+    )
   })
   
   # Outputs -----
-  
-  #output$figCaption <- renderUI(
-  #  figCaption()
-  #)
-  
-  output$figure <- renderPlot({
-    figure()
-  }, res = 96)
   
   output$figureFooter <- renderUI({
     figureFooter()
@@ -169,12 +211,32 @@ server <- function(input, output, session) {
     figureFooterHelpText()
   })
   
-  output$figureSubtitle <- renderUI(
-    figureSubtitle()
-  )
-  
   output$figureTitle <- renderUI(
     figureTitle()
+  )
+  
+  output$histogram <- renderPlot({
+    histogram()
+  }, res = 96)
+  
+  output$histogramCaption <- renderUI(
+    histogramCaption()
+  )
+  
+  output$histogramSubtitle <- renderUI(
+    histogramSubtitle()
+  )
+  
+  output$timeSeries <- renderPlot({
+    timeSeries()
+  }, res = 96)
+  
+  output$timeSeriesCaption <- renderUI(
+    timeSeriesCaption()
+  )
+  
+  output$timeSeriesSubtitle <- renderUI(
+    timeSeriesSubtitle()
   )
 }
 

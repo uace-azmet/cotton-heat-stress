@@ -63,6 +63,19 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
         dplyr::select(all_of(c(varsID, varsMeasure))) #%>%
         #dplyr::mutate(dplyr::across("wind_2min_timestamp", as.character))
     }
+    
+    # Add cotton heat stress categories
+    dataAZMetDataELT <- dataAZMetDataELT %>%
+      dplyr::mutate(heatstress_categories = dplyr::if_else(
+        heatstress_cotton_meanF > 86.0, "LEVEL 2 HEAT STRESS", dplyr::if_else(
+          heatstress_cotton_meanF < 82.4, "NO HEAT STRESS", "LEVEL 1 HEAT STRESS"
+      ))) %>%
+      dplyr::mutate(
+        heatstress_categories = factor(
+          heatstress_categories, 
+          levels = c("LEVEL 2 HEAT STRESS", "LEVEL 1 HEAT STRESS", "NO HEAT STRESS")
+        )
+      )
   }
   
   return(dataAZMetDataELT)
