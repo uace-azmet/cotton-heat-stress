@@ -18,6 +18,12 @@ fxnHistogram <- function(inData, azmetStation) {
   inData <- inData %>%
     dplyr::filter(is.na(heatstress_cotton_meanF) == FALSE)
   
+  if (max(inData$date_year) - min(inData$date_year) == 1) {
+    previousYearsLabel <- min(inData$date_year)
+  } else {
+    previousYearsLabel <- paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
+  }
+  
   xAxisBreaks <- c(121, 152, 182, 213, 244, 274)
   xAxisLabels <- c("May", "Jun", "Jul", "Aug", "Sep", "Oct")
   
@@ -30,10 +36,10 @@ fxnHistogram <- function(inData, azmetStation) {
       data = dplyr::filter(inData, datetime == max(datetime)),
       mapping = aes(
         x = date_doy + 3.0, 
-        y = 1.0 + 1.5, 
-        label = paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
+        y = 1.75, 
+        label = previousYearsLabel
       ),
-      alpha = 0.8, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 1.0, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Current growing season, as a visual overlay
@@ -45,8 +51,8 @@ fxnHistogram <- function(inData, azmetStation) {
     
     geom_label(
       data = dplyr::filter(inData, datetime == max(datetime)),
-      mapping = aes(x = date_doy + 3.0, y = 1.0, label = date_year),
-      alpha = 0.8, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      mapping = aes(x = date_doy + 3.0, y = 0.5, label = date_year),
+      alpha = 1.0, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Month-day marker
@@ -63,6 +69,13 @@ fxnHistogram <- function(inData, azmetStation) {
       breaks = xAxisBreaks, 
       labels = xAxisLabels,
       expand = expansion(mult = c(0.00, 0.00))
+    ) +
+    
+    scale_y_continuous(
+      breaks = seq(from = 0, to = 100, by = 1), 
+      labels = seq(from = 0, to = 100, by = 1),
+      limits = c(0, length(unique(inData$date_year))),
+      expand = expansion(mult = c(0.05, 0.05))
     ) +
     
     theme_minimal() +

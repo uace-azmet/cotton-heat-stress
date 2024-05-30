@@ -15,6 +15,12 @@ fxnTimeSeries <- function(inData, azmetStation) {
     }
   }
   
+  if (max(inData$date_year) - min(inData$date_year) == 1) {
+    previousYearsLabel <- min(inData$date_year)
+  } else {
+    previousYearsLabel <- paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
+  }
+  
   xAxisBreaks <- c(121, 152, 182, 213, 244, 274)
   xAxisLabels <- c("May", "Jun", "Jul", "Aug", "Sep", "Oct")
   
@@ -74,10 +80,10 @@ fxnTimeSeries <- function(inData, azmetStation) {
     
     annotate(
       geom = "label", 
-      label = paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-"), 
+      label = previousYearsLabel, 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = (dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF) - 3, 
-      alpha = 0.8, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 1.0, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Current year
@@ -98,7 +104,7 @@ fxnTimeSeries <- function(inData, azmetStation) {
       label = max(inData$date_year), 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, 
-      alpha = 0.8, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 1.0, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Heat stress zones: labels -----

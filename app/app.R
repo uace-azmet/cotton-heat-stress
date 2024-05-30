@@ -8,6 +8,7 @@
 # Libraries
 library(azmetr)
 library(dplyr)
+library(english)
 library(ggplot2)
 library(htmltools)
 library(lubridate)

@@ -30,17 +30,30 @@ fxnHistogramCaption <- function(azmetStation, inData) {
     doyMostRecentLevel <- "Level 2 heat stress"
   }
   
-  if (doyMostRecentLevelFreq == 1) {
-    numberOfTimes <- "time"
+  if (doyMostRecentLevelFreq < 10) {
+    freqText <- english::as.english(doyMostRecentLevelFreq)
   } else {
-    numberOfTimes <- "times"
+    freqText <- doyMostRecentLevelFreq
+  }
+  
+  if (doyMostRecentLevelFreq == 1) {
+    numberOfTimesText <- "time"
+  } else {
+    numberOfTimesText <- "times"
+  }
+  
+  if ((max(inData$date_year) - min(inData$date_year)) + 1 < 10) {
+    recordLengthText <- 
+      english::as.english((max(inData$date_year) - min(inData$date_year)) + 1)
+  } else {
+    recordLengthText <- (max(inData$date_year) - min(inData$date_year)) + 1
   }
   
   histogramCaption <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "Based on data for ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d")), " (vertical dotted line) from ", doyMinYear, " through ", doyMaxYear, " at the AZMet ", azmetStation, " station, estimated canopy temperatures have been in ", doyMostRecentLevel, " ", doyMostRecentLevelFreq, " ", numberOfTimes, "."
+          "Based on data for ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d")), " (vertical dotted line) from ", doyMinYear, " through ", doyMaxYear, " at the AZMet ", azmetStation, " station, estimated canopy temperatures have been in ", doyMostRecentLevel, " ", freqText, " ", numberOfTimesText, " in ", recordLengthText, " years."
         ),
       ),
       
