@@ -18,27 +18,69 @@ fxnTimeSeriesCaption <- function(azmetStation, inData) {
     }
   }
   
-  # Calculate average estimated canopy temperature for day of year of most recent date in data
   doyMostRecentDate <- inData$date_doy[which(inData$datetime == max(inData$datetime))]
   
-  doyAverage <- 
+  doyValue <- 
+    format(
+      round(
+        dplyr::filter(inData, datetime == max(inData$datetime))$heatstress_cotton_meanF,
+        digits = 1
+      ), 
+      nsmall = 1
+    )
+  
+  doyAverageValue <- 
+    format(
+      round(
+        mean(
+          dplyr::filter(inData, date_doy == doyMostRecentDate)$heatstress_cotton_meanF, 
+          na.rm = TRUE
+        ), 
+        digits = 1
+      ), 
+      nsmall = 1
+    )
+  
+  doyMaxValue <- format(
     round(
-      mean(
+      max(
         dplyr::filter(inData, date_doy == doyMostRecentDate)$heatstress_cotton_meanF, 
         na.rm = TRUE
-      ), 
+      ),
       digits = 1
-    )
+    ),
+    nsmall = 1
+  )
+  
+  doyMinValue <- format(
+    round(
+      min(
+        dplyr::filter(inData, date_doy == doyMostRecentDate)$heatstress_cotton_meanF, 
+        na.rm = TRUE
+      ),
+      digits = 1
+    ),
+    nsmall = 1
+  )
   
   doyMinYear <- min(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
   doyMaxYear <- max(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
+  
+  if (dplyr::filter(inData, datetime == max(inData$datetime))$heatstress_categories == "NO HEAT STRESS") {
+    doyLevel <- "no heat stress"
+  } else if (dplyr::filter(inData, datetime == max(inData$datetime))$heatstress_categories == "LEVEL 1 HEAT STRESS") {
+    doyLevel <- "Level 1 heat stress"
+  } else {
+    doyLevel <- "Level 2 heat stress"
+  }
+  
   
  # Build caption text
   timeSeriesCaption <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "The average estimated canopy temperature on ", format(as.Date(max(inData$datetime)), "%B"), " ", format(as.Date(max(inData$datetime)), "%d"), " (vertical dotted line) at the AZMet ", azmetStation, " station is ", doyAverage, " °F, based on data from ", doyMinYear, " through ", doyMaxYear, " (black and gray points)."
+          "The estimated canopy temperature of ", doyValue, " °F (black point) on ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")), " at the AZMet ", azmetStation, " station indicates ", doyLevel, ". The maximum, average, and minimum of estimated canopy temperatures on ", format(as.Date(max(inData$datetime)), "%B"), " ", format(as.Date(max(inData$datetime)), "%d"), " (vertical dotted line) are ", doyMaxValue, ", ", doyAverageValue, ", and ", doyMinValue, " °F, respectively, based on data from ", doyMinYear, " through ", doyMaxYear, " (black and gray points)."
         ),
       ),
       

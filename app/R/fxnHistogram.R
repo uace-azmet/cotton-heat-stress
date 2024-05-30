@@ -15,12 +15,39 @@ fxnHistogram <- function(inData, azmetStation) {
     }
   }
   
+  inData <- inData %>%
+    dplyr::filter(is.na(heatstress_cotton_meanF) == FALSE)
+  
   xAxisBreaks <- c(121, 152, 182, 213, 244, 274)
   xAxisLabels <- c("May", "Jun", "Jul", "Aug", "Sep", "Oct")
   
   histogram <- ggplot2::ggplot(data = inData) +
     
+    # All growing seasons
     geom_histogram(mapping = aes(x = date_doy), binwidth = 1, center = 0, fill = "#bdbdbd") +
+    
+    geom_label(
+      data = dplyr::filter(inData, datetime == max(datetime)),
+      mapping = aes(
+        x = date_doy + 3.0, 
+        y = 1.0 + 1.5, 
+        label = paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-")
+      ),
+      alpha = 0.8, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+    ) +
+    
+    # Current growing season, as a visual overlay
+    geom_histogram(
+      data = dplyr::filter(inData, date_year == max(inData$date_year)), 
+      mapping = aes(x = date_doy), 
+      binwidth = 1, center = 0, fill = "#343a40"
+    ) +
+    
+    geom_label(
+      data = dplyr::filter(inData, datetime == max(datetime)),
+      mapping = aes(x = date_doy + 3.0, y = 1.0, label = date_year),
+      alpha = 0.8, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+    ) +
     
     # Month-day marker
     geom_vline(
@@ -30,7 +57,7 @@ fxnHistogram <- function(inData, azmetStation) {
   
     facet_wrap(vars(heatstress_categories), ncol = 1, scales = "fixed", strip.position = "top") +
     
-    labs(x = "\nMonth\n", y = "Number of Years\n") +
+    labs(x = "\nMonth\n", y = "Number of Times in Level\n") +
     
     scale_x_continuous(
       breaks = xAxisBreaks, 

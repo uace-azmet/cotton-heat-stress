@@ -77,7 +77,7 @@ fxnTimeSeries <- function(inData, azmetStation) {
       label = paste(min(inData$date_year), max(inData$date_year) - 1, sep = "-"), 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = (dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF) - 3, 
-      color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 0.8, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Current year
@@ -98,7 +98,7 @@ fxnTimeSeries <- function(inData, azmetStation) {
       label = max(inData$date_year), 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, 
-      color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 0.8, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Heat stress zones: labels -----

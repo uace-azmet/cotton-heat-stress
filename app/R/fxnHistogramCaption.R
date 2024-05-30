@@ -6,13 +6,41 @@
 
 
 fxnHistogramCaption <- function(azmetStation, inData) {
+  
+  doyMostRecentDate <- inData$date_doy[which(inData$datetime == max(inData$datetime))]
+  
+  doyMinYear <- min(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
+  doyMaxYear <- max(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
+  
+  doyMostRecentLevel <- inData$heatstress_categories[which(inData$datetime == max(inData$datetime))]
+  
+  doyMostRecentLevelFreq <- 
+    nrow(
+      dplyr::filter(
+        dplyr::filter(inData, date_doy == doyMostRecentDate), 
+        heatstress_categories == doyMostRecentLevel
+      )
+    )
+  
+  if (doyMostRecentLevel == "NO HEAT STRESS") {
+    doyMostRecentLevel <- "no heat stress"
+  } else if (doyMostRecentLevel == "LEVEL 1 HEAT STRESS") {
+    doyMostRecentLevel <- "Level 1 heat stress"
+  } else {
+    doyMostRecentLevel <- "Level 2 heat stress"
+  }
+  
+  if (doyMostRecentLevelFreq == 1) {
+    numberOfTimes <- "time"
+  } else {
+    numberOfTimes <- "times"
+  }
+  
   histogramCaption <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "Frequencies are based on data through ", 
-          gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y")),
-          " (vertical dotted line)."
+          "Based on data for ", gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d")), " (vertical dotted line) from ", doyMinYear, " through ", doyMaxYear, " at the AZMet ", azmetStation, " station, estimated canopy temperatures have been in ", doyMostRecentLevel, " ", doyMostRecentLevelFreq, " ", numberOfTimes, "."
         ),
       ),
       
