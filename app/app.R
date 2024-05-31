@@ -1,9 +1,5 @@
 # View time series and statistics of cotton heat stress by station during the growing season
 
-# Add code for the following
-# 
-# 'azmet-shiny-template.html': <!-- Google tag (gtag.js) -->
-
 # Libraries
 library(azmetr)
 library(dplyr)
