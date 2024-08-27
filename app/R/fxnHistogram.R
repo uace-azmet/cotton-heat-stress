@@ -29,9 +29,12 @@ fxnHistogram <- function(inData) {
   
   histogram <- ggplot2::ggplot(data = inData) +
     
+    # https://www.color-hex.com/color-palette/1041718  
+    
     # All growing seasons
     geom_histogram(
-      mapping = aes(x = date_doy), binwidth = 1, center = 0, fill = "#bdbdbd"
+      mapping = aes(x = date_doy), 
+      binwidth = 1, center = 0, color = "#FFFFFF", fill = "#989898", linewidth = 0.1
     ) +
     
     geom_label(
@@ -41,26 +44,26 @@ fxnHistogram <- function(inData) {
         y = 1.75, 
         label = previousYearsLabel
       ),
-      alpha = 1.0, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 1.0, color = "#989898", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Current growing season, as a visual overlay
     geom_histogram(
       data = dplyr::filter(inData, date_year == max(inData$date_year)), 
       mapping = aes(x = date_doy), 
-      binwidth = 1, center = 0, fill = "#343a40"
+      binwidth = 1, center = 0, color = "#FFFFFF", fill = "#3b3b3b", linewidth = 0.1
     ) +
     
     geom_label(
       data = dplyr::filter(inData, datetime == max(datetime)),
       mapping = aes(x = date_doy + 3.0, y = 0.5, label = date_year),
-      alpha = 1.0, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 1.0, color = "#3b3b3b", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Month-day marker
     geom_vline(
       xintercept = dplyr::filter(inData, datetime == max(datetime))$date_doy,
-      color = "#e0e0e0", linewidth = 0.6, linetype = "dotted", lineend = "round"
+      color = "#989898", linewidth = 0.6, linetype = "dotted", lineend = "round"
     ) +
   
     facet_wrap(
@@ -91,17 +94,17 @@ fxnHistogram <- function(inData) {
       #title,
       #aspect.ratio,
       #axis.title,
-      axis.title.x = element_text(color = "#757575", face = "plain", size = 9, hjust = 0.0),
+      axis.title.x = element_text(color = "#989898", face = "plain", size = 9, hjust = 0.0),
       #axis.title.x.top,
       #axis.title.x.bottom,
-      axis.title.y = element_text(color = "#757575", face = "plain", size = 9, hjust = 0.0),
+      axis.title.y = element_text(color = "#989898", face = "plain", size = 9, hjust = 0.0),
       #axis.title.y.left,
       #axis.title.y.right,
       #axis.text,
-      axis.text.x = element_text(color = "#757575", face = "plain", size = 9),
+      axis.text.x = element_text(color = "#989898", face = "plain", size = 9),
       #axis.text.x.top,
       #axis.text.x.bottom,
-      axis.text.y = element_text(color = "#757575", face = "plain", size = 9),
+      axis.text.y = element_text(color = "#989898", face = "plain", size = 9),
       #axis.text.y.left,
       #axis.text.y.right,
       #axis.ticks,
@@ -109,13 +112,13 @@ fxnHistogram <- function(inData) {
       #axis.ticks.x.top,
       axis.ticks.x.bottom = 
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          color = "#c9c9c9", linewidth = 0.25, linetype = "solid", lineend = "round", 
           arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y,
       axis.ticks.y.left = 
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          color = "#c9c9c9", linewidth = 0.25, linetype = "solid", lineend = "round", 
           arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y.right,
@@ -162,7 +165,7 @@ fxnHistogram <- function(inData) {
       #panel.grid,
       panel.grid.major =
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          color = "#c9c9c9", linewidth = 0.25, linetype = "solid", lineend = "round", 
           arrow = NULL, inherit.blank = FALSE
         ),
       panel.grid.minor = element_blank(),
@@ -186,7 +189,7 @@ fxnHistogram <- function(inData) {
       #strip.clip,
       #strip.placement,
       #strip.text,
-      strip.text.x = element_text(color = "#757575", face = "plain", hjust = 0.0, size = 9)
+      strip.text.x = element_text(color = "#989898", face = "plain", hjust = 0.0, size = 10)
       #strip.text.y,
       #strip.switch.pad.grid,
       #strip.switch.pad.wrap,

@@ -28,7 +28,9 @@ fxnTimeSeries <- function(azmetStation, inData) {
   timeSeries <- ggplot2::ggplot(data = inData) +
     
     # Heat stress zones: shading -----
-    
+  
+    # https://www.color-hex.com/color-palette/1041718  
+  
     # Level 1
     annotate(
       geom = "rect", 
@@ -36,8 +38,8 @@ fxnTimeSeries <- function(azmetStation, inData) {
       xmax = Inf, 
       ymin = 82.4, 
       ymax = 86.0, 
-      fill = "#e0e0e0", 
-      alpha = 0.4
+      fill = "#989898", 
+      alpha = 0.2
     ) +
     
     # Level 2
@@ -47,7 +49,7 @@ fxnTimeSeries <- function(azmetStation, inData) {
       xmax = Inf, 
       ymin = 86.0, 
       ymax = Inf, 
-      fill = "#bdbdbd",
+      fill = "#989898",
       alpha = 0.4
     ) +
     
@@ -56,14 +58,14 @@ fxnTimeSeries <- function(azmetStation, inData) {
     # Month-day marker
     geom_vline(
       xintercept = dplyr::filter(inData, datetime == max(datetime))$date_doy,
-      color = "#e0e0e0", linewidth = 0.6, linetype = "dotted", lineend = "round"
+      color = "#989898", linewidth = 0.6, linetype = "dotted", lineend = "round"
     ) +
   
     # Previous years
     geom_line(
       data = dplyr::filter(inData, date_year <= (max(date_year) - 1)), 
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF, group = date_year), 
-      color = "#bdbdbd", lineend = "round", linejoin = "round", linewidth = 0.6, alpha = 1.0
+      color = "#989898", lineend = "round", linejoin = "round", linewidth = 0.5, alpha = 1.0
     ) +
   
     geom_point(
@@ -73,7 +75,7 @@ fxnTimeSeries <- function(azmetStation, inData) {
           date_doy == max(dplyr::filter(inData, date_year == max(date_year))$date_doy)
         ),
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#FFFFFF", fill = "#bdbdbd", shape = 21, size = 3, stroke = 0.5
+      color = "#FFFFFF", fill = "#989898", shape = 21, size = 3, stroke = 0.5
     ) +
     
     annotate(
@@ -81,20 +83,20 @@ fxnTimeSeries <- function(azmetStation, inData) {
       label = previousYearsLabel, 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = (dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF) - 3, 
-      alpha = 1.0, color = "#bdbdbd", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 1.0, color = "#989898", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Current year
     geom_line(
       data = dplyr::filter(inData, date_year == max(date_year)),
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#343a40", linewidth = 1.0
+      color = "#3b3b3b", linewidth = 1.0
     ) +
     
     geom_point(
       data = dplyr::filter(inData, datetime == max(datetime)), 
       mapping = aes(x = date_doy, y = heatstress_cotton_meanF), 
-      color = "#FFFFFF", fill = "#343a40", shape = 21, size = 4, stroke = 0.5
+      color = "#FFFFFF", fill = "#3b3b3b", shape = 21, size = 4, stroke = 0.5
     ) +
     
     annotate(
@@ -102,7 +104,7 @@ fxnTimeSeries <- function(azmetStation, inData) {
       label = max(inData$date_year), 
       x = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$date_doy + 3.0, 
       y = dplyr::filter(dplyr::filter(inData, date_year == max(date_year)), datetime == max(datetime))$heatstress_cotton_meanF, 
-      alpha = 1.0, color = "#343a40", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
+      alpha = 1.0, color = "#3b3b3b", fill = "#FFFFFF", fontface = "bold", hjust = 0.0, size = 4
     ) +
     
     # Heat stress zones: labels -----
@@ -112,7 +114,7 @@ fxnTimeSeries <- function(azmetStation, inData) {
       label = "NO HEAT STRESS", 
       x = (min(inData$date_doy) + 1.5), 
       y = (78.8 + 0.5), 
-      color = "#757575", 
+      color = "#989898", 
       size = 3.5, 
       fontface = "plain", 
       hjust = 0.0, 
@@ -124,7 +126,7 @@ fxnTimeSeries <- function(azmetStation, inData) {
       label = "LEVEL 1 HEAT STRESS", 
       x = (min(inData$date_doy) + 1.5), 
       y = (82.4 + 0.5), 
-      color = "#757575", 
+      color = "#989898", 
       size = 3.5, 
       fontface = "plain", 
       hjust = 0.0, 
@@ -136,7 +138,7 @@ fxnTimeSeries <- function(azmetStation, inData) {
       label = "LEVEL 2 HEAT STRESS", 
       x = (min(inData$date_doy) + 1.5), 
       y = (86.0 + 0.5), 
-      color = "#757575", 
+      color = "#989898", 
       size = 3.5, 
       fontface = "plain", 
       hjust = 0.0, 
@@ -168,17 +170,17 @@ fxnTimeSeries <- function(azmetStation, inData) {
       #title,
       #aspect.ratio,
       #axis.title,
-      axis.title.x = element_text(color = "#757575", face = "plain", size = 9, hjust = 0.0),
+      axis.title.x = element_text(color = "#989898", face = "plain", size = 9, hjust = 0.0),
       #axis.title.x.top,
       #axis.title.x.bottom,
-      axis.title.y = element_text(color = "#757575", face = "plain", size = 9, angle = 0, vjust = 0.0),
+      axis.title.y = element_text(color = "#989898", face = "plain", size = 9, angle = 0, vjust = 0.0),
       #axis.title.y.left,
       #axis.title.y.right,
       #axis.text,
-      axis.text.x = element_text(color = "#757575", face = "plain", size = 9),
+      axis.text.x = element_text(color = "#989898", face = "plain", size = 9),
       #axis.text.x.top,
       #axis.text.x.bottom,
-      axis.text.y = element_text(color = "#757575", face = "plain", size = 9),
+      axis.text.y = element_text(color = "#989898", face = "plain", size = 9),
       #axis.text.y.left,
       #axis.text.y.right,
       #axis.ticks,
@@ -186,13 +188,13 @@ fxnTimeSeries <- function(azmetStation, inData) {
       #axis.ticks.x.top,
       axis.ticks.x.bottom = 
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          color = "#c9c9c9", linewidth = 0.25, linetype = "solid", lineend = "round", 
           arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y,
       axis.ticks.y.left = 
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          color = "#c9c9c9", linewidth = 0.25, linetype = "solid", lineend = "round", 
           arrow = NULL, inherit.blank = FALSE
         ),
       #axis.ticks.y.right,
@@ -239,7 +241,7 @@ fxnTimeSeries <- function(azmetStation, inData) {
       #panel.grid,
       panel.grid.major =
         element_line(
-          color = "#e0e0e0", linewidth = 0.25, linetype = "solid", lineend = "round", 
+          color = "#c9c9c9", linewidth = 0.25, linetype = "solid", lineend = "round", 
           arrow = NULL, inherit.blank = FALSE
         ),
       panel.grid.minor = element_blank(),
