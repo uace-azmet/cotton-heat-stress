@@ -24,6 +24,8 @@ fxnHistogramCaption <- function(azmetStation, inData) {
       )
     )
   
+  doyYearCount <- length(dplyr::filter(inData, date_doy == doyMostRecentDate)$date_year)
+  
   if (doyMostRecentLevel == "NO HEAT STRESS") {
     doyMostRecentLevel <- "no heat stress"
   } else if (doyMostRecentLevel == "LEVEL 1 HEAT STRESS") {
@@ -46,9 +48,13 @@ fxnHistogramCaption <- function(azmetStation, inData) {
   
   if ((max(inData$date_year) - min(inData$date_year)) + 1 < 10) {
     recordLengthText <- 
-      english::as.english((max(inData$date_year) - min(inData$date_year)) + 1)
+      #english::as.english((max(inData$date_year) - min(inData$date_year)) + 1)
+      #english::as.english(length(unique(inData$date_year)))
+      english::as.english(doyYearCount)
   } else {
-    recordLengthText <- (max(inData$date_year) - min(inData$date_year)) + 1
+    #recordLengthText <- (max(inData$date_year) - min(inData$date_year)) + 1
+    #recordLengthText <- length(unique(inData$date_year))
+    recordLengthText <- doyYearCount
   }
   
   histogramCaption <- 

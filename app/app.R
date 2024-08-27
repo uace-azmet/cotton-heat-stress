@@ -60,6 +60,10 @@ ui <- htmltools::htmlTemplate(
         column(width = 11, align = "left", offset = 1, htmlOutput("figureTitle"))
       ), 
       
+      fluidRow(
+        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureSubtitle"))
+      ),
+      
       br(),
       
       fluidRow(
@@ -133,9 +137,17 @@ server <- function(input, output, session) {
     fxnFigureFooterHelpText()
   })
   
+  # Build figure subtitle
+  figureSubtitle <- eventReactive(dataAZMetDataMerge(), {
+    fxnFigureSubtitle(
+      azmetStation = input$azmetStation, 
+      inData = dataAZMetDataMerge()
+    )
+  })
+  
   # Build figure title
   figureTitle <- eventReactive(dataAZMetDataMerge(), {
-    fxnFigureTitle(azmetStation = input$azmetStation)
+    fxnFigureTitle(inData = dataAZMetDataMerge())
   })
   
   # Build histogram
@@ -199,6 +211,10 @@ server <- function(input, output, session) {
   output$histogramSubtitle <- renderUI(
     histogramSubtitle()
   )
+  
+  output$figureSubtitle <- renderUI({
+    figureSubtitle()
+  })
   
   output$timeSeries <- renderPlot({
     timeSeries()

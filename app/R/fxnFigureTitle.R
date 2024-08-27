@@ -1,16 +1,25 @@
 #' `fxnFigureTitle.R` - Build title for figure based on user input
 #' 
-#' @param azmetStation - AZMet station selection by user
+#' @param inData - data table of seasonal cotton heat stress values by year
 #' @return `figureTitle` - Title for figure based on selected station
 
 
-fxnFigureTitle <- function(azmetStation) {
+fxnFigureTitle <- function(inData) {
+ 
+  doyValue <- 
+    format(
+      round(
+        dplyr::filter(inData, datetime == max(inData$datetime))$heatstress_cotton_meanF,
+        digits = 1
+      ), 
+      nsmall = 1
+    )
+  
   figureTitle <- 
     htmltools::h4(
       htmltools::HTML(
-        paste(
-          "Cotton Heat Stress at the AZMet", azmetStation, "Station", 
-          sep = " "
+        paste0(
+          "<b>Estimated canopy temperature: ", doyValue, " °F</b>"
         ),
       ),
         
