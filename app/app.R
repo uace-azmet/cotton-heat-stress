@@ -1,14 +1,5 @@
 # View time series and statistics of cotton heat stress by station during the growing season
 
-# Libraries
-library(azmetr)
-library(dplyr)
-library(english)
-library(ggplot2)
-library(htmltools)
-library(lubridate)
-library(shiny)
-library(vroom)
 
 # Functions
 #source("./R/fxnABC.R", local = TRUE)
@@ -39,7 +30,7 @@ ui <- htmltools::htmlTemplate(
         selectInput(
           inputId = "azmetStation", 
           label = "AZMet Station",
-          choices = stationNames[order(stationNames$stationName), ]$stationName,
+          choices = azmetStations[order(azmetStations$stationName), ]$stationName,
           selected = "Aguila"
         ),
         
@@ -115,7 +106,7 @@ server <- function(input, output, session) {
   # Reactive events -----
   
   # Download and prep AZMet data
-  dataAZMetDataMerge <- eventReactive(input$viewHeatStressData, {
+  dataMerge <- eventReactive(input$viewHeatStressData, {
   # User feedback
     id <- showNotification(
       ui = "Retrieving heat stress data . . .", 
@@ -123,66 +114,66 @@ server <- function(input, output, session) {
     )
     on.exit(removeNotification(id), add = TRUE)
     
-    # Calls 'fxnAZMetDataELT()' and returns tidy data over multiple years
-    fxnAZMetDataMerge(azmetStation = input$azmetStation)
+    # Calls 'fxn_dataELT()' and returns tidy data over multiple years
+    fxn_dataMerge(azmetStation = input$azmetStation)
   })
   
   # Build figure footer
-  figureFooter <- eventReactive(dataAZMetDataMerge(), {
+  figureFooter <- eventReactive(dataMerge(), {
     fxnFigureFooter(timeStep = "Daily")
   })
   
   # Build footer help text
-  figureFooterHelpText <- eventReactive(dataAZMetDataMerge(), {
+  figureFooterHelpText <- eventReactive(dataMerge(), {
     fxnFigureFooterHelpText()
   })
   
   # Build figure subtitle
-  figureSubtitle <- eventReactive(dataAZMetDataMerge(), {
+  figureSubtitle <- eventReactive(dataMerge(), {
     fxnFigureSubtitle(
       azmetStation = input$azmetStation, 
-      inData = dataAZMetDataMerge()
+      insData = dataMerge()
     )
   })
   
   # Build figure title
-  figureTitle <- eventReactive(dataAZMetDataMerge(), {
-    fxnFigureTitle(inData = dataAZMetDataMerge())
+  figureTitle <- eventReactive(dataMerge(), {
+    fxnFigureTitle(inData = dataMerge())
   })
   
   # Build histogram
-  histogram <- eventReactive(dataAZMetDataMerge(), {
-    fxnHistogram(inData = dataAZMetDataMerge())
+  histogram <- eventReactive(dataMerge(), {
+    fxnHistogram(inData = dataMerge())
   })
   
   # Build histogram caption
-  histogramCaption <- eventReactive(dataAZMetDataMerge(), {
+  histogramCaption <- eventReactive(dataMerge(), {
     fxnHistogramCaption(
       azmetStation = input$azmetStation, 
-      inData = dataAZMetDataMerge()
+      inData = dataMerge()
     )
   })
   
   # Build histogram subtitle
-  histogramSubtitle <- eventReactive(dataAZMetDataMerge(), {
+  histogramSubtitle <- eventReactive(dataMerge(), {
     fxnHistogramSubtitle()
   })
   
   # Build time series
-  timeSeries <- eventReactive(dataAZMetDataMerge(), {
-    fxnTimeSeries(azmetStation = input$azmetStation, inData = dataAZMetDataMerge())
+  timeSeries <- eventReactive(dataMerge(), {
+    fxnTimeSeries(azmetStation = input$azmetStation, inData = dataMerge())
   })
   
   # Build time series caption
-  timeSeriesCaption <- eventReactive(dataAZMetDataMerge(), {
+  timeSeriesCaption <- eventReactive(dataMerge(), {
     fxnTimeSeriesCaption(
       azmetStation = input$azmetStation, 
-      inData = dataAZMetDataMerge()
+      inData = dataMerge()
     )
   })
   
   # Build time series subtitle
-  timeSeriesSubtitle <- eventReactive(dataAZMetDataMerge(), {
+  timeSeriesSubtitle <- eventReactive(dataMerge(), {
     fxnTimeSeriesSubtitle()
   })
   

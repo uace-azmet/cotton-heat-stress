@@ -1,16 +1,16 @@
-#' fxnAZMetDataMerge: downloads and merges individual-year data based on user-defined station
+#' fxn_dataMerge: downloads and merges individual-year data based on user-defined station
 #' 
 #' @param: azmetStation - AZMet station selection by user
-#' @return: dataAZMetDataMerge - merged data tables from individual years
+#' @return: data_dataMerge - merged data tables from individual years
 
 
-fxnAZMetDataMerge <- function(azmetStation) {
+fxn_dataMerge <- function(azmetStation) {
   azmetStationStartDate <- lubridate::as_date("2021-01-01") # Placeholder for station start date
   startDate <- seasonStartDate
   endDate <- seasonEndDate
   
   while (startDate >= azmetStationStartDate) {
-    dataAZMetDataELT <- fxnAZMetDataELT(
+    dataETL <- fxn_dataETL(
       azmetStation = azmetStation, 
       timeStep = "Daily", 
       startDate = startDate, 
@@ -18,14 +18,14 @@ fxnAZMetDataMerge <- function(azmetStation) {
     )
     
     # For case of empty data return
-    if (nrow(dataAZMetDataELT) == 0) {
+    if (nrow(dataETL) == 0) {
       startDate <- min(seq(startDate, length = 2, by = "-1 year"))
       endDate <- min(seq(endDate, length = 2, by = "-1 year"))
     } else {
-      if (exists("dataAZMetDataMerge") == FALSE) {
-        dataAZMetDataMerge <- dataAZMetDataELT
+      if (exists("data_dataMerge") == FALSE) {
+        data_dataMerge <- dataETL
       } else {
-        dataAZMetDataMerge <- rbind(dataAZMetDataMerge, dataAZMetDataELT)
+        data_dataMerge <- rbind(data_dataMerge, dataETL)
       }
       
       startDate <- min(seq(startDate, length = 2, by = "-1 year"))
@@ -33,5 +33,5 @@ fxnAZMetDataMerge <- function(azmetStation) {
     }
   }
   
-  return(dataAZMetDataMerge)
+  return(dataMerge)
 }

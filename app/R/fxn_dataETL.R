@@ -1,18 +1,18 @@
-#' `fxnAZMetDataELT.R` AZMet hourly or daily data download from API-based database
+#' `fxnAZMetDataETL.R` AZMet hourly or daily data download from API-based database
 #' 
 #' @param azmetStation - AZMet station name
 #' @param timeStep - AZMet data time step
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
-#' @return `dataAZMetDataELT` - Transformed data table
+#' @return `dataAZMetDataETL` - Transformed data table
 
 
-fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
+fxn_dataETL <- function(azmetStation, timeStep, startDate, endDate) {
   
   # HOURLY
   if (timeStep == "Hourly") {
-    dataAZMetDataELT <- azmetr::az_hourly(
-      station_id = dplyr::filter(stationNames, stationName == azmetStation)$stationID,
+    dataAZMetDataETL <- azmetr::az_hourly(
+      station_id = dplyr::filter(azmetStations, stationName == azmetStation)$stationID,
       start_date_time = paste(startDate, "01", sep = " "),
       end_date_time = paste(endDate, "24", sep = " ")
     )
@@ -26,12 +26,12 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
     varsMeasure <- c("dwpt", "dwptF", "eto_azmet", "eto_azmet_in", "heatstress_cottonC", "heatstress_cottonF", "meta_bat_volt", "precip_total", "precip_total_in", "relative_humidity", "sol_rad_total", "sol_rad_total_ly", "temp_airC", "temp_airF", "temp_soil_10cmC", "temp_soil_10cmF", "temp_soil_50cmC", "temp_soil_50cmF", "vp_actual", "vp_deficit", "wind_2min_spd_max_mph", "wind_2min_spd_max_mps", "wind_2min_spd_mean_mph", "wind_2min_spd_mean_mps", "wind_2min_timestamp", "wind_2min_vector_dir", "wind_spd_max_mph", "wind_spd_max_mps", "wind_spd_mph", "wind_spd_mps", "wind_vector_dir", "wind_vector_dir_stand_dev", "wind_vector_magnitude", "wind_vector_magnitude_mph")
     
     # For case of empty data return
-    if (nrow(dataAZMetDataELT) == 0) {
-      dataAZMetDataELT <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
-      colnames(dataAZMetDataELT) <- c(varsID, varsMeasure)
+    if (nrow(dataAZMetDataETL) == 0) {
+      dataAZMetDataETL <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
+      colnames(dataAZMetDataETL) <- c(varsID, varsMeasure)
     } else {
       # Tidy data
-      dataAZMetDataELT <- dataAZMetDataELT %>%
+      dataAZMetDataETL <- dataAZMetDataETL %>%
         dplyr::select(all_of(c(varsID, varsMeasure))) %>%
         dplyr::mutate(dplyr::across(c("date_datetime", "wind_2min_timestamp"), as.character))
     } 
@@ -39,8 +39,8 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
   
   # DAILY
   if (timeStep == "Daily") {
-    dataAZMetDataELT <- azmetr::az_daily(
-      station_id = dplyr::filter(stationNames, stationName == azmetStation)$stationID, 
+    dataAZMetDataETL <- azmetr::az_daily(
+      station_id = dplyr::filter(azmetStations, stationName == azmetStation)$stationID, 
       start_date = startDate, 
       end_date = endDate
     )
@@ -55,18 +55,18 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
     varsMeasure <- c("heatstress_cotton_meanF")
     
     # For case of empty data return
-    if (nrow(dataAZMetDataELT) == 0) {
-      dataAZMetDataELT <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
-      colnames(dataAZMetDataELT) <- c(varsID, varsMeasure)
+    if (nrow(dataAZMetDataETL) == 0) {
+      dataAZMetDataETL <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
+      colnames(dataAZMetDataETL) <- c(varsID, varsMeasure)
     } else {
       # Tidy data
-      dataAZMetDataELT <- dataAZMetDataELT %>%
+      dataAZMetDataETL <- dataAZMetDataETL %>%
         dplyr::select(all_of(c(varsID, varsMeasure))) #%>%
         #dplyr::mutate(dplyr::across("wind_2min_timestamp", as.character))
     }
     
     # Add cotton heat stress categories
-    dataAZMetDataELT <- dataAZMetDataELT %>%
+    dataAZMetDataETL <- dataAZMetDataETL %>%
       dplyr::mutate(heatstress_categories = dplyr::if_else(
         heatstress_cotton_meanF > 86.0, "LEVEL 2 HEAT STRESS", dplyr::if_else(
           heatstress_cotton_meanF < 82.4, "NO HEAT STRESS", "LEVEL 1 HEAT STRESS"
@@ -80,5 +80,5 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
       )
   }
   
-  return(dataAZMetDataELT)
+  return(dataAZMetDataETL)
 }
