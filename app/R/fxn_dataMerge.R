@@ -22,10 +22,10 @@ fxn_dataMerge <- function(azmetStation) {
       startDate <- min(seq(startDate, length = 2, by = "-1 year"))
       endDate <- min(seq(endDate, length = 2, by = "-1 year"))
     } else {
-      if (exists("data_dataMerge") == FALSE) {
-        data_dataMerge <- dataETL
+      if (exists("dataMerge") == FALSE) {
+        dataMerge <- dataETL
       } else {
-        data_dataMerge <- rbind(data_dataMerge, dataETL)
+        dataMerge <- rbind(dataMerge, dataETL)
       }
       
       startDate <- min(seq(startDate, length = 2, by = "-1 year"))

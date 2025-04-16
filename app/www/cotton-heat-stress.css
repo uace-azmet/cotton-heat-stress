@@ -1,5 +1,32 @@
 /* class */
 
+.btn {
+  background-color: #FFFFFF; 
+  border-color: #001C48; 
+  color: #001C48;
+  margin-top: 4px;
+}
+
+.btn:active {
+  background-color: #1E5288 !important;
+  border-color: #1E5288 !important; 
+  box-shadow: 0 0 0 0.1rem rgb(30, 82, 136, 0.2) !important;
+  color: #FFFFFF !important;
+}
+
+.btn:focus {
+  background-color: #FFFFFF;
+  border-color: #001C48; 
+  box-shadow: 0 0 0 0.1rem rgb(0, 28, 72, 0.2);
+  color: #001C48;
+}
+
+.btn:hover {
+  background-color: #001C48;
+  border-color: #001C48; 
+  color: #FFFFFF;
+}
+
 .control-label {
   color: #343a40; font-weight: bold;
 }
@@ -8,8 +35,8 @@
   background-color: #fff !important; color: #343a40;
 }
 
-.figure-footer {
-  color: #343a40;
+.page-support-text {
+  color: #191919;
 }
 
 .figure-footer-help-text {
@@ -50,18 +77,7 @@
 
 /* id */
 
-#viewHeatStressData {
-  background-color: transparent; border-color: #001C48; color: #001C48;
-}
-
-#viewHeatStressData:active {
-  background-color: #001C48; color: #fff;
-}
-
-#viewHeatStressData:hover {
-  background-color: #001C48; color: #fff;
-}
-
 #sidebarPanel {
-  background-color: #E2E9EB !important; margin-bottom: 72px;
+  background-color: #E2E9EB !important; 
+  margin-bottom: 72px;
 }

@@ -90,7 +90,7 @@ ui <- htmltools::htmlTemplate(
       ),
       
       fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureFooter"))
+        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "pageSupportText"))
       ),
      
       br()
@@ -119,8 +119,8 @@ server <- function(input, output, session) {
   })
   
   # Build figure footer
-  figureFooter <- eventReactive(dataMerge(), {
-    fxnFigureFooter(timeStep = "Daily")
+  pageSupportText <- eventReactive(dataMerge(), {
+    fxn_pageSupportText(timeStep = "Daily")
   })
   
   # Build footer help text
@@ -132,7 +132,7 @@ server <- function(input, output, session) {
   figureSubtitle <- eventReactive(dataMerge(), {
     fxnFigureSubtitle(
       azmetStation = input$azmetStation, 
-      insData = dataMerge()
+      inData = dataMerge()
     )
   })
   
@@ -179,10 +179,6 @@ server <- function(input, output, session) {
   
   # Outputs -----
   
-  output$figureFooter <- renderUI({
-    figureFooter()
-  })
-  
   output$figureFooterHelpText <- renderUI({
     figureFooterHelpText()
   })
@@ -205,6 +201,10 @@ server <- function(input, output, session) {
   
   output$figureSubtitle <- renderUI({
     figureSubtitle()
+  })
+  
+  output$pageSupportText <- renderUI({
+    pageSupportText()
   })
   
   output$timeSeries <- renderPlot({
