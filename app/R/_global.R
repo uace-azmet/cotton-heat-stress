@@ -1,44 +1,63 @@
-# Libraries --------------------
-
-library(azmetr)
-library(dplyr)
-library(english)
-library(ggplot2)
-library(htmltools)
-library(lubridate)
-library(shiny)
-library(vroom)
-
-
 # Files --------------------
 
-# Functions. Loaded automatically at app start if in `R` folder
-#source("./R/fxn_functionName.R", local = TRUE)
-
-# Scripts. Loaded automatically at app start if in `R` folder
-#source("./R/scr_scriptName.R", local = TRUE)
+azmetStations <- 
+  vroom::vroom(
+    file = "aux-files/azmet-stations-api-db.csv", 
+    delim = ",", 
+    col_names = TRUE, 
+    show_col_types = FALSE
+  )
 
 
 # Variables --------------------
 
-# Cotton heat stress season start date
-if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
-  seasonStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-04-24"))
+azmetStations <- azmetStations |>
+  dplyr::filter(stationName != "Test")
+
+apiStartDate <- as.Date("2021-01-01")
+
+if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-02-02"))) {
+  initialEndDate <- 
+    as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-11-15"))
 } else {
-  seasonStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-04-24"))
+  initialEndDate <- 
+    (Sys.Date() - 1)
 }
 
-# Cotton heat stress season end date
-if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
-  seasonEndDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-10-08"))
+if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-02-02"))) {
+  initialPlantingDate <- 
+    as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-02-01"))
 } else {
-  seasonEndDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-10-08"))
+  initialPlantingDate <- 
+    as.Date(paste0(lubridate::year(Sys.Date()), "-02-01"))
 }
 
-# Load auxilliary files
-azmetStations <- vroom::vroom(
-  file = "aux-files/azmet-stations-api-db.csv", 
-  delim = ",", 
-  col_names = TRUE, 
-  show_col_types = FALSE
+# Cotton growth stages, defined by 86/55 F heat units after planting, used in figure
+dataCottonGrowthStages <- data.frame(
+  huapValue = 
+    c(
+      0, 
+      700, 
+      1200, 
+      1500, 
+      1800, 
+      2200, 
+      2400, 
+      2800, 
+      3000, 
+      3400
+    ), 
+  growthStage = 
+    c(
+      "Planting", 
+      "Pinhead Square", 
+      "First Flower", 
+      "One-inch Boll", 
+      "Peak Bloom (Short)", 
+      "Peak Bloom (Long)", 
+      "Cutout (Short)", 
+      "Cutout (Long)", 
+      "Terminate (Short)", 
+      "Terminate (Long)"
+    )
 )

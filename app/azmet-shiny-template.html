@@ -15,6 +15,8 @@
     <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-5193JD209G');</script>
     <!-- script src="https://azmet.arizona.edu/sites/default/files/google_tag/az_comprehensive/google_tag.script.js?sact2n" defer></script -->
     <title>Cotton Heat Stress | Arizona Meteorological Network</title> <!-- Edit this line based on individual Shiny app -->
+    <!-- Shiny head code, https://shiny.posit.co/r/articles/build/templates/ -->
+    {{ headContent() }}
     <link rel="stylesheet" media="all" href="https://azmet.arizona.edu/profiles/custom/az_quickstart/modules/custom/az_flexible_page/css/az_flexible_page.theme.css?sact2n" />
     <link rel="stylesheet" media="all" href="https://azmet.arizona.edu/core/modules/system/css/components/ajax-progress.module.css?sact2n" />
     <link rel="stylesheet" media="all" href="https://azmet.arizona.edu/core/modules/system/css/components/align.module.css?sact2n" />
@@ -287,7 +289,7 @@
             <div class="container">
               <!-- div -->
                 <!-- Shiny app -->
-                {{ sidebarLayout }}
+                {{ pageFluid }}
               <!-- /div -->
             </div>
             <div class="container">

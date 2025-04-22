@@ -1,10 +1,21 @@
-# View time series and statistics of cotton heat stress by station during the growing season
+# Use cumulative heat units to estimate cotton growth stages by station and date range
 
 
-# Functions
+# Libraries
+library(azmetr)
+library(bsicons)
+library(bslib)
+library(dplyr)
+library(htmltools)
+library(lubridate)
+library(plotly)
+library(shiny)
+library(vroom)
+
+# Functions. Loaded automatically at app start if in `R` folder
 #source("./R/fxnABC.R", local = TRUE)
 
-# Scripts
+# Scripts. Loaded automatically at app start if in `R` folder
 #source("./R/scr##DEF.R", local = TRUE)
 
 
@@ -12,90 +23,29 @@
 
 ui <- htmltools::htmlTemplate(
   
-  "azmet-shiny-template.html",
+  filename = "azmet-shiny-template.html",
   
-  sidebarLayout = sidebarLayout(
-    position = "left",
+  pageFluid = bslib::page_fluid(
+    title = NULL,
+    theme = theme, # `scr##_theme.R`
     
-    sidebarPanel(
-      id = "sidebarPanel",
-      width = 4,
+    bslib::layout_sidebar(
+      sidebar = sidebar, # `scr##_sidebar.R`
       
-      verticalLayout(
-        helpText(em(
-          "Select an AZMet station. Then, click or tap 'VIEW HEAT STRESS DATA'."
-        )),
-        
-        br(),
-        selectInput(
-          inputId = "azmetStation", 
-          label = "AZMet Station",
-          choices = azmetStations[order(azmetStations$stationName), ]$stationName,
-          selected = "Aguila"
-        ),
-        
-        br(),
-        actionButton(
-          inputId = "viewHeatStressData", 
-          label = "VIEW HEAT STRESS DATA",
-          class = "btn btn-block btn-blue"
-        )
-      )
-    ), # sidebarPanel()
+      shiny::htmlOutput(outputId = "figureTitle"),
+      shiny::htmlOutput(outputId = "figureSummary"),
+      shiny::htmlOutput(outputId = "figureHelpText"),
+      #shiny::plotOutput(outputId = "figure"),
+      plotly::plotlyOutput(outputId = "figure"),
+      shiny::htmlOutput(outputId = "figureFooter")
+    ) |>
+      htmltools::tagAppendAttributes(
+        #https://getbootstrap.com/docs/5.0/utilities/api/
+        class = "border-0 rounded-0 shadow-none"
+      ),
     
-    mainPanel(
-      id = "mainPanel",
-      width = 8,
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput("figureTitle"))
-      ), 
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureSubtitle"))
-      ),
-      
-      br(),
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput("timeSeriesSubtitle"))
-      ), 
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, plotOutput("timeSeries"))
-      ),
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput("timeSeriesCaption"))
-      ),
-      
-      br(),
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput("histogramSubtitle"))
-      ), 
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, plotOutput("histogram"))
-      ),
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput("histogramCaption"))
-      ),
-      
-      br(), br(), br(),
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "figureFooterHelpText"))
-      ),
-      
-      fluidRow(
-        column(width = 11, align = "left", offset = 1, htmlOutput(outputId = "pageSupportText"))
-      ),
-     
-      br()
-    ) # mainPanel()
-  ) # sidebarLayout()
+    shiny::htmlOutput(outputId = "pageSupportText")
+  )
 ) # htmltools::htmlTemplate()
 
 
@@ -103,121 +53,114 @@ ui <- htmltools::htmlTemplate(
 
 server <- function(input, output, session) {
   
-  # Reactive events -----
+  # Observables -----
   
-  # Download and prep AZMet data
-  dataMerge <- eventReactive(input$viewHeatStressData, {
-  # User feedback
-    id <- showNotification(
-      ui = "Retrieving heat stress data . . .", 
-      action = NULL, duration = NULL, closeButton = FALSE, type = "message"
+  shiny::observeEvent(input$calculateHeatUnits, {
+    if (input$plantingDate > input$endDate) {
+      shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
+    }
+  })
+  
+  
+  # Reactives -----
+  
+  dataMerge <- shiny::eventReactive(input$calculateHeatUnits, {
+    shiny::validate(
+      shiny::need(
+        expr = input$plantingDate <= input$endDate, 
+        message = FALSE
+      )
     )
-    on.exit(removeNotification(id), add = TRUE)
     
-    # Calls 'fxn_dataELT()' and returns tidy data over multiple years
-    fxn_dataMerge(azmetStation = input$azmetStation)
-  })
-  
-  # Build figure footer
-  pageSupportText <- eventReactive(dataMerge(), {
-    fxn_pageSupportText(timeStep = "Daily")
-  })
-  
-  # Build footer help text
-  figureFooterHelpText <- eventReactive(dataMerge(), {
-    fxnFigureFooterHelpText()
-  })
-  
-  # Build figure subtitle
-  figureSubtitle <- eventReactive(dataMerge(), {
-    fxnFigureSubtitle(
+    idCalculatingHeatUnits <- shiny::showNotification(
+      ui = "Calculating heat units . . .", 
+      action = NULL, 
+      duration = NULL, 
+      closeButton = FALSE,
+      id = "idCalculatingHeatUnits",
+      type = "message"
+    )
+    
+    on.exit(
+      removeNotification(id = idCalculatingHeatUnits), 
+      add = TRUE
+    )
+    
+    #Calls 'fxn_dataELT()' and 'fxn_dataHeatSum()'
+    fxn_dataMerge(
       azmetStation = input$azmetStation, 
-      inData = dataMerge()
+      startDate = input$plantingDate, 
+      endDate = input$endDate
     )
   })
   
-  # Build figure title
-  figureTitle <- eventReactive(dataMerge(), {
-    fxnFigureTitle(inData = dataMerge())
-  })
-  
-  # Build histogram
-  histogram <- eventReactive(dataMerge(), {
-    fxnHistogram(inData = dataMerge())
-  })
-  
-  # Build histogram caption
-  histogramCaption <- eventReactive(dataMerge(), {
-    fxnHistogramCaption(
-      azmetStation = input$azmetStation, 
-      inData = dataMerge()
+  figure <- shiny::eventReactive(dataMerge(), {
+    fxn_figure(
+      inData = dataMerge(),
+      azmetStation = input$azmetStation
     )
   })
   
-  # Build histogram subtitle
-  histogramSubtitle <- eventReactive(dataMerge(), {
-    fxnHistogramSubtitle()
-  })
-  
-  # Build time series
-  timeSeries <- eventReactive(dataMerge(), {
-    fxnTimeSeries(azmetStation = input$azmetStation, inData = dataMerge())
-  })
-  
-  # Build time series caption
-  timeSeriesCaption <- eventReactive(dataMerge(), {
-    fxnTimeSeriesCaption(
-      azmetStation = input$azmetStation, 
-      inData = dataMerge()
+  figureFooter <- shiny::eventReactive(dataMerge(), {
+    fxn_figureFooter(
+      azmetStation = input$azmetStation,
+      startDate = input$plantingDate, 
+      endDate = input$endDate
     )
   })
   
-  # Build time series subtitle
-  timeSeriesSubtitle <- eventReactive(dataMerge(), {
-    fxnTimeSeriesSubtitle()
+  figureHelpText <- shiny::eventReactive(dataMerge(), {
+    fxn_figureHelpText()
   })
+  
+  figureSummary <- shiny::eventReactive(dataMerge(), {
+    fxn_figureSummary(
+      azmetStation = input$azmetStation, 
+      inData = dataMerge(),
+      startDate = input$plantingDate, 
+      endDate = input$endDate
+    )
+  })
+  
+  figureTitle <- shiny::eventReactive(dataMerge(), {
+    fxn_figureTitle(azmetStation = input$azmetStation)
+  })
+  
+  pageSupportText <- shiny::eventReactive(dataMerge(), {
+    fxn_pageSupportText(
+      azmetStation = input$azmetStation,
+      startDate = input$plantingDate, 
+      endDate = input$endDate, 
+      timeStep = "Daily"
+    )
+  })
+  
   
   # Outputs -----
   
-  output$figureFooterHelpText <- renderUI({
-    figureFooterHelpText()
+  output$figure <- plotly::renderPlotly({
+    figure()
   })
   
-  output$figureTitle <- renderUI(
-    figureTitle()
-  )
-  
-  output$histogram <- renderPlot({
-    histogram()
-  }, res = 96)
-  
-  output$histogramCaption <- renderUI(
-    histogramCaption()
-  )
-  
-  output$histogramSubtitle <- renderUI(
-    histogramSubtitle()
-  )
-  
-  output$figureSubtitle <- renderUI({
-    figureSubtitle()
-  })
-  
-  output$pageSupportText <- renderUI({
+  output$pageSupportText <- shiny::renderUI({
     pageSupportText()
   })
   
-  output$timeSeries <- renderPlot({
-    timeSeries()
-  }, res = 96)
+  output$figureFooter <- shiny::renderUI({
+    figureFooter()
+  })
   
-  output$timeSeriesCaption <- renderUI(
-    timeSeriesCaption()
-  )
+  output$figureHelpText <- shiny::renderUI({
+    figureHelpText()
+  })
   
-  output$timeSeriesSubtitle <- renderUI(
-    timeSeriesSubtitle()
-  )
+  output$figureSummary <- shiny::renderUI({
+    figureSummary()
+  })
+  
+  output$figureTitle <- shiny::renderUI({
+    figureTitle()
+  })
 }
 
 # Run --------------------
