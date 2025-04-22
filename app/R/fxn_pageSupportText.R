@@ -1,16 +1,14 @@
 #' `fxn_pageSupportText.R` - Build supporting text for page
 #' 
-#' @param azmetStation - AZMet station selection by user
-#' @param startDate - Planting date of period of interest
-#' @param endDate - End date of period of interest
 #' @param timeStep - AZMet data time step
-#' @return `figureFooter` - Footer for figure based on user input
+#' @return `pageSupportText` - Supporting text for page
 
 
-fxn_pageSupportText <- function(azmetStation, startDate, endDate, timeStep) {
+fxn_pageSupportText <- function(timeStep) {
   
   
   # Define inputs -----
+  
   apiURL <- a(
     "api.azmet.arizona.edu", 
     href="https://api.azmet.arizona.edu/v1/observations/daily", # Daily data
@@ -24,14 +22,14 @@ fxn_pageSupportText <- function(azmetStation, startDate, endDate, timeStep) {
   )
   
   bulletinURL <- a(
-    "AZ1602 'Heat Units'",
-    href="https://extension.arizona.edu/sites/extension.arizona.edu/files/pubs/az1602.pdf",
+    "AZ1448 'Cotton Heat Stress'",
+    href="https://staging.azmet.arizona.edu/sites/default/files/2022-07/az1448.pdf",
     target="_blank"
   )
   
-  heatUnitsWebpageURL <- a(
-    "heat units-related information",
-    href="https://azmet.arizona.edu/application-areas/heat-units",
+  cottonWebpageURL <- a(
+    "cotton-related information",
+    href="https://azmet.arizona.edu/application-areas/cotton",
     target="_blank"
   )
   
@@ -41,7 +39,7 @@ fxn_pageSupportText <- function(azmetStation, startDate, endDate, timeStep) {
   
   webpageCode <- a(
     "GitHub page", 
-    href="https://github.com/uace-azmet/cotton-growth-stages-and-heat-units", 
+    href="https://github.com/uace-azmet/cotton-heat-stress", 
     target="_blank"
   )
   
@@ -69,20 +67,19 @@ fxn_pageSupportText <- function(azmetStation, startDate, endDate, timeStep) {
     target="_blank"
   )
   
-  
   # Build text -----
   
   pageSupportText <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "Heat units are based on the single sine curve method with upper and lower temperature thresholds of 86 and 55 °F, respectively. The cumulative heat unit total for the current growing season (black bar in graph) represents the accumulation of daily totals from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Accumulation totals of heat units for past growing seasons (gray bars in graph) are based on the same planting and end dates, but during those respective years. Tables of daily totals of heat units for individual stations and the current calendar year currently are available from the AZMet webpage with ", heatUnitsWebpageURL, ". More information on this method, as well as the relationship between heat units and cotton growth stages, is in Extension bulletin ", bulletinURL, ".",  
+          "Estimated canopy temperatures below 82.4 °F indicate no cotton heat stress, between 82.4 and 86.0 °F Level 1 heat stress, and above 86.0 °F Level 2 heat stress. Tables of daily values of estimated canopy temperatures and stress levels for individual stations and the current growing season currently are available from the AZMet webpage with ", cottonWebpageURL, ".", " ", "More information about cotton heat stress is in Extension bulletin", " ", bulletinURL, ".",
           br(), br(), 
-          timeStep, " AZMet data are from ", apiURL, " and accessed using the ", azmetrURL, " R package. Values from recent dates may be based on provisional data. More information about ", webpageDataVariables, ", ", webpageNetworkMap, ", and ", webpageStationMetadata, " is available on the ", webpageAZMet, ". Users of AZMet data and related information assume all risks of its use.",
+          timeStep, " ", "AZMet data are from", " ", apiURL, " and accessed using the ", azmetrURL, " R package. Values from recent dates may be based on provisional data", ".", " ", "More information about", " ", webpageDataVariables, ",", " ", webpageNetworkMap, ",", " ", "and", " ", webpageStationMetadata, " ", "is available on the", " ", webpageAZMet, ".", " ", "Users of AZMet data and related information assume all risks of its use", ".",
           br(), br(),
-          "To cite the above AZMet data, please use: 'Arizona Meteorological Network (", todayYear, ") Arizona Meteorological Network (AZMet) Data. https://azmet.arizona.edu. Accessed ", todayDate, "', along with 'Arizona Meteorological Network (", todayYear, ") Cotton Growth Stages and Heat Units. https://viz.datascience.arizona.edu/azmet/cotton-growth-stages-and-heat-units. Accessed ", todayDate, "'.",
+          "To cite the above AZMet data, please use: 'Arizona Meteorological Network (", todayYear, ") Arizona Meteorological Network (AZMet) Data. https://azmet.arizona.edu. Accessed ", todayDate, "', along with 'Arizona Meteorological Network (", todayYear, ") Cotton Heat Stress. https://viz.datascience.arizona.edu/azmet/cotton-heat-stress. Accessed ", todayDate, "'.",
           br(), br(),
-          "For information on how this webpage is put together, please visit the ", webpageCode, " for this tool."
+          "For information on how this webpage is put together, please visit the", " ", webpageCode, " ", "for this tool."
         )
       ),
       

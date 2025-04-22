@@ -14,7 +14,7 @@ fxn_figureTitle <- function(azmetStation) {
           htmltools::HTML("&nbsp;"),
           toupper(
             paste0(
-              "Cumulative Heat Units at the AZMet ", azmetStation, " Station"
+              "Cotton Heat Stress Data at the AZMet ", azmetStation, " Station"
             )
           )
         ),

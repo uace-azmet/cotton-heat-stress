@@ -1,24 +1,6 @@
 # Use cumulative heat units to estimate cotton growth stages by station and date range
 
 
-# Libraries
-library(azmetr)
-library(bsicons)
-library(bslib)
-library(dplyr)
-library(htmltools)
-library(lubridate)
-library(plotly)
-library(shiny)
-library(vroom)
-
-# Functions. Loaded automatically at app start if in `R` folder
-#source("./R/fxnABC.R", local = TRUE)
-
-# Scripts. Loaded automatically at app start if in `R` folder
-#source("./R/scr##DEF.R", local = TRUE)
-
-
 # UI --------------------
 
 ui <- htmltools::htmlTemplate(
@@ -33,6 +15,9 @@ ui <- htmltools::htmlTemplate(
       sidebar = sidebar, # `scr##_sidebar.R`
       
       shiny::htmlOutput(outputId = "figureTitle"),
+      
+      #navsetCardTab, # `scr##_navsetCardTab.R`
+      
       shiny::htmlOutput(outputId = "figureSummary"),
       shiny::htmlOutput(outputId = "figureHelpText"),
       #shiny::plotOutput(outputId = "figure"),
@@ -55,7 +40,7 @@ server <- function(input, output, session) {
   
   # Observables -----
   
-  shiny::observeEvent(input$calculateHeatUnits, {
+  shiny::observeEvent(input$retrieveData, {
     if (input$plantingDate > input$endDate) {
       shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
     }
@@ -64,25 +49,18 @@ server <- function(input, output, session) {
   
   # Reactives -----
   
-  dataMerge <- shiny::eventReactive(input$calculateHeatUnits, {
-    shiny::validate(
-      shiny::need(
-        expr = input$plantingDate <= input$endDate, 
-        message = FALSE
-      )
-    )
-    
-    idCalculatingHeatUnits <- shiny::showNotification(
-      ui = "Calculating heat units . . .", 
+  dataMerge <- shiny::eventReactive(input$retrieveData, {
+    idRetrievingHeatStressData <- shiny::showNotification(
+      ui = "Retrieving heat stress data . . .", 
       action = NULL, 
       duration = NULL, 
       closeButton = FALSE,
-      id = "idCalculatingHeatUnits",
+      id = "idRetrievingHeatStressData",
       type = "message"
     )
     
     on.exit(
-      removeNotification(id = idCalculatingHeatUnits), 
+      removeNotification(id = idRetrievingHeatStressData), 
       add = TRUE
     )
     
@@ -128,9 +106,6 @@ server <- function(input, output, session) {
   
   pageSupportText <- shiny::eventReactive(dataMerge(), {
     fxn_pageSupportText(
-      azmetStation = input$azmetStation,
-      startDate = input$plantingDate, 
-      endDate = input$endDate, 
       timeStep = "Daily"
     )
   })

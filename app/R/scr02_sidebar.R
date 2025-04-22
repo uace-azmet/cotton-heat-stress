@@ -18,7 +18,7 @@ sidebar <- bslib::sidebar(
   ),
   
   shiny::helpText(
-    "Select an AZMet station and set dates for planting and the end of the period of interest. Then, click or tap 'CALCULATE HEAT UNITS'."
+    "Select an AZMet station. Then, click or tap 'RETRIEVE DATA'."
   ),
   
   shiny::selectInput(
@@ -55,8 +55,8 @@ sidebar <- bslib::sidebar(
   ),
   
   shiny::actionButton(
-    inputId = "calculateHeatUnits", 
-    label = "CALCULATE HEAT UNITS",
+    inputId = "retrieveData", 
+    label = "RETRIEVE DATA",
     class = "btn btn-block btn-blue"
   )
 ) # bslib::sidebar()
