@@ -14,15 +14,17 @@ ui <- htmltools::htmlTemplate(
     bslib::layout_sidebar(
       sidebar = sidebar, # `scr##_sidebar.R`
       
-      shiny::htmlOutput(outputId = "figureTitle"),
+      shiny::htmlOutput(outputId = "navsetCardTabTitle"),
       
       #navsetCardTab, # `scr##_navsetCardTab.R`
+      shiny::htmlOutput(outputId = "navsetCardTab"),
       
-      shiny::htmlOutput(outputId = "figureSummary"),
-      shiny::htmlOutput(outputId = "figureHelpText"),
+      
+      #shiny::htmlOutput(outputId = "figureSummary"),
+      #shiny::htmlOutput(outputId = "figureHelpText"),
       #shiny::plotOutput(outputId = "figure"),
-      plotly::plotlyOutput(outputId = "figure"),
-      shiny::htmlOutput(outputId = "figureFooter")
+      #plotly::plotlyOutput(outputId = "figure"),
+      #shiny::htmlOutput(outputId = "figureFooter")
     ) |>
       htmltools::tagAppendAttributes(
         #https://getbootstrap.com/docs/5.0/utilities/api/
@@ -37,14 +39,15 @@ ui <- htmltools::htmlTemplate(
 # Server --------------------
 
 server <- function(input, output, session) {
+  #shinyjs::useShinyjs(html = TRUE)
+  #shinyjs::hideElement("navsetCardTab")
+  
   
   # Observables -----
   
-  shiny::observeEvent(input$retrieveData, {
-    if (input$plantingDate > input$endDate) {
-      shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
-    }
-  })
+  #shiny::observeEvent(dataMerge(), {
+  #  shinyjs::showElement("navsetCardTab")
+  #})
   
   
   # Reactives -----
@@ -72,27 +75,27 @@ server <- function(input, output, session) {
     )
   })
   
-  figure <- shiny::eventReactive(dataMerge(), {
-    fxn_figure(
+  ectFigure <- shiny::eventReactive(dataMerge(), {
+    fxn_ectFigure(
       inData = dataMerge(),
       azmetStation = input$azmetStation
     )
   })
   
-  figureFooter <- shiny::eventReactive(dataMerge(), {
-    fxn_figureFooter(
+  ectFigureFooter <- shiny::eventReactive(dataMerge(), {
+    fxn_ectFigureFooter(
       azmetStation = input$azmetStation,
       startDate = input$plantingDate, 
       endDate = input$endDate
     )
   })
   
-  figureHelpText <- shiny::eventReactive(dataMerge(), {
-    fxn_figureHelpText()
+  ectFigureHelpText <- shiny::eventReactive(dataMerge(), {
+    fxn_ectFigureHelpText()
   })
   
-  figureSummary <- shiny::eventReactive(dataMerge(), {
-    fxn_figureSummary(
+  ectFigureSummary <- shiny::eventReactive(dataMerge(), {
+    fxn_ectFigureSummary(
       azmetStation = input$azmetStation, 
       inData = dataMerge(),
       startDate = input$plantingDate, 
@@ -100,8 +103,14 @@ server <- function(input, output, session) {
     )
   })
   
-  figureTitle <- shiny::eventReactive(dataMerge(), {
-    fxn_figureTitle(azmetStation = input$azmetStation)
+  navsetCardTab <- shiny::eventReactive(dataMerge(), {
+    fxn_navsetCardTab()
+  })
+  
+  navsetCardTabTitle <- shiny::eventReactive(dataMerge(), {
+    fxn_navsetCardTabTitle(
+      azmetStation = input$azmetStation
+    )
   })
   
   pageSupportText <- shiny::eventReactive(dataMerge(), {
@@ -113,28 +122,32 @@ server <- function(input, output, session) {
   
   # Outputs -----
   
-  output$figure <- plotly::renderPlotly({
-    figure()
+  output$ectFigure <- plotly::renderPlotly({
+    ectFigure()
+  })
+  
+  output$ectFigureFooter <- shiny::renderUI({
+    ectFigureFooter()
+  })
+  
+  output$ectFigureHelpText <- shiny::renderUI({
+    ectFigureHelpText()
+  })
+  
+  output$ectFigureSummary <- shiny::renderUI({
+    ectFigureSummary()
   })
   
   output$pageSupportText <- shiny::renderUI({
     pageSupportText()
   })
   
-  output$figureFooter <- shiny::renderUI({
-    figureFooter()
+  output$navsetCardTab <- shiny::renderUI({
+    navsetCardTab()
   })
   
-  output$figureHelpText <- shiny::renderUI({
-    figureHelpText()
-  })
-  
-  output$figureSummary <- shiny::renderUI({
-    figureSummary()
-  })
-  
-  output$figureTitle <- shiny::renderUI({
-    figureTitle()
+  output$navsetCardTabTitle <- shiny::renderUI({
+    navsetCardTabTitle()
   })
 }
 

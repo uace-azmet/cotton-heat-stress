@@ -1,11 +1,11 @@
-#' `fxn_figureTitle.R` - Build title for figure
+#' `fxn_navsetCardTabTitle.R` - Build title for container of navigation panels
 #' 
 #' @param azmetStation - AZMet station selection by user
-#' @return `figureTitle` - Title for figure based on selected station
+#' @return `navsetCardTabTitle` - Title for container of navigation panels
 
 
-fxn_figureTitle <- function(azmetStation) {
-  figureTitle <- 
+fxn_navsetCardTabTitle <- function(azmetStation) {
+  navsetCardTabTitle <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
@@ -20,8 +20,8 @@ fxn_figureTitle <- function(azmetStation) {
         ),
       ),
       
-      class = "figure-title"
+      class = "navset-card-tab-title"
     )
   
-  return(figureTitle)
+  return(navsetCardTabTitle)
 }

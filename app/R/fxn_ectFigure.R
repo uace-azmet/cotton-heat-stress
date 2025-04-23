@@ -1,4 +1,4 @@
-#' `fxn_figure` generates bar chart of cumulative heat units of current and recent years with cotton growth stage labels
+#' `fxn_ectFigure` generates bar chart of cumulative heat units of current and recent years with cotton growth stage labels
 #' 
 #' @param inData - data table of seasonal heat accumulation values by year
 #' @param azmetStation - user-specified AZMet station
@@ -11,7 +11,7 @@
 # https://www.color-hex.com/color-palette/1041718
 
 
-fxn_figure <- function(inData, azmetStation) {
+fxn_ectFigure <- function(inData, azmetStation) {
   
   # Inputs -----
   
@@ -30,7 +30,7 @@ fxn_figure <- function(inData, azmetStation) {
   
   # Figure -----
   
-  figure <- 
+  ectFigure <- 
     plotly::plot_ly( # Bars for `dataOtherYears`
       data = dataOtherYears,
       x = ~dateYear,
@@ -215,5 +215,5 @@ fxn_figure <- function(inData, azmetStation) {
       )
     )
   
-  return(figure)
+  return(ectFigure)
 }

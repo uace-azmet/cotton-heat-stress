@@ -1,12 +1,12 @@
-#' `fxn_figureFooter.R` - Build footer for figure based on user input
+#' `fxn_ectFigureFooter.R` - Build footer for figure of estimated canopy temperatures based on user input
 #' 
 #' @param azmetStation AZMet station selection by user
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
-#' @return `figureFooter` Caption for figure based on selected station
+#' @return `ectFigureFooter` Caption for figure of estimated canopy temperatures based on selected station
 
 
-fxn_figureFooter <- function(azmetStation, startDate, endDate) {
+fxn_ectFigureFooter <- function(azmetStation, startDate, endDate) {
   azmetStationStartDate <- apiStartDate # Placeholder for station start date
   nonOperational <- 0
   standardText <- paste0("Data in the new AZMet database currently start on ", gsub(" 0", " ", format(apiStartDate, "%B %d, %Y")), ".")
@@ -33,7 +33,7 @@ fxn_figureFooter <- function(azmetStation, startDate, endDate) {
   
   # Generate figure footer based on presence/absence of non-operational dates
   if (azmetStation == "Yuma N.Gila" & nonOperational == 1) {
-    figureFooter <- 
+    ectFigureFooter <- 
       htmltools::p(
         htmltools::HTML(
           paste(
@@ -43,10 +43,10 @@ fxn_figureFooter <- function(azmetStation, startDate, endDate) {
           )
         ),
         
-        class = "figure-footer"
+        class = "ect-figure-footer"
       )
   } else if (azmetStation == "Mohave ETo") {
-    figureFooter <- 
+    ectFigureFooter <- 
       htmltools::p(
         htmltools::HTML(
           paste(
@@ -56,10 +56,10 @@ fxn_figureFooter <- function(azmetStation, startDate, endDate) {
           )
         ),
         
-        class = "figure-footer"
+        class = "ect-figure-footer"
       )
   } else if (azmetStation == "Wellton ETo") {
-    figureFooter <- 
+    ectFigureFooter <- 
       htmltools::p(
         htmltools::HTML(
           paste(
@@ -69,10 +69,10 @@ fxn_figureFooter <- function(azmetStation, startDate, endDate) {
           )
         ),
         
-        class = "figure-footer"
+        class = "ect-figure-footer"
       )
   } else if (azmetStation == "Yuma Valley ETo") {
-    figureFooter <- 
+    ectFigureFooter <- 
       htmltools::p(
         htmltools::HTML(
           paste(
@@ -82,15 +82,15 @@ fxn_figureFooter <- function(azmetStation, startDate, endDate) {
           )
         ),
         
-        class = "figure-footer"
+        class = "ect-figure-footer"
       )
   } else {
-    figureFooter <- 
+    ectFigureFooter <- 
       htmltools::p(
         htmltools::HTML(standardText), 
-        class = "figure-footer"
+        class = "ect-figure-footer"
       )
   }
   
-  return(figureFooter)
+  return(ectFigureFooter)
 }
