@@ -68,14 +68,14 @@ fxn_dataETL <- function(azmetStation, timeStep, startDate, endDate) {
     # Add cotton heat stress categories
     dataAZMetDataETL <- dataAZMetDataETL %>%
       dplyr::mutate(heatstress_categories = dplyr::if_else(
-        heatstress_cotton_meanF > 86.0, "LEVEL 2 HEAT STRESS", dplyr::if_else(
-          heatstress_cotton_meanF < 82.4, "NO HEAT STRESS", "LEVEL 1 HEAT STRESS"
+        heatstress_cotton_meanF > 86.0, "Level 2 heat stress", dplyr::if_else(
+          heatstress_cotton_meanF < 82.4, "no heat stress", "Level 1 heat stress"
         )
       )) %>%
       dplyr::mutate(
         heatstress_categories = factor(
           heatstress_categories, 
-          levels = c("LEVEL 2 HEAT STRESS", "LEVEL 1 HEAT STRESS", "NO HEAT STRESS")
+          levels = c("Level 2 heat stress", "Level 1 heat stress", "no heat stress")
         )
       )
   }
