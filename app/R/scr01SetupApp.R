@@ -9,7 +9,9 @@ if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
 if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
   seasonEndDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-10-08"))
 } else {
-  seasonEndDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-10-08"))
+  # Patch for `azmetr` error in parse_params: Please supply an `end_date` earlier than today.
+  #seasonEndDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-10-08"))
+  seasonEndDate <- as.Date(Sys.Date() - 1)
 }
 
 # Load auxilliary files
