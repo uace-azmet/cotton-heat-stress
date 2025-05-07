@@ -35,46 +35,124 @@ dataMerge <- fxn_dataMerge(azmetStation = azmetStation)
 
 inData <- dataMerge
 
-fxn_slsGraph <- function(inData) {
+fxn_slsGraph <- function(azmetStation, inData) {
   inData <- inData |>
     dplyr::mutate(datetime = lubridate::ymd(datetime))
 
-  dataPriorYears <- inData %>%
-    dplyr::filter(date_year != max(date_year)) %>%
-    dplyr::group_by(date_year)
-
+  # NEED TO ROUND STATS to tenths
+  #
+  #
+  dataStats <- inData %>% 
+    dplyr::group_by(date_doy) %>% 
+    dplyr::summarize(
+      max = max(heatstress_cotton_meanF, na.rm = TRUE), 
+      mean = mean(heatstress_cotton_meanF, na.rm = TRUE), 
+      min = min(heatstress_cotton_meanF, na.rm = TRUE)
+    ) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::mutate(meta_station_name = azmetStation) %>% 
+    dplyr::mutate(heatstress_categories_max = dplyr::if_else(
+      max > 86.0, "Level 2 heat stress", dplyr::if_else(
+        max < 82.4, "no heat stress", "Level 1 heat stress"
+      )
+    )) %>%
+    dplyr::mutate(heatstress_categories_mean = dplyr::if_else(
+      mean > 86.0, "Level 2 heat stress", dplyr::if_else(
+        mean < 82.4, "no heat stress", "Level 1 heat stress"
+      )
+    )) %>%
+    dplyr::mutate(heatstress_categories_min = dplyr::if_else(
+      min > 86.0, "Level 2 heat stress", dplyr::if_else(
+        min < 82.4, "no heat stress", "Level 1 heat stress"
+      )
+    )) %>%
+    dplyr::mutate(
+      heatstress_categories_max = factor(
+        heatstress_categories_max, 
+        levels = c("Level 2 heat stress", "Level 1 heat stress", "no heat stress")
+      )
+    ) %>% 
+    dplyr::mutate(
+      heatstress_categories_mean = factor(
+        heatstress_categories_mean, 
+        levels = c("Level 2 heat stress", "Level 1 heat stress", "no heat stress")
+      )
+    ) %>% 
+    dplyr::mutate(
+      heatstress_categories_min = factor(
+        heatstress_categories_min, 
+        levels = c("Level 2 heat stress", "Level 1 heat stress", "no heat stress")
+      )
+    )
+  
   dataCurrentYear <- inData %>%
     dplyr::filter(date_year == max(date_year)) %>%
     dplyr::group_by(date_year)
 
   slsGraph <-
-    plotly::plot_ly( # Lines and points for `dataPriorYears`
-      data = dataPriorYears,
+    plotly::plot_ly( # Ribbon for `dataStats` day-of-year minimum
+      data = dataStats,
       x = ~date_doy,
-      y = ~heatstress_cotton_meanF,
+      y = ~min,
       type = "scatter",
-      mode = "lines+markers",
-      #color = "rgba(201, 201, 201, 1.0)",
-      marker = list(
-        color = "rgba(201, 201, 201, 1.0)",
-        size = 3
-      ),
-      line = list(
-        color = "rgba(201, 201, 201, 1.0)",
-        width = 1
-      ),
-      name = "prior years",
+      mode = "lines",
+      line = list(color = "transparent"),
+      name = "day-of-year minimum",
+      hoverinfo = "none",
+      # text = ~paste0(
+      #   "<br><b>Day-of-year Minimum:</b>  ", min, " °F",
+      #   "<br><b>Heat Stress Level:</b>  ", heatstress_categories_min
+      # ),
+      showlegend = FALSE
+    ) %>% 
+    
+    plotly::add_trace( # Ribbon for `dataStats` day-of-year maximum
+      inherit = TRUE,
+      y = ~max,
+      #type = "scatter",
+      #mode = "lines",
+      #line = list(color = "transparent"),
+      fill = "tonexty",
+      fillcolor = "rgba(227, 227, 227, 1.0)",
+      name = "Day-of-year Range",
       hoverinfo = "text",
       text = ~paste0(
-        "<br><b>AZMet Station:</b>  ", meta_station_name,
-        "<br><b>Date:</b>  ", gsub(" 0", " ", format(datetime, "%b %d, %Y")),
-        "<br><b>Estimated Canopy Temperature:</b>  ", heatstress_cotton_meanF, " °F",
-        "<br><b>Heat Stress Level:</b>  ", heatstress_categories
+        "<br><b>Day-of-year Maximum:</b>  ", max, " °F",
+        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_max,
+        "<br><b>Day-of-year Minimum:</b>  ", min, " °F",
+        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_min
       ),
       showlegend = TRUE,
-      legendgroup = "dataPriorYears"
+      legendgroup = "dataStats-range"
+    ) %>% 
+    
+    plotly::add_trace( # Lines for `dataStats` day-of-year mean
+      inherit = TRUE,
+      # data = dataStats,
+      # x = ~date_doy,
+      y = ~mean,
+      # type = "scatter",
+      mode = "lines+markers",
+      marker = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        size = 2
+      ),
+      line = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        #dash = "dot",
+        #shape = "linear",
+        width = 1.0
+      ),
+      name = "Day-of-year Average",
+      hoverinfo = "text",
+      text = ~paste0(
+        "<br><b>Day-of-year Average:</b>  ", mean, " °F",
+        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_mean
+      ),
+      showlegend = TRUE,
+      legendgroup = "dataStats-mean"
     ) %>%
-
+    
     plotly::add_trace( # Lines and points for `dataCurrentYear`
       inherit = FALSE,
       data = dataCurrentYear,
@@ -85,11 +163,11 @@ fxn_slsGraph <- function(inData) {
       #color = ~meta_station_name,
       marker = list(
         color = "rgba(25, 25, 25, 1.0)",
-        size = 3
+        size = 2
       ),
       line = list(
         color = "rgba(25, 25, 25, 1.0)",
-        width = 1.5
+        width = 1.0
       ),
       name = ~date_year,
       hoverinfo = "text",
@@ -135,6 +213,7 @@ fxn_slsGraph <- function(inData) {
           size = 14
         )
       ),
+      hovermode = "x unified",
       legend = list(
         orientation = "h",
         traceorder = "reversed",
@@ -178,4 +257,4 @@ fxn_slsGraph <- function(inData) {
   return(slsGraph)
 }
 
-fxn_slsGraph(inData = inData)
+fxn_slsGraph(azmetStation = azmetStation, inData = inData)

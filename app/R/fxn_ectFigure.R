@@ -5,6 +5,7 @@
 #' @return `figure` - png of figure
 
 # https://plotly-r.com/ 
+# https://plotly.com/r/
 # https://plotly.com/r/reference/ 
 # https://plotly.github.io/schema-viewer/
 # https://github.com/plotly/plotly.js/blob/c1ef6911da054f3b16a7abe8fb2d56019988ba14/src/components/fx/hover.js#L1596
