@@ -335,7 +335,7 @@ fxn_slsGraph <- function(azmetStation, inData) {
           )
         ),
       xaxis = list(
-        range = list(min(dataStats$pseudoDate), max(dataStats$pseudoDate)),
+        range = list(min(dataStats$pseudoDate) - 0.5, max(dataStats$pseudoDate) + 0.5),
         spikecolor = "#a6a6a6",
         spikedash = "dot",
         spikemode = "across+marker",
