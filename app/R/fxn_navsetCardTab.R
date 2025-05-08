@@ -11,7 +11,7 @@ fxn_navsetCardTab <- function() {
     sidebar = NULL,
     header = NULL,
     footer = NULL,
-    height = 600,
+    height = 700,
     full_screen = TRUE,
     #wrapper = card_body,
     
@@ -19,14 +19,15 @@ fxn_navsetCardTab <- function() {
       title = "Estimated Canopy Temperatures",
       value = "estimatedCanopyTemperatures",
       shiny::htmlOutput(outputId = "ectFigureSummary"),
-      shiny::htmlOutput(outputId = "ectFigureHelpText")
+      shiny::htmlOutput(outputId = "ectFigureHelpText"),
+      plotly::plotlyOutput(outputId = "ectFigure")
     ),
     
     bslib::nav_panel(
       title = "Stress-level Frequency",
       value = "stressLevelFrequency",
-      plotly::plotlyOutput(outputId = "ectFigure"),
-      shiny::htmlOutput(outputId = "ectFigureFooter")
+      #plotly::plotlyOutput(outputId = "ectFigure"),
+      #shiny::htmlOutput(outputId = "ectFigureFooter")
     )
   ) |>
     htmltools::tagAppendAttributes(

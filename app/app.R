@@ -52,68 +52,66 @@ server <- function(input, output, session) {
   
   # Reactives -----
   
-  dataMerge <- shiny::eventReactive(input$retrieveData, {
+  dataELT <- shiny::eventReactive(input$retrieveData, {
     idRetrievingHeatStressData <- shiny::showNotification(
-      ui = "Retrieving heat stress data . . .", 
-      action = NULL, 
-      duration = NULL, 
+      ui = "Retrieving heat stress data . . .",
+      action = NULL,
+      duration = NULL,
       closeButton = FALSE,
       id = "idRetrievingHeatStressData",
       type = "message"
     )
-    
+
     on.exit(
-      removeNotification(id = idRetrievingHeatStressData), 
+      shiny::removeNotification(id = idRetrievingHeatStressData),
       add = TRUE
     )
-    
+
     #Calls 'fxn_dataELT()' and 'fxn_dataHeatSum()'
-    fxn_dataMerge(
-      azmetStation = input$azmetStation, 
-      startDate = input$plantingDate, 
-      endDate = input$endDate
-    )
-  })
-  
-  ectFigure <- shiny::eventReactive(dataMerge(), {
-    fxn_ectFigure(
-      inData = dataMerge(),
-      azmetStation = input$azmetStation
-    )
-  })
-  
-  ectFigureFooter <- shiny::eventReactive(dataMerge(), {
-    fxn_ectFigureFooter(
+    fxn_dataELT(
       azmetStation = input$azmetStation,
-      startDate = input$plantingDate, 
-      endDate = input$endDate
+      timeStep = "Daily",
+      startDate = apiStartDate,
+      endDate = apiEndDate
     )
   })
   
-  ectFigureHelpText <- shiny::eventReactive(dataMerge(), {
-    fxn_ectFigureHelpText()
+  ectFigure <- shiny::eventReactive(dataELT(), {
+    fxn_ectFigure(
+      inData = dataELT()
+    )
   })
-  
-  ectFigureSummary <- shiny::eventReactive(dataMerge(), {
+
+  # ectFigureFooter <- shiny::eventReactive(dataMerge(), {
+  #   fxn_ectFigureFooter(
+  #     azmetStation = input$azmetStation,
+  #     startDate = input$plantingDate, 
+  #     endDate = input$endDate
+  #   )
+  # })
+  # 
+  ectFigureHelpText <- shiny::eventReactive(dataELT(), {
+   fxn_ectFigureHelpText()
+  })
+
+  ectFigureSummary <- shiny::eventReactive(dataELT(), {
     fxn_ectFigureSummary(
-      azmetStation = input$azmetStation, 
-      inData = dataMerge(),
-      startDate = input$plantingDate, 
-      endDate = input$endDate
+      azmetStation = input$azmetStation,
+      inData = dataELT()
     )
   })
   
-  navsetCardTab <- shiny::eventReactive(dataMerge(), {
+  navsetCardTab <- shiny::eventReactive(dataELT(), {
     fxn_navsetCardTab()
   })
   
-  navsetCardTabTitle <- shiny::eventReactive(dataMerge(), {
+  navsetCardTabTitle <- shiny::eventReactive(dataELT(), {
     fxn_navsetCardTabTitle(
       azmetStation = input$azmetStation
     )
   })
   
-  pageSupportText <- shiny::eventReactive(dataMerge(), {
+  pageSupportText <- shiny::eventReactive(dataELT(), {
     fxn_pageSupportText(
       timeStep = "Daily"
     )
@@ -125,15 +123,15 @@ server <- function(input, output, session) {
   output$ectFigure <- plotly::renderPlotly({
     ectFigure()
   })
-  
-  output$ectFigureFooter <- shiny::renderUI({
-    ectFigureFooter()
-  })
-  
+
+  # output$ectFigureFooter <- shiny::renderUI({
+  #   ectFigureFooter()
+  # })
+  # 
   output$ectFigureHelpText <- shiny::renderUI({
-    ectFigureHelpText()
+   ectFigureHelpText()
   })
-  
+
   output$ectFigureSummary <- shiny::renderUI({
     ectFigureSummary()
   })
