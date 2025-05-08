@@ -11,7 +11,7 @@ fxn_navsetCardTab <- function() {
     sidebar = NULL,
     header = NULL,
     footer = NULL,
-    height = 700,
+    height = 800,
     full_screen = TRUE,
     #wrapper = card_body,
     
