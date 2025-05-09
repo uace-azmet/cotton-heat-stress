@@ -1,4 +1,6 @@
-source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataELT.R")
+#source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataELT.R")
+#source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/R/fxn_dataELT.R")
+source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/R/fxn_dataELT.R")
 
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataETL_HS.R")
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataMerge_HS.R")
@@ -7,8 +9,9 @@ source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documen
 
 azmetStations <-
   vroom::vroom(
-    file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    #file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
     #file = "/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
     delim = ",",
     col_names = TRUE,
     show_col_types = FALSE
@@ -22,7 +25,7 @@ azmetStation <- "Maricopa"
 # } else {
 #   seasonStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-01-01"))
 # }
-seasonStartDate <- as.Date("2024-01-01")
+seasonStartDate <- as.Date("2021-01-01")
 
 # Cotton heat stress season end date
 # if (Sys.Date() < as.Date(paste0(lubridate::year(Sys.Date()), "-04-28"))) {
@@ -30,12 +33,18 @@ seasonStartDate <- as.Date("2024-01-01")
 # } else {
 #   seasonEndDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-10-08"))
 # }
-seasonEndDate <- as.Date("2024-12-31")
+seasonEndDate <- as.Date("2025-05-08")
 
 library(magrittr)
-dataMerge <- fxn_dataMerge(azmetStation = azmetStation)
 
-inData <- dataMerge
+inData <- fxn_dataELT(
+  azmetStation = azmetStation,
+  timeStep = "Daily",
+  startDate = seasonStartDate,
+    #dplyr::filter(azmetStations, stationName == azmetStation)$stationStartDate,
+  endDate = seasonEndDate
+    #dplyr::filter(azmetStations, stationName == azmetStation)$stationEndDate
+)
 
 fxn_slsGraph <- function(azmetStation, inData) {
   inData <- inData %>% 
@@ -84,7 +93,12 @@ fxn_slsGraph <- function(azmetStation, inData) {
       )
     ) %>% 
     dplyr::mutate(
-      pseudoDate = as.Date(date_doy, paste0((max(inData$date_year) - 1), "-12-31"))
+      pseudoDate = as.Date(date_doy, origin = paste0((max(inData$date_year) - 1), "-12-31"))
+    ) %>% 
+    dplyr::filter(
+      dplyr::case_when(
+        lubridate::leap_year(max(inData$date_year)) == FALSE ~ date_doy < 366
+      )
     )
   
   dataCurrentYear <- inData %>%

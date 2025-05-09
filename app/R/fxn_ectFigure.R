@@ -1,7 +1,7 @@
-#' `fxn_ectFigure` generates bar chart of cumulative heat units of current and recent years with cotton growth stage labels
+#' `fxn_ectFigure.R` generates Plotly line graph of estimated canopy temperature based on selected station
 #' 
-#' @param inData - data table of seasonal heat accumulation values by year
-#' @return `ectFigure` - png of figure
+#' @param inData - data table from `fxn_dataETL()`
+#' @return `ectFigure` - Plotly line graph of estimated canopy temperature based on selected station
 
 # https://plotly-r.com/ 
 # https://plotly.com/r/
@@ -11,9 +11,10 @@
 # https://www.color-hex.com/color-palette/1041718
 
 
-fxn_ectFigure <- function(inData, azmetStation) {
+fxn_ectFigure <- function(inData) {
   
-  # Inputs -----
+  
+  # Variables ----------
   
   dataStats <- inData %>% 
     dplyr::group_by(date_doy) %>% 
@@ -23,62 +24,55 @@ fxn_ectFigure <- function(inData, azmetStation) {
       min = min(heatstress_cotton_meanF, na.rm = TRUE)
     ) %>% 
     dplyr::ungroup() %>% 
-    #dplyr::mutate(meta_station_name = azmetStation) %>% 
-    dplyr::mutate(heatstress_categories_max = dplyr::if_else(
-      max > 86.0, "Level 2 heat stress", dplyr::if_else(
-        max < 82.4, "no heat stress", "Level 1 heat stress"
-      )
-    )) %>%
-    dplyr::mutate(heatstress_categories_mean = dplyr::if_else(
-      mean > 86.0, "Level 2 heat stress", dplyr::if_else(
-        mean < 82.4, "no heat stress", "Level 1 heat stress"
-      )
-    )) %>%
-    dplyr::mutate(heatstress_categories_min = dplyr::if_else(
-      min > 86.0, "Level 2 heat stress", dplyr::if_else(
-        min < 82.4, "no heat stress", "Level 1 heat stress"
-      )
-    )) %>% 
     dplyr::mutate(
+      heatstress_categories_max = dplyr::if_else(
+        max > 86.0, "Level 2 heat stress", dplyr::if_else(
+          max < 82.4, "No heat stress", "Level 1 heat stress"
+        )
+      ),
+      heatstress_categories_mean = dplyr::if_else(
+        mean > 86.0, "Level 2 heat stress", dplyr::if_else(
+          mean < 82.4, "No heat stress", "Level 1 heat stress"
+        )
+      ),
+      heatstress_categories_min = dplyr::if_else(
+        min > 86.0, "Level 2 heat stress", dplyr::if_else(
+          min < 82.4, "No heat stress", "Level 1 heat stress"
+        )
+      ),
       heatstress_categories_max = factor(
         heatstress_categories_max, 
-        levels = c("Level 2 heat stress", "Level 1 heat stress", "no heat stress")
-      )
-    ) %>% 
-    dplyr::mutate(
+        levels = c("Level 2 heat stress", "Level 1 heat stress", "No heat stress")
+      ),
       heatstress_categories_mean = factor(
         heatstress_categories_mean, 
-        levels = c("Level 2 heat stress", "Level 1 heat stress", "no heat stress")
-      )
-    ) %>% 
-    dplyr::mutate(
+        levels = c("Level 2 heat stress", "Level 1 heat stress", "No heat stress")
+      ),
       heatstress_categories_min = factor(
         heatstress_categories_min, 
-        levels = c("Level 2 heat stress", "Level 1 heat stress", "no heat stress")
-      )
+        levels = c("Level 2 heat stress", "Level 1 heat stress", "No heat stress")
+      ),
+      pseudoDate = 
+        as.Date(
+          date_doy,
+          # https://stackoverflow.com/questions/24200014/convert-day-of-year-to-date
+          origin = paste0((max(inData$date_year) - 1), "-12-31") # DOY zero-based
+        )
     ) %>% 
-    dplyr::mutate(
-      pseudoDate = as.Date(date_doy, paste0((max(inData$date_year) - 1), "-12-31"))
+    dplyr::filter(
+      dplyr::case_when(
+        lubridate::leap_year(max(inData$date_year)) == FALSE ~ date_doy < 366
+      )
     )
   
   dataCurrentYear <- inData %>%
-    dplyr::filter(date_year == max(date_year)) %>%
-    dplyr::group_by(date_year)
+    dplyr::filter(date_year == max(date_year)) # %>%
+    # dplyr::group_by(date_year)
   
-  #if (lubridate::leap_year(lubridate::year(lubridate::today(tzone = "America/Phoenix"))) == TRUE) {
-  #  xMax <- 366
-  #} else {
-  #  xMax <- 365
-  #}
-  
-  if (max(inData$heatstress_cotton_meanF, na.rm = TRUE) > 92.0) {
-    yMaxLevel2 <- max(inData$heatstress_cotton_meanF, na.rm = TRUE)
-  } else {
-    yMaxLevel2 <- 92.0
-  }
+  layoutFontFamily <- "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
   
   
-  # Figure -----
+  # Figure ----------
   
   ectFigure <- 
     plotly::plot_ly( # Ribbon for `dataStats` day-of-year minimum
@@ -100,9 +94,9 @@ fxn_ectFigure <- function(inData, azmetStation) {
     plotly::add_trace( # Ribbon for `dataStats` day-of-year maximum
       inherit = TRUE,
       y = ~max,
-      #type = "scatter",
-      #mode = "lines",
-      #line = list(color = "transparent"),
+      # type = "scatter",
+      # mode = "lines",
+      # line = list(color = "transparent"),
       fill = "tonexty",
       fillcolor = "rgba(227, 227, 227, 1.0)",
       name = "Day-of-year Range",
@@ -130,8 +124,6 @@ fxn_ectFigure <- function(inData, azmetStation) {
       ),
       line = list(
         color = "rgba(166, 166, 166, 1.0)",
-        #dash = "dot",
-        #shape = "linear",
         width = 1.0
       ),
       name = "Day-of-year Average",
@@ -151,7 +143,6 @@ fxn_ectFigure <- function(inData, azmetStation) {
       y = ~heatstress_cotton_meanF,
       type = "scatter",
       mode = "lines+markers",
-      #color = ~meta_station_name,
       marker = list(
         color = "rgba(25, 25, 25, 1.0)",
         size = 2
@@ -174,7 +165,6 @@ fxn_ectFigure <- function(inData, azmetStation) {
     plotly::config(
       displaylogo = FALSE,
       displayModeBar = TRUE,
-      modeBarButtonsToAdd = c("togglespikelines"),
       modeBarButtonsToRemove = c(
         "autoScale2d",
         "hoverClosestCartesian",
@@ -198,7 +188,7 @@ fxn_ectFigure <- function(inData, azmetStation) {
           align = "left",
           font = list(
             color = "#3b3b3b",
-            family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+            family = layoutFontFamily,
             size = 12
           ),
           showarrow = FALSE,
@@ -215,7 +205,7 @@ fxn_ectFigure <- function(inData, azmetStation) {
           align = "left",
           font = list(
             color = "#3b3b3b",
-            family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+            family = layoutFontFamily,
             size = 12
           ),
           showarrow = FALSE,
@@ -232,7 +222,7 @@ fxn_ectFigure <- function(inData, azmetStation) {
           align = "left",
           font = list(
             color = "#3b3b3b",
-            family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+            family = layoutFontFamily,
             size = 12
           ),
           showarrow = FALSE,
@@ -248,15 +238,15 @@ fxn_ectFigure <- function(inData, azmetStation) {
       ),
       font = list(
         color = "#191919",
-        family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        family = layoutFontFamily,
         size = 13
       ),
       hoverlabel = list(
-        bgcolor = "rgba(255, 255, 255, 0.8)",
+        bgcolor = "rgba(255, 255, 255, 0.75)",
         bordercolor = "transparent",
         font = list(
           color = "#191919",
-          family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          family = layoutFontFamily,
           size = 14
         ),
         margin = list(t = 0, b = 40, l = 24, r = 24)
@@ -311,12 +301,15 @@ fxn_ectFigure <- function(inData, azmetStation) {
             x1 = 1,
             xref = "paper",
             y0 = 86.0, # Level 2 Heat Stress min
-            y1 = yMaxLevel2, # Level 2 Heat Stress max
+            y1 = 500, # Level 2 Heat Stress max
             yref = "y"
           )
         ),
       xaxis = list(
-        range = list(min(dataStats$pseudoDate) - 0.5, max(dataStats$pseudoDate) + 0.5),
+        range = list(
+          min(dataStats$pseudoDate) - 0.5, 
+          max(dataStats$pseudoDate) + 0.5
+        ),
         spikecolor = "#a6a6a6",
         spikedash = "dot",
         spikemode = "across+marker",
