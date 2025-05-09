@@ -14,6 +14,11 @@
     content: attr(data-title);
 }
 
+/* https://stackoverflow.com/questions/77114751/is-it-possible-to-modify-the-arrow-that-collapses-the-sidebar */
+.bslib-sidebar-layout > .collapse-toggle > .collapse-icon {
+  fill: #989898 !important;
+}
+
 .btn {
   background-color: #FFFFFF; 
   border-color: #001C48; 
@@ -209,6 +214,7 @@
 
 .navset-card-tab-title {
   color: #191919;
+  padding-top: 24px;
 }
 
 .next:hover {
@@ -266,7 +272,7 @@
   padding-bottom: 24px !important;
   padding-left: 24px !important;
   padding-right: 24px !important;
-  padding-top: 24px !important;
+  padding-top: 48px !important;
 }
 
 .table-condensed {
