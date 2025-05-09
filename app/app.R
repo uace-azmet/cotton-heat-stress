@@ -15,16 +15,9 @@ ui <- htmltools::htmlTemplate(
       sidebar = sidebar, # `scr##_sidebar.R`
       
       shiny::htmlOutput(outputId = "navsetCardTabTitle"),
-      
-      #navsetCardTab, # `scr##_navsetCardTab.R`
       shiny::htmlOutput(outputId = "navsetCardTab"),
       
-      
-      #shiny::htmlOutput(outputId = "figureSummary"),
-      #shiny::htmlOutput(outputId = "figureHelpText"),
-      #shiny::plotOutput(outputId = "figure"),
-      #plotly::plotlyOutput(outputId = "figure"),
-      #shiny::htmlOutput(outputId = "figureFooter")
+      #height = "800px"
     ) |>
       htmltools::tagAppendAttributes(
         #https://getbootstrap.com/docs/5.0/utilities/api/
@@ -67,12 +60,13 @@ server <- function(input, output, session) {
       add = TRUE
     )
 
-    #Calls 'fxn_dataELT()' and 'fxn_dataHeatSum()'
     fxn_dataELT(
       azmetStation = input$azmetStation,
       timeStep = "Daily",
-      startDate = apiStartDate,
-      endDate = apiEndDate
+      startDate = 
+        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationStartDate,
+      endDate = 
+        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationEndDate
     )
   })
   
@@ -82,14 +76,16 @@ server <- function(input, output, session) {
     )
   })
 
-  # ectFigureFooter <- shiny::eventReactive(dataMerge(), {
-  #   fxn_ectFigureFooter(
-  #     azmetStation = input$azmetStation,
-  #     startDate = input$plantingDate, 
-  #     endDate = input$endDate
-  #   )
-  # })
-  # 
+  ectFigureFooter <- shiny::eventReactive(dataELT(), {
+    fxn_ectFigureFooter(
+      azmetStation = input$azmetStation,
+      startDate =
+        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationStartDate,
+      endDate =
+        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationEndDate
+    )
+  })
+
   ectFigureHelpText <- shiny::eventReactive(dataELT(), {
    fxn_ectFigureHelpText()
   })
@@ -124,10 +120,10 @@ server <- function(input, output, session) {
     ectFigure()
   })
 
-  # output$ectFigureFooter <- shiny::renderUI({
-  #   ectFigureFooter()
-  # })
-  # 
+  output$ectFigureFooter <- shiny::renderUI({
+   ectFigureFooter()
+  })
+
   output$ectFigureHelpText <- shiny::renderUI({
    ectFigureHelpText()
   })
@@ -139,7 +135,7 @@ server <- function(input, output, session) {
   output$pageSupportText <- shiny::renderUI({
     pageSupportText()
   })
-  
+
   output$navsetCardTab <- shiny::renderUI({
     navsetCardTab()
   })

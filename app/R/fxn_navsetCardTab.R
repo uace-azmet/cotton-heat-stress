@@ -20,7 +20,8 @@ fxn_navsetCardTab <- function() {
       value = "estimatedCanopyTemperatures",
       shiny::htmlOutput(outputId = "ectFigureSummary"),
       shiny::htmlOutput(outputId = "ectFigureHelpText"),
-      plotly::plotlyOutput(outputId = "ectFigure")
+      plotly::plotlyOutput(outputId = "ectFigure"),
+      shiny::htmlOutput(outputId = "ectFigureFooter")
     ),
     
     bslib::nav_panel(

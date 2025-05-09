@@ -157,12 +157,6 @@
   font-weight: normal;
 }
 
-/* https://github.com/plotly/plotly.js/issues/2342 */
-.hovertext {
-  fill-opacity: 0.85;
-  padding: 0px;
-}
-
 .main.bslib-gap-spacing.html-fill-container {
   padding-bottom: 24px;
   padding-left: 24px;
@@ -171,7 +165,7 @@
 }
 
 .modebar-container {
-  top: -12px !important;
+  padding-top: -12px !important;
 }
 
 .month:hover {
@@ -319,5 +313,6 @@
 /* id */
 
 #retrieveData {
+  margin-bottom: 124px !important;
   margin-top: 24px !important;
 }

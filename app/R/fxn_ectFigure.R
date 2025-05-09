@@ -108,7 +108,7 @@ fxn_ectFigure <- function(inData, azmetStation) {
       name = "Day-of-year Range",
       hoverinfo = "text",
       text = ~paste0(
-        "<br><b>Day-of-year Maximum:</b>  ", format(round(max, digits = 1), nsmall = 1), " °F",
+        "<b>Day-of-year Maximum:</b>  ", format(round(max, digits = 1), nsmall = 1), " °F",
         "<br><b>Heat Stress Level:</b>  ", heatstress_categories_max,
         "<br><b>Day-of-year Minimum:</b>  ", format(round(min, digits = 1), nsmall = 1), " °F",
         "<br><b>Heat Stress Level:</b>  ", heatstress_categories_min
@@ -137,8 +137,8 @@ fxn_ectFigure <- function(inData, azmetStation) {
       name = "Day-of-year Average",
       hoverinfo = "text",
       text = ~paste0(
-        "<br><b>Day-of-year Average:</b>  ", format(round(mean, digits = 1), nsmall = 1), " °F",
-        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_mean
+        "<b>Day-of-year Average:</b>  ", format(round(mean, digits = 1), nsmall = 1), " °F",
+        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_mean, "<br>"
       ),
       showlegend = TRUE,
       legendgroup = "dataStats-mean"
@@ -163,10 +163,9 @@ fxn_ectFigure <- function(inData, azmetStation) {
       name = ~date_year,
       hoverinfo = "text",
       text = ~paste0(
-        "<br><b>AZMet Station:</b>  ", meta_station_name,
-        "<br><b>Date:</b>  ", gsub(" 0", " ", format(datetime, "%b %d, %Y")),
+        "<b>Date:</b>  ", gsub(" 0", " ", format(datetime, "%b %d, %Y")),
         "<br><b>Estimated Canopy Temperature:</b>  ", format(round(heatstress_cotton_meanF, digits = 1), nsmall = 1), " °F",
-        "<br><b>Heat Stress Level:</b>  ", heatstress_categories
+        "<br><b>Heat Stress Level:</b>  ", heatstress_categories, "<br>"
       ),
       showlegend = TRUE,
       legendgroup = NULL
@@ -175,7 +174,7 @@ fxn_ectFigure <- function(inData, azmetStation) {
     plotly::config(
       displaylogo = FALSE,
       displayModeBar = TRUE,
-      #modeBarButtonsToAdd = c("togglespikelines"),
+      modeBarButtonsToAdd = c("togglespikelines"),
       modeBarButtonsToRemove = c(
         "autoScale2d",
         "hoverClosestCartesian",
@@ -198,8 +197,6 @@ fxn_ectFigure <- function(inData, azmetStation) {
         list( # No Heat Stress
           align = "left",
           font = list(
-            #color = "#a6a6a6",
-            #color = "#8B0015",
             color = "#3b3b3b",
             family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
             size = 12
@@ -217,7 +214,6 @@ fxn_ectFigure <- function(inData, azmetStation) {
         list( # Level 1 Heat Stress
           align = "left",
           font = list(
-            #color = "#8B0015",
             color = "#3b3b3b",
             family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
             size = 12
@@ -235,7 +231,6 @@ fxn_ectFigure <- function(inData, azmetStation) {
         list( # Level 2 Heat Stress
           align = "left",
           font = list(
-            #color = "#8B0015",
             color = "#3b3b3b",
             family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
             size = 12
@@ -257,13 +252,16 @@ fxn_ectFigure <- function(inData, azmetStation) {
         size = 13
       ),
       hoverlabel = list(
+        bgcolor = "rgba(255, 255, 255, 0.8)",
         bordercolor = "transparent",
         font = list(
           color = "#191919",
           family = "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
           size = 14
-        )
+        ),
+        margin = list(t = 0, b = 40, l = 24, r = 24)
       ),
+      hoverdistance = 1,
       hovermode = "x unified",
       legend = list(
         orientation = "h",

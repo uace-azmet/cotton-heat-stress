@@ -28,32 +28,6 @@ sidebar <- bslib::sidebar(
     selected = "Aguila"
   ),
   
-  # shiny::dateInput(
-  #   inputId = "plantingDate",
-  #   label = "Planting Date",
-  #   value = initialPlantingDate,
-  #   min = "2024-01-01", # January 1 of current growing season,
-  #   max = Sys.Date() - 1,
-  #   format = "MM d, yyyy",
-  #   startview = "month",
-  #   weekstart = 0, # Sunday
-  #   width = "100%",
-  #   autoclose = TRUE
-  # ),
-  # 
-  # shiny::dateInput(
-  #   inputId = "endDate",
-  #   label = "End Date",
-  #   value = initialEndDate,
-  #   min = "2024-01-01", # January 1 of current growing season,
-  #   max = initialEndDate,
-  #   format = "MM d, yyyy",
-  #   startview = "month",
-  #   weekstart = 0, # Sunday
-  #   width = "100%",
-  #   autoclose = TRUE
-  # ),
-  
   shiny::actionButton(
     inputId = "retrieveData", 
     label = "RETRIEVE DATA",
