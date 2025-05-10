@@ -248,8 +248,7 @@ fxn_ectFigure <- function(inData) {
           color = "#191919",
           family = layoutFontFamily,
           size = 14
-        ),
-        margin = list(t = 0, b = 40, l = 24, r = 24)
+        )
       ),
       hoverdistance = 1,
       hovermode = "x unified",

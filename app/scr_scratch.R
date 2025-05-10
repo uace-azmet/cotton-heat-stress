@@ -1,6 +1,6 @@
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataELT.R")
-#source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/R/fxn_dataELT.R")
-source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/R/fxn_dataELT.R")
+source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/R/fxn_dataELT.R")
+#source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/R/fxn_dataELT.R")
 
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataETL_HS.R")
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataMerge_HS.R")
@@ -10,8 +10,8 @@ source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documen
 azmetStations <-
   vroom::vroom(
     #file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
-    #file = "/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
-    file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    file = "/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    #file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
     delim = ",",
     col_names = TRUE,
     show_col_types = FALSE
@@ -44,12 +44,11 @@ inData <- fxn_dataELT(
     #dplyr::filter(azmetStations, stationName == azmetStation)$stationStartDate,
   endDate = seasonEndDate
     #dplyr::filter(azmetStations, stationName == azmetStation)$stationEndDate
-)
+) %>% 
+  dplyr::mutate(datetime = lubridate::ymd(datetime))
 
-fxn_slsGraph <- function(azmetStation, inData) {
-  inData <- inData %>% 
-    dplyr::mutate(datetime = lubridate::ymd(datetime))
 
+fxn_ectFigure <- function(azmetStation, inData) {
   dataStats <- inData %>% 
     dplyr::group_by(date_doy) %>% 
     dplyr::summarize(
@@ -58,7 +57,7 @@ fxn_slsGraph <- function(azmetStation, inData) {
       min = min(heatstress_cotton_meanF, na.rm = TRUE)
     ) %>% 
     dplyr::ungroup() %>% 
-    dplyr::mutate(meta_station_name = azmetStation) %>% 
+    dplyr::mutate(meta_station_name = azmetStation) %>% # Not needed in app version
     dplyr::mutate(heatstress_categories_max = dplyr::if_else(
       max > 86.0, "Level 2 heat stress", dplyr::if_else(
         max < 82.4, "no heat stress", "Level 1 heat stress"
@@ -105,19 +104,7 @@ fxn_slsGraph <- function(azmetStation, inData) {
     dplyr::filter(date_year == max(date_year)) %>%
     dplyr::group_by(date_year)
   
-  #if (lubridate::leap_year(lubridate::year(lubridate::today(tzone = "America/Phoenix"))) == TRUE) {
-  #  xMax <- 366
-  #} else {
-  #  xMax <- 365
-  #}
-  
-  if (max(inData$heatstress_cotton_meanF, na.rm = TRUE) > 92.0) {
-    yMaxLevel2 <- max(inData$heatstress_cotton_meanF, na.rm = TRUE)
-  } else {
-    yMaxLevel2 <- 92.0
-  }
-  
-  slsGraph <-
+  ectFigure <-
     plotly::plot_ly( # Ribbon for `dataStats` day-of-year minimum
       data = dataStats,
       x = ~pseudoDate,
@@ -383,7 +370,204 @@ fxn_slsGraph <- function(azmetStation, inData) {
       )
     )
 
-  return(slsGraph)
+  return(ectFigure)
 }
 
-fxn_slsGraph(azmetStation = azmetStation, inData = inData)
+fxn_ectFigure(azmetStation = azmetStation, inData = inData)
+
+
+# https://community.plotly.com/t/unified-hovermode-with-sublots/37606
+fxn_slfFigure <- function(azmetStation, inData) {
+  
+  
+  # Variables ----------
+  
+  dataCounts <- inData %>% 
+    dplyr::group_by(date_doy, heatstress_categories, .drop = FALSE) %>% 
+    dplyr::summarize(count = n()) %>% 
+    dplyr::ungroup() %>% 
+    reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count")
+  
+  layoutFontFamily <- "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+  
+  
+  # Graphs ----------
+  
+  # Level 2 heat stress -----
+  
+  level2 <- 
+    plotly::plot_ly(
+      data = dataCounts,
+      x = ~date_doy,
+      y = ~`Level 2`,
+      type = "scatter",
+      mode = "lines+markers",
+      legendgroup = "All years",
+      line = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        shape = "hvh", # https://plotly.com/python/line-charts/
+        width = 1.0
+      ),
+      marker = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        size = 2
+      ),
+      name = "All years",
+      showlegend = TRUE
+    )
+  
+  # Level 1 heat stress -----
+  
+  level1 <- 
+    plotly::plot_ly(
+      data = dataCounts,
+      x = ~date_doy,
+      y = ~`Level 1`,
+      type = "scatter",
+      mode = "lines+markers",
+      legendgroup = "All years",
+      line = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        shape = "hvh", # https://plotly.com/python/line-charts/
+        width = 1.0
+      ),
+      marker = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        size = 2
+      ),
+      name = "",
+      showlegend = TRUE
+    )
+  
+  # No heat stress -----
+  
+  none <- 
+    plotly::plot_ly(
+      data = dataCounts,
+      x = ~date_doy,
+      y = ~`None`,
+      type = "scatter",
+      mode = "lines+markers",
+      legendgroup = "All years",
+      line = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        shape = "hvh", # https://plotly.com/python/line-charts/
+        width = 1.0
+      ),
+      marker = list(
+        color = "rgba(166, 166, 166, 1.0)",
+        size = 2
+      ),
+      name = "",
+      showlegend = TRUE
+    )
+  
+  # Stacked subplots -----
+  
+  slfFigure <- 
+    plotly::subplot(
+      level2, 
+      level1, 
+      none,
+      #heights = c(1/3, 1/3, 1/3),
+      margin = 0.04,
+      nrows = 3, 
+      shareX = TRUE,
+      shareY = TRUE,
+      titleX = FALSE,
+      titleY = FALSE,
+      widths = 1
+    ) %>% 
+    plotly::layout(
+      font = list(
+        color = "#191919",
+        family = layoutFontFamily,
+        size = 13
+      ),
+      hoverlabel = list(
+        bgcolor = "rgba(255, 255, 255, 0.75)",
+        bordercolor = "transparent",
+        font = list(
+          color = "#191919",
+          family = layoutFontFamily,
+          size = 14
+        )
+      ),
+      hovermode = "x unified",
+      legend = list(
+        orientation = "h",
+        traceorder = "reversed",
+        x = 0.00,
+        xanchor = "left",
+        xref = "container",
+        y = 1.05,
+        yanchor = "bottom",
+        yref = "container"
+      ),
+      margin = list(
+        l = 0,
+        r = 50, # For space between plot and modebar
+        b = 80, # For space between x-axis title and caption or figure help text
+        t = 0,
+        pad = 3
+      ),
+      modebar = list(
+        bgcolor = "#FFFFFF",
+        orientation = "v"
+      ),
+      xaxis = list(
+        spikecolor = "#a6a6a6",
+        spikedash = "dot",
+        spikemode = "across+marker",
+        spikesnap = "hovered data",
+        spikethickness = "-2",
+        #tickformat = format("%b %e"),
+        title = list(
+          font = list(size = 14),
+          standoff = 25,
+          text = "Month and Day"
+        ),
+        zeroline = FALSE
+      ),
+      yaxis = list(
+        fixedrange = TRUE,
+        range = list(
+          min(dataCounts$None, na.rm = TRUE), 
+          max(dataCounts$None, na.rm = TRUE) + 0.1
+        ),
+        zeroline = TRUE,
+        zerolinecolor = "#eee",
+        zerolinewidth = 0.5
+      ),
+      yaxis2 = list(
+        fixedrange = TRUE,
+        range = list(
+          min(dataCounts$None, na.rm = TRUE), 
+          max(dataCounts$None, na.rm = TRUE) + 0.1
+        ),
+        title = list(
+          font = list(size = 14),
+          standoff = 25,
+          text = "Number of Times in Level"
+        ),
+        zeroline = TRUE,
+        zerolinecolor = "#eee",
+        zerolinewidth = 0.5
+      ),
+      yaxis3 = list(
+        fixedrange = TRUE,
+        range = list(
+          min(dataCounts$None, na.rm = TRUE), 
+          max(dataCounts$None, na.rm = TRUE) + 0.1
+        ),
+        zeroline = TRUE,
+        zerolinecolor = "#eee",
+        zerolinewidth = 0.5
+      )
+    )
+  
+  return(slfFigure)
+}
+
+fxn_slfFigure(azmetStation = azmetStation, inData = inData)
+
