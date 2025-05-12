@@ -33,7 +33,7 @@ seasonStartDate <- as.Date("2021-01-01")
 # } else {
 #   seasonEndDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-10-08"))
 # }
-seasonEndDate <- as.Date("2025-05-08")
+seasonEndDate <- lubridate::today(tzone = "America/Phoenix") - 1
 
 library(magrittr)
 
@@ -387,6 +387,12 @@ fxn_slfFigure <- function(azmetStation, inData) {
     dplyr::summarize(count = dplyr::n()) %>% 
     dplyr::ungroup() %>% 
     reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>% 
+    dplyr::rowwise() %>% 
+    dplyr::mutate(
+      perc_freqNone = (None / sum(None, `Level 1`, `Level 2`)) * 100,
+      perc_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)) * 100,
+      perc_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`)) * 100
+    ) %>% 
     dplyr::mutate(
       pseudoDate = 
         as.Date(
@@ -407,6 +413,12 @@ fxn_slfFigure <- function(azmetStation, inData) {
     dplyr::summarize(count = dplyr::n()) %>% 
     dplyr::ungroup() %>% 
     reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>% 
+    dplyr::rowwise() %>% 
+    dplyr::mutate(
+      perc_freqNone = (None / sum(None, `Level 1`, `Level 2`)) * 100,
+      perc_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)) * 100,
+      perc_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`)) * 100
+    ) %>% 
     dplyr::mutate(
       pseudoDate = 
         as.Date(
