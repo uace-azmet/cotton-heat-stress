@@ -323,8 +323,9 @@ fxn_ectFigure <- function(inData) {
         zeroline = FALSE
       ),
       yaxis = list(
+        #fixedrange = TRUE,
         range = list(
-          min(dataStats$min, na.rm = TRUE) - 0.5, 
+          min(dataStats$min, na.rm = TRUE) - 0.5,
           max(dataStats$max, na.rm = TRUE) + 0.5
         ),
         title = list(

@@ -1,6 +1,6 @@
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataELT.R")
-source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/R/fxn_dataELT.R")
-#source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/R/fxn_dataELT.R")
+#source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/R/fxn_dataELT.R")
+source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/R/fxn_dataELT.R")
 
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataETL_HS.R")
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataMerge_HS.R")
@@ -10,8 +10,8 @@ source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Document
 azmetStations <-
   vroom::vroom(
     #file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
-    file = "/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
-    #file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    #file = "/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
     delim = ",",
     col_names = TRUE,
     show_col_types = FALSE
@@ -382,11 +382,39 @@ fxn_slfFigure <- function(azmetStation, inData) {
   
   # Variables ----------
   
-  dataCounts <- inData %>% 
+  dataCountsAllYears <- inData %>% 
     dplyr::group_by(date_doy, heatstress_categories, .drop = FALSE) %>% 
-    dplyr::summarize(count = n()) %>% 
+    dplyr::summarize(count = dplyr::n()) %>% 
     dplyr::ungroup() %>% 
-    reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count")
+    reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>% 
+    dplyr::mutate(
+      pseudoDate = 
+        as.Date(
+          date_doy,
+          # https://stackoverflow.com/questions/24200014/convert-day-of-year-to-date
+          origin = paste0((max(inData$date_year) - 1), "-12-31") # DOY zero-based
+        )
+    ) %>% 
+    dplyr::filter(
+      dplyr::case_when(
+        lubridate::leap_year(max(inData$date_year)) == FALSE ~ date_doy < 366
+      )
+    )
+  
+  dataCountsCurrentYear <- inData %>% 
+    dplyr::filter(date_year == max(date_year, na.rm = TRUE)) %>% 
+    dplyr::group_by(date_doy, heatstress_categories, .drop = FALSE) %>% 
+    dplyr::summarize(count = dplyr::n()) %>% 
+    dplyr::ungroup() %>% 
+    reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>% 
+    dplyr::mutate(
+      pseudoDate = 
+        as.Date(
+          date_doy,
+          # https://stackoverflow.com/questions/24200014/convert-day-of-year-to-date
+          origin = paste0((max(inData$date_year) - 1), "-12-31") # DOY zero-based
+        )
+    )
   
   layoutFontFamily <- "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
   
@@ -397,12 +425,16 @@ fxn_slfFigure <- function(azmetStation, inData) {
   
   level2 <- 
     plotly::plot_ly(
-      data = dataCounts,
-      x = ~date_doy,
+      data = dataCountsAllYears,
+      x = ~pseudoDate,
       y = ~`Level 2`,
       type = "scatter",
       mode = "lines+markers",
-      legendgroup = "All years",
+      legendgroup = paste(
+        min(inData$date_year, na.rm = TRUE),
+        max(inData$date_year, na.rm = TRUE),
+        sep = "-"
+      ),
       line = list(
         color = "rgba(166, 166, 166, 1.0)",
         shape = "hvh", # https://plotly.com/python/line-charts/
@@ -412,7 +444,27 @@ fxn_slfFigure <- function(azmetStation, inData) {
         color = "rgba(166, 166, 166, 1.0)",
         size = 2
       ),
-      name = "All years",
+      name = paste(
+        min(inData$date_year, na.rm = TRUE),
+        max(inData$date_year, na.rm = TRUE),
+        sep = "-"
+      ),
+      showlegend = TRUE
+    ) %>% 
+    plotly::add_trace(
+      inherit = TRUE,
+      data = dataCountsCurrentYear,
+      legendgroup = max(inData$date_year, na.rm = TRUE),
+      line = list(
+        color = "rgba(25, 25, 25, 1.0)",
+        shape = "hvh", # https://plotly.com/python/line-charts/
+        width = 1.0
+      ),
+      marker = list(
+        color = "rgba(25, 25, 25, 1.0)",
+        size = 2
+      ),
+      name = max(inData$date_year, na.rm = TRUE),
       showlegend = TRUE
     )
   
@@ -420,12 +472,16 @@ fxn_slfFigure <- function(azmetStation, inData) {
   
   level1 <- 
     plotly::plot_ly(
-      data = dataCounts,
-      x = ~date_doy,
+      data = dataCountsAllYears,
+      x = ~pseudoDate,
       y = ~`Level 1`,
       type = "scatter",
       mode = "lines+markers",
-      legendgroup = "All years",
+      legendgroup = paste(
+        min(inData$date_year, na.rm = TRUE),
+        max(inData$date_year, na.rm = TRUE),
+        sep = "-"
+      ),
       line = list(
         color = "rgba(166, 166, 166, 1.0)",
         shape = "hvh", # https://plotly.com/python/line-charts/
@@ -435,20 +491,44 @@ fxn_slfFigure <- function(azmetStation, inData) {
         color = "rgba(166, 166, 166, 1.0)",
         size = 2
       ),
-      name = "",
-      showlegend = TRUE
+      name = paste(
+        min(inData$date_year, na.rm = TRUE),
+        max(inData$date_year, na.rm = TRUE),
+        sep = "-"
+      ),
+      showlegend = FALSE
+    ) %>% 
+    plotly::add_trace(
+      inherit = TRUE,
+      data = dataCountsCurrentYear,
+      legendgroup = max(inData$date_year, na.rm = TRUE),
+      line = list(
+        color = "rgba(25, 25, 25, 1.0)",
+        shape = "hvh", # https://plotly.com/python/line-charts/
+        width = 1.0
+      ),
+      marker = list(
+        color = "rgba(25, 25, 25, 1.0)",
+        size = 2
+      ),
+      name = max(inData$date_year, na.rm = TRUE),
+      showlegend = FALSE
     )
   
   # No heat stress -----
   
   none <- 
     plotly::plot_ly(
-      data = dataCounts,
-      x = ~date_doy,
+      data = dataCountsAllYears,
+      x = ~pseudoDate,
       y = ~`None`,
       type = "scatter",
       mode = "lines+markers",
-      legendgroup = "All years",
+      legendgroup = paste(
+        min(inData$date_year, na.rm = TRUE),
+        max(inData$date_year, na.rm = TRUE),
+        sep = "-"
+      ),
       line = list(
         color = "rgba(166, 166, 166, 1.0)",
         shape = "hvh", # https://plotly.com/python/line-charts/
@@ -458,8 +538,28 @@ fxn_slfFigure <- function(azmetStation, inData) {
         color = "rgba(166, 166, 166, 1.0)",
         size = 2
       ),
-      name = "",
-      showlegend = TRUE
+      name = paste(
+        min(inData$date_year, na.rm = TRUE),
+        max(inData$date_year, na.rm = TRUE),
+        sep = "-"
+      ),
+      showlegend = FALSE
+    ) %>% 
+    plotly::add_trace(
+      inherit = TRUE,
+      data = dataCountsCurrentYear,
+      legendgroup = max(inData$date_year, na.rm = TRUE),
+      line = list(
+        color = "rgba(25, 25, 25, 1.0)",
+        shape = "hvh", # https://plotly.com/python/line-charts/
+        width = 1.0
+      ),
+      marker = list(
+        color = "rgba(25, 25, 25, 1.0)",
+        size = 2
+      ),
+      name = max(inData$date_year, na.rm = TRUE),
+      showlegend = FALSE
     )
   
   # Stacked subplots -----
@@ -478,7 +578,81 @@ fxn_slfFigure <- function(azmetStation, inData) {
       titleY = FALSE,
       widths = 1
     ) %>% 
+    
+    plotly::config(
+      displaylogo = FALSE,
+      displayModeBar = TRUE,
+      modeBarButtonsToRemove = c(
+        "autoScale2d",
+        "hoverClosestCartesian",
+        "hoverCompareCartesian",
+        "lasso2d",
+        "select"
+      ),
+      scrollZoom = FALSE,
+      toImageButtonOptions = list(
+        format = "png", # Either png, svg, jpeg, or webp
+        filename = "AZMet-cotton-heat-stress",
+        height = 400,
+        width = 700,
+        scale = 5
+      )
+    ) %>%
+    
     plotly::layout(
+      annotations = list(
+        list( # No Heat Stress
+          align = "left",
+          font = list(
+            color = "#3b3b3b",
+            family = layoutFontFamily,
+            size = 12
+          ),
+          showarrow = FALSE,
+          text = "LEVEL 2 HEAT STRESS",
+          x = 0,
+          xanchor = "left",
+          xref = "paper",
+          xshift = 24,
+          y = max(dataCountsAllYears$None, na.rm = TRUE),
+          yanchor = "top",
+          yref = "y1"  
+        ),
+        list( # No Heat Stress
+          align = "left",
+          font = list(
+            color = "#3b3b3b",
+            family = layoutFontFamily,
+            size = 12
+          ),
+          showarrow = FALSE,
+          text = "LEVEL 1 HEAT STRESS",
+          x = 0,
+          xanchor = "left",
+          xref = "paper",
+          xshift = 24,
+          y = max(dataCountsAllYears$None, na.rm = TRUE),
+          yanchor = "top",
+          yref = "y2"  
+        ),
+        list( # No Heat Stress
+          align = "left",
+          font = list(
+            color = "#3b3b3b",
+            family = layoutFontFamily,
+            size = 12
+          ),
+          showarrow = FALSE,
+          text = "NO HEAT STRESS",
+          x = 0,
+          xanchor = "left",
+          xref = "paper",
+          xshift = 24,
+          y = max(dataCountsAllYears$None, na.rm = TRUE),
+          yanchor = "top",
+          yref = "y3"  
+        )
+      ),
       font = list(
         color = "#191919",
         family = layoutFontFamily,
@@ -516,12 +690,16 @@ fxn_slfFigure <- function(azmetStation, inData) {
         orientation = "v"
       ),
       xaxis = list(
+        range = list(
+          min(dataCountsAllYears$pseudoDate) - 0.5, 
+          max(dataCountsAllYears$pseudoDate) + 0.5
+        ),
         spikecolor = "#a6a6a6",
         spikedash = "dot",
         spikemode = "across+marker",
         spikesnap = "hovered data",
         spikethickness = "-2",
-        #tickformat = format("%b %e"),
+        tickformat = format("%b %e"),
         title = list(
           font = list(size = 14),
           standoff = 25,
@@ -532,8 +710,8 @@ fxn_slfFigure <- function(azmetStation, inData) {
       yaxis = list(
         fixedrange = TRUE,
         range = list(
-          min(dataCounts$None, na.rm = TRUE), 
-          max(dataCounts$None, na.rm = TRUE) + 0.1
+          0 - 0.1, 
+          max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
         ),
         zeroline = TRUE,
         zerolinecolor = "#eee",
@@ -542,8 +720,8 @@ fxn_slfFigure <- function(azmetStation, inData) {
       yaxis2 = list(
         fixedrange = TRUE,
         range = list(
-          min(dataCounts$None, na.rm = TRUE), 
-          max(dataCounts$None, na.rm = TRUE) + 0.1
+          0 - 0.1, 
+          max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
         ),
         title = list(
           font = list(size = 14),
@@ -557,8 +735,8 @@ fxn_slfFigure <- function(azmetStation, inData) {
       yaxis3 = list(
         fixedrange = TRUE,
         range = list(
-          min(dataCounts$None, na.rm = TRUE), 
-          max(dataCounts$None, na.rm = TRUE) + 0.1
+          0 - 0.1, 
+          max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
         ),
         zeroline = TRUE,
         zerolinecolor = "#eee",
