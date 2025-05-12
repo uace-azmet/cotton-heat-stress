@@ -27,8 +27,10 @@ fxn_navsetCardTab <- function() {
     bslib::nav_panel(
       title = "Stress-level Frequency",
       value = "stressLevelFrequency",
-      #plotly::plotlyOutput(outputId = "ectFigure"),
-      #shiny::htmlOutput(outputId = "ectFigureFooter")
+      # shiny::htmlOutput(outputId = "ectFigureSummary"),
+      # shiny::htmlOutput(outputId = "ectFigureHelpText"),
+      plotly::plotlyOutput(outputId = "slfFigure")
+      # shiny::htmlOutput(outputId = "ectFigureFooter")
     )
   ) |>
     htmltools::tagAppendAttributes(

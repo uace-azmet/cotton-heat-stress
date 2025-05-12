@@ -26,31 +26,31 @@ fxn_ectFigure <- function(inData) {
     dplyr::ungroup() %>% 
     dplyr::mutate(
       heatstress_categories_max = dplyr::if_else(
-        max > 86.0, "Level 2 heat stress", dplyr::if_else(
-          max < 82.4, "No heat stress", "Level 1 heat stress"
+        max > 86.0, "Level 2", dplyr::if_else(
+          max < 82.4, "None", "Level 1"
         )
       ),
       heatstress_categories_mean = dplyr::if_else(
-        mean > 86.0, "Level 2 heat stress", dplyr::if_else(
-          mean < 82.4, "No heat stress", "Level 1 heat stress"
+        mean > 86.0, "Level 2", dplyr::if_else(
+          mean < 82.4, "None", "Level 1"
         )
       ),
       heatstress_categories_min = dplyr::if_else(
-        min > 86.0, "Level 2 heat stress", dplyr::if_else(
-          min < 82.4, "No heat stress", "Level 1 heat stress"
+        min > 86.0, "Level 2", dplyr::if_else(
+          min < 82.4, "None", "Level 1"
         )
       ),
       heatstress_categories_max = factor(
         heatstress_categories_max, 
-        levels = c("Level 2 heat stress", "Level 1 heat stress", "No heat stress")
+        levels = c("Level 2", "Level 1", "None")
       ),
       heatstress_categories_mean = factor(
         heatstress_categories_mean, 
-        levels = c("Level 2 heat stress", "Level 1 heat stress", "No heat stress")
+        levels = c("Level 2", "Level 1", "None")
       ),
       heatstress_categories_min = factor(
         heatstress_categories_min, 
-        levels = c("Level 2 heat stress", "Level 1 heat stress", "No heat stress")
+        levels = c("Level 2", "Level 1", "None")
       ),
       pseudoDate = 
         as.Date(
@@ -304,6 +304,7 @@ fxn_ectFigure <- function(inData) {
             yref = "y"
           )
         ),
+      spikedistance = 1,
       xaxis = list(
         range = list(
           min(dataStats$pseudoDate) - 0.5, 

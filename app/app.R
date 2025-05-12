@@ -1,4 +1,4 @@
-# Use cumulative heat units to estimate cotton growth stages by station and date range
+# View time series and statistics of cotton heat stress by station during the growing season
 
 
 # UI --------------------
@@ -113,6 +113,12 @@ server <- function(input, output, session) {
     )
   })
   
+  slfFigure <- shiny::eventReactive(dataELT(), {
+    fxn_slfFigure(
+      inData = dataELT()
+    )
+  })
+  
   
   # Outputs -----
   
@@ -142,6 +148,10 @@ server <- function(input, output, session) {
   
   output$navsetCardTabTitle <- shiny::renderUI({
     navsetCardTabTitle()
+  })
+  
+  output$slfFigure <- plotly::renderPlotly({
+    slfFigure()
   })
 }
 

@@ -1,6 +1,6 @@
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataELT.R")
-#source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/R/fxn_dataELT.R")
-source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/R/fxn_dataELT.R")
+source("/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/R/fxn_dataELT.R")
+#source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/R/fxn_dataELT.R")
 
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataETL_HS.R")
 #source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/R/fxn_dataMerge_HS.R")
@@ -10,8 +10,8 @@ source("/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documen
 azmetStations <-
   vroom::vroom(
     #file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/office/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
-    #file = "/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
-    file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    file = "/Users/jeremy/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/home/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
+    #file = "/Users/jlweiss/Library/CloudStorage/OneDrive-UniversityofArizona/Documents/azmet/code/laptop/cotton-heat-stress/app/aux-files/azmet-stations-api-db.csv",
     delim = ",",
     col_names = TRUE,
     show_col_types = FALSE
@@ -92,7 +92,7 @@ fxn_ectFigure <- function(azmetStation, inData) {
       )
     ) %>% 
     dplyr::mutate(
-      pseudoDate = as.Date(date_doy, origin = paste0((max(inData$date_year) - 1), "-12-31"))
+      pseudo_date = as.Date(date_doy, origin = paste0((max(inData$date_year) - 1), "-12-31"))
     ) %>% 
     dplyr::filter(
       dplyr::case_when(
@@ -107,7 +107,7 @@ fxn_ectFigure <- function(azmetStation, inData) {
   ectFigure <-
     plotly::plot_ly( # Ribbon for `dataStats` day-of-year minimum
       data = dataStats,
-      x = ~pseudoDate,
+      x = ~pseudo_date,
       y = ~min,
       type = "scatter",
       mode = "lines",
@@ -342,7 +342,7 @@ fxn_ectFigure <- function(azmetStation, inData) {
           )
         ),
       xaxis = list(
-        range = list(min(dataStats$pseudoDate) - 0.5, max(dataStats$pseudoDate) + 0.5),
+        range = list(min(dataStats$pseudo_date) - 0.5, max(dataStats$pseudo_date) + 0.5),
         spikecolor = "#a6a6a6",
         spikedash = "dot",
         spikemode = "across+marker",
@@ -394,7 +394,7 @@ fxn_slfFigure <- function(azmetStation, inData) {
       perc_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`)) * 100
     ) %>% 
     dplyr::mutate(
-      pseudoDate = 
+      pseudo_date = 
         as.Date(
           date_doy,
           # https://stackoverflow.com/questions/24200014/convert-day-of-year-to-date
@@ -420,7 +420,7 @@ fxn_slfFigure <- function(azmetStation, inData) {
       perc_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`)) * 100
     ) %>% 
     dplyr::mutate(
-      pseudoDate = 
+      pseudo_date = 
         as.Date(
           date_doy,
           # https://stackoverflow.com/questions/24200014/convert-day-of-year-to-date
@@ -438,10 +438,11 @@ fxn_slfFigure <- function(azmetStation, inData) {
   level2 <- 
     plotly::plot_ly(
       data = dataCountsAllYears,
-      x = ~pseudoDate,
+      x = ~pseudo_date,
       y = ~`Level 2`,
       type = "scatter",
       mode = "lines+markers",
+      hoverinfo = "text",
       legendgroup = paste(
         min(inData$date_year, na.rm = TRUE),
         max(inData$date_year, na.rm = TRUE),
@@ -461,11 +462,17 @@ fxn_slfFigure <- function(azmetStation, inData) {
         max(inData$date_year, na.rm = TRUE),
         sep = "-"
       ),
-      showlegend = TRUE
+      showlegend = TRUE,
+      text = ~paste0(
+        "<b>Day-of-year:</b>  ", date_doy,
+        "<br><b>Day-of-year Frequency:</b>  ", `Level 2`,
+        "<br><b>Day-of-year Percent Frequency:</b>  ", format(round(perc_freqL2, digits = 1), nsmall = 1), " %"
+      )
     ) %>% 
     plotly::add_trace(
       inherit = TRUE,
       data = dataCountsCurrentYear,
+      hoverinfo = "text",
       legendgroup = max(inData$date_year, na.rm = TRUE),
       line = list(
         color = "rgba(25, 25, 25, 1.0)",
@@ -477,7 +484,11 @@ fxn_slfFigure <- function(azmetStation, inData) {
         size = 2
       ),
       name = max(inData$date_year, na.rm = TRUE),
-      showlegend = TRUE
+      showlegend = TRUE,
+      text = ~paste0(
+        "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
+        "<br><b>Frequency:</b>  ", `Level 2`
+      )
     )
   
   # Level 1 heat stress -----
@@ -485,10 +496,11 @@ fxn_slfFigure <- function(azmetStation, inData) {
   level1 <- 
     plotly::plot_ly(
       data = dataCountsAllYears,
-      x = ~pseudoDate,
+      x = ~pseudo_date,
       y = ~`Level 1`,
       type = "scatter",
       mode = "lines+markers",
+      hoverinfo = "text",
       legendgroup = paste(
         min(inData$date_year, na.rm = TRUE),
         max(inData$date_year, na.rm = TRUE),
@@ -508,11 +520,17 @@ fxn_slfFigure <- function(azmetStation, inData) {
         max(inData$date_year, na.rm = TRUE),
         sep = "-"
       ),
-      showlegend = FALSE
+      showlegend = FALSE,
+      text = ~paste0(
+        "<b>Day-of-year:</b>  ", date_doy,
+        "<br><b>Day-of-year Frequency:</b>  ", `Level 1`,
+        "<br><b>Day-of-year Percent Frequency:</b>  ", format(round(perc_freqL1, digits = 1), nsmall = 1), " %"
+      )
     ) %>% 
     plotly::add_trace(
       inherit = TRUE,
       data = dataCountsCurrentYear,
+      hoverinfo = "text",
       legendgroup = max(inData$date_year, na.rm = TRUE),
       line = list(
         color = "rgba(25, 25, 25, 1.0)",
@@ -524,7 +542,11 @@ fxn_slfFigure <- function(azmetStation, inData) {
         size = 2
       ),
       name = max(inData$date_year, na.rm = TRUE),
-      showlegend = FALSE
+      showlegend = FALSE,
+      text = ~paste0(
+        "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
+        "<br><b>Frequency:</b>  ", `Level 1`
+      )
     )
   
   # No heat stress -----
@@ -532,10 +554,11 @@ fxn_slfFigure <- function(azmetStation, inData) {
   none <- 
     plotly::plot_ly(
       data = dataCountsAllYears,
-      x = ~pseudoDate,
+      x = ~pseudo_date,
       y = ~`None`,
       type = "scatter",
       mode = "lines+markers",
+      hoverinfo = "text",
       legendgroup = paste(
         min(inData$date_year, na.rm = TRUE),
         max(inData$date_year, na.rm = TRUE),
@@ -555,11 +578,17 @@ fxn_slfFigure <- function(azmetStation, inData) {
         max(inData$date_year, na.rm = TRUE),
         sep = "-"
       ),
-      showlegend = FALSE
+      showlegend = FALSE,
+      text = ~paste0(
+        "<b>Day-of-year:</b>  ", date_doy,
+        "<br><b>Day-of-year Frequency:</b>  ", `None`,
+        "<br><b>Day-of-year Percent Frequency:</b>  ", format(round(perc_freqNone, digits = 1), nsmall = 1), " %"
+      )
     ) %>% 
     plotly::add_trace(
       inherit = TRUE,
       data = dataCountsCurrentYear,
+      hoverinfo = "text",
       legendgroup = max(inData$date_year, na.rm = TRUE),
       line = list(
         color = "rgba(25, 25, 25, 1.0)",
@@ -571,7 +600,11 @@ fxn_slfFigure <- function(azmetStation, inData) {
         size = 2
       ),
       name = max(inData$date_year, na.rm = TRUE),
-      showlegend = FALSE
+      showlegend = FALSE,
+      text = ~paste0(
+        "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
+        "<br><b>Frequency:</b>  ", `None`
+      )
     )
   
   # Stacked subplots -----
@@ -670,6 +703,7 @@ fxn_slfFigure <- function(azmetStation, inData) {
         family = layoutFontFamily,
         size = 13
       ),
+      hoverdistance = 1,
       hoverlabel = list(
         bgcolor = "rgba(255, 255, 255, 0.75)",
         bordercolor = "transparent",
@@ -701,10 +735,11 @@ fxn_slfFigure <- function(azmetStation, inData) {
         bgcolor = "#FFFFFF",
         orientation = "v"
       ),
+      spikedistance = 1,
       xaxis = list(
         range = list(
-          min(dataCountsAllYears$pseudoDate) - 0.5, 
-          max(dataCountsAllYears$pseudoDate) + 0.5
+          min(dataCountsAllYears$pseudo_date) - 0.5, 
+          max(dataCountsAllYears$pseudo_date) + 0.5
         ),
         spikecolor = "#a6a6a6",
         spikedash = "dot",
@@ -738,7 +773,7 @@ fxn_slfFigure <- function(azmetStation, inData) {
         title = list(
           font = list(size = 14),
           standoff = 25,
-          text = "Number of Times in Level"
+          text = "Number of Times in Level (Frequency)"
         ),
         zeroline = TRUE,
         zerolinecolor = "#eee",
