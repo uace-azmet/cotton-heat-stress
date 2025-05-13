@@ -11,7 +11,7 @@ fxn_slfFigureFooter <- function(azmetStation, startDate, endDate) {
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "Day-of-year frequency and percent frequency statistics for the AZMet ", azmetStation, " station are based on data from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Data in the new AZMet database currently start on ", gsub(" 0", " ", format(apiStartDate, "%B %d, %Y")), "."
+          "Day-of-year frequency and relative frequency statistics for the AZMet ", azmetStation, " station are based on data from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Data in the new AZMet database currently start on ", gsub(" 0", " ", format(apiStartDate, "%B %d, %Y")), "."
         )
       ), 
       

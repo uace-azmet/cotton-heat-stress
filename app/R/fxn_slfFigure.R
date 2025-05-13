@@ -23,9 +23,9 @@ fxn_slfFigure <- function(inData) {
     reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>% 
     dplyr::rowwise() %>% 
     dplyr::mutate(
-      perc_freqNone = (None / sum(None, `Level 1`, `Level 2`)) * 100,
-      perc_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)) * 100,
-      perc_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`)) * 100
+      rel_freqNone = (None / sum(None, `Level 1`, `Level 2`)),
+      rel_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)),
+      rel_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`))
     ) %>% 
     dplyr::mutate(
       pseudo_date = 
@@ -49,9 +49,9 @@ fxn_slfFigure <- function(inData) {
     reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>% 
     dplyr::rowwise() %>% 
     dplyr::mutate(
-      perc_freqNone = (None / sum(None, `Level 1`, `Level 2`)) * 100,
-      perc_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)) * 100,
-      perc_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`)) * 100
+      rel_freqNone = (None / sum(None, `Level 1`, `Level 2`)),
+      rel_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)),
+      rel_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`))
     ) %>% 
     dplyr::mutate(
       pseudo_date = 
@@ -100,7 +100,7 @@ fxn_slfFigure <- function(inData) {
       text = ~paste0(
         "<b>Day-of-year:</b>  ", date_doy,
         "<br><b>Day-of-year Frequency:</b>  ", `Level 2`,
-        "<br><b>Day-of-year Percent Frequency:</b>  ", format(round(perc_freqL2, digits = 1), nsmall = 1), " %"
+        "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqL2, digits = 2), nsmall = 2)
       )
     ) %>% 
     plotly::add_trace(
@@ -121,7 +121,7 @@ fxn_slfFigure <- function(inData) {
       showlegend = TRUE,
       text = ~paste0(
         "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
-        "<br><b>Frequency:</b>  ", `Level 2`
+        "<br><b>Frequency:</b>  ", `Level 2`, "<br>"
       )
     )
   
@@ -158,7 +158,7 @@ fxn_slfFigure <- function(inData) {
       text = ~paste0(
         "<b>Day-of-year:</b>  ", date_doy,
         "<br><b>Day-of-year Frequency:</b>  ", `Level 1`,
-        "<br><b>Day-of-year Percent Frequency:</b>  ", format(round(perc_freqL1, digits = 1), nsmall = 1), " %"
+        "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqL1, digits = 2), nsmall = 2)
       )
     ) %>% 
     plotly::add_trace(
@@ -179,7 +179,7 @@ fxn_slfFigure <- function(inData) {
       showlegend = FALSE,
       text = ~paste0(
         "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
-        "<br><b>Frequency:</b>  ", `Level 1`
+        "<br><b>Frequency:</b>  ", `Level 1`, "<br>"
       )
     )
   
@@ -216,7 +216,7 @@ fxn_slfFigure <- function(inData) {
       text = ~paste0(
         "<b>Day-of-year:</b>  ", date_doy,
         "<br><b>Day-of-year Frequency:</b>  ", `None`,
-        "<br><b>Day-of-year Percent Frequency:</b>  ", format(round(perc_freqNone, digits = 1), nsmall = 1), " %"
+        "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqNone, digits = 2), nsmall = 2)
       )
     ) %>% 
     plotly::add_trace(
@@ -237,7 +237,7 @@ fxn_slfFigure <- function(inData) {
       showlegend = FALSE,
       text = ~paste0(
         "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
-        "<br><b>Frequency:</b>  ", `None`
+        "<br><b>Frequency:</b>  ", `None`, "<br>"
       )
     )
   
