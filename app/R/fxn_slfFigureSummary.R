@@ -6,14 +6,28 @@
 
 
 fxn_slfFigureSummary <- function(azmetStation, inData) {
-  doyValue <-
-    format(
-      round(
-        dplyr::filter(inData, datetime == max(inData$datetime))$heatstress_cotton_meanF,
-        digits = 1
-      ),
-      nsmall = 1
-    )
+  
+  
+  # Variables ----------
+  
+  
+  # doyMaxDate <- inData %>% 
+  #   dplyr::filter(max(inData$datetime))$date_doy
+  # 
+  # dataPercFreq <- inData %>% 
+  #   dplyr::filter(date_doy == doyMaxDate) %>% 
+  #   dplyr::group_by(heatstress_categories, .drop = FALSE) %>% 
+  #   dplyr::summarize(count = dplyr::n()) %>% 
+  #   dplyr::ungroup() %>% 
+  #   reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>% 
+  #   dplyr::rowwise() %>% 
+  #   dplyr::mutate(
+  #     perc_freqNone = (None / sum(None, `Level 1`, `Level 2`)) * 100,
+  #     perc_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)) * 100,
+  #     perc_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`)) * 100
+  #   )
+  
+  doyMonthDay <- gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y"))
   
   if (dplyr::filter(inData, datetime == max(inData$datetime))$heatstress_categories == "None") {
     doyLevel <- "no heat stress"
@@ -23,18 +37,19 @@ fxn_slfFigureSummary <- function(azmetStation, inData) {
     doyLevel <- "Level 2 heat stress"
   }
   
-  doyMonthDay <- gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y"))
+  # Summary text ----------
   
   slfFigureSummary <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "The estimated canopy temperature of <b>", doyValue, " °F</b> on ", doyMonthDay, " at the AZMet ", azmetStation, " station indicates <b>", doyLevel, "</b>."
-        ),
-      ),
-      
-      class = "slf-figure-summary"
+          "For ", doyMonthDay, " at the AZMet ", azmetStation, " station, day-of-year estimated canopy temperatures have indicated <b>", doyLevel, "</b> in <b>", "100", " % </b> of recent years."
+        )
+      )
     )
+  
+  
+  class = "slf-figure-summary"
   
   return(slfFigureSummary)
 }
