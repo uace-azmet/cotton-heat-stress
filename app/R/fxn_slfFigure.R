@@ -1,7 +1,7 @@
-#' `fxn_slfFigure.R` generates Plotly line graph of estimated canopy temperature based on selected station
+#' `fxn_slfFigure.R` generates Plotly line graphs of stress-level frequency based on selected station
 #' 
 #' @param inData - data table from `fxn_dataETL()`
-#' @return `slfFigure` - Plotly line graph of estimated canopy temperature based on selected station
+#' @return `slfFigure` - Plotly line graphs of stress-level frequency based on selected station
 
 # https://plotly-r.com/ 
 # https://plotly.com/r/

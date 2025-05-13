@@ -1,11 +1,11 @@
-#' `fxn_ectFigureSummary.R` - Build summary of figure for estimated canopy temperatures based on user input
+#' `fxn_slfFigureSummary.R` - Build summary of figure for stress-level frequencies based on user input
 #' 
 #' @param azmetStation - AZMet station selection by user
 #' @param inData - data table from `fxn_dataETL()`
-#' @return `ectFigureSummary` - Summary of figure for estimated canopy temperatures based on user inputs
+#' @return `slfFigureSummary` - Summary of figure for stress-level frequencies based on user inputs
 
 
-fxn_ectFigureSummary <- function(azmetStation, inData) {
+fxn_slfFigureSummary <- function(azmetStation, inData) {
   doyValue <-
     format(
       round(
@@ -25,7 +25,7 @@ fxn_ectFigureSummary <- function(azmetStation, inData) {
   
   doyMonthDay <- gsub(" 0", " ", format(as.Date(max(inData$datetime)), "%B %d, %Y"))
   
-  ectFigureSummary <- 
+  slfFigureSummary <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
@@ -33,8 +33,8 @@ fxn_ectFigureSummary <- function(azmetStation, inData) {
         ),
       ),
       
-      class = "ect-figure-summary"
+      class = "slf-figure-summary"
     )
   
-  return(ectFigureSummary)
+  return(slfFigureSummary)
 }

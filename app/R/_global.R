@@ -44,3 +44,5 @@ azmetStations <- azmetStations |>
   dplyr::mutate(stationStartDate = stationStartDate) |>
   dplyr::mutate(stationEndDate = stationEndDate) |>
   dplyr::filter(!stationName %in% c("Chino Valley", "Mohave ETo", "Test", "Wellton ETo", "Yuma Valley ETo"))
+
+selectedTab <- shiny::reactiveVal(value = "estimatedCanopyTemperatures")

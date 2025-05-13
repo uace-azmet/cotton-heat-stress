@@ -1,6 +1,6 @@
-#' `fxn_slfFigureHelpText.R` - Build help text for figure of stress level frequencies
+#' `fxn_slfFigureHelpText.R` - Build help text for figure of stress-level frequencies
 #' 
-#' @return `slfFigureHelpText` - Help text for figure of stress level frequencies
+#' @return `slfFigureHelpText` - Help text for figure of stress-level frequencies
 
 
 fxn_slfFigureHelpText <- function() {

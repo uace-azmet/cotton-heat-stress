@@ -42,6 +42,16 @@ server <- function(input, output, session) {
   #  shinyjs::showElement("navsetCardTab")
   #})
   
+  shiny::observe({
+    if (shiny::req(input$navsetCardTab) == "estimatedCanopyTemperatures") {
+      message("estimatedCanopyTemperatures has been selected")
+      selectedTab <- selectedTab("estimatedCanopyTemperatures")
+    } else if (shiny::req(input$navsetCardTab) == "stressLevelFrequency") {
+      message("stressLevelFrequency has been selected")
+      selectedTab <- selectedTab("stressLevelFrequency")
+    }
+  })
+  
   
   # Reactives -----
   
@@ -119,6 +129,27 @@ server <- function(input, output, session) {
     )
   })
   
+  slfFigureFooter <- shiny::eventReactive(dataELT(), {
+    fxn_slfFigureFooter(
+      azmetStation = input$azmetStation,
+      startDate =
+        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationStartDate,
+      endDate =
+        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationEndDate
+    )
+  })
+  
+  slfFigureHelpText <- shiny::eventReactive(dataELT(), {
+    fxn_slfFigureHelpText()
+  })
+  
+  slfFigureSummary <- shiny::eventReactive(dataELT(), {
+    fxn_slfFigureSummary(
+      azmetStation = input$azmetStation,
+      inData = dataELT()
+    )
+  })
+  
   
   # Outputs -----
   
@@ -152,6 +183,18 @@ server <- function(input, output, session) {
   
   output$slfFigure <- plotly::renderPlotly({
     slfFigure()
+  })
+  
+  output$slfFigureFooter <- shiny::renderUI({
+    slfFigureFooter()
+  })
+  
+  output$slfFigureHelpText <- shiny::renderUI({
+    slfFigureHelpText()
+  })
+  
+  output$slfFigureSummary <- shiny::renderUI({
+    slfFigureSummary()
   })
 }
 
