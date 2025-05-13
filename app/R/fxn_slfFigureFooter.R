@@ -1,9 +1,9 @@
-#' `fxn_slfFigureFooter.R` - Build footer for figure of stress-level frequencies based on user input
+#' `fxn_slfFigureFooter.R` - Build footer for figure of stress-level frequency based on selected station
 #' 
 #' @param azmetStation AZMet station selection by user
 #' @param startDate - Start date of station record
 #' @param endDate - End date of station record
-#' @return `slfFigureFooter` Caption for figure of stress-level frequencies based on selected station
+#' @return `slfFigureFooter` Caption for figure of stress-level frequency based on selected station
 
 
 fxn_slfFigureFooter <- function(azmetStation, startDate, endDate) {

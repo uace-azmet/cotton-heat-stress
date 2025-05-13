@@ -10,7 +10,6 @@ library(lubridate)
 library(plotly)
 library(reshape2)
 library(shiny)
-#library(shinyjs)
 library(vroom)
 
 
@@ -43,8 +42,8 @@ azmetStations <- azmetStations |>
       stationEndDate
     )
   ) |>
-  dplyr::mutate(stationStartDate = stationStartDate) |>
-  dplyr::mutate(stationEndDate = stationEndDate) |>
+  #dplyr::mutate(stationStartDate = stationStartDate) |>
+  #dplyr::mutate(stationEndDate = stationEndDate) |>
   dplyr::filter(!stationName %in% c("Chino Valley", "Mohave ETo", "Test", "Wellton ETo", "Yuma Valley ETo"))
 
 selectedTab <- shiny::reactiveVal(value = "estimatedCanopyTemperatures")

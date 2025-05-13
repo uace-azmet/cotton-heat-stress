@@ -66,10 +66,15 @@ fxn_ectFigure <- function(inData) {
     )
   
   dataCurrentYear <- inData %>%
-    dplyr::filter(date_year == max(date_year)) # %>%
-    # dplyr::group_by(date_year)
+    dplyr::filter(date_year == max(date_year))
   
   layoutFontFamily <- "proxima-nova, calibri, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+  
+  if (max(dataStats$max, na.rm = TRUE) > 90) {
+    yAxisMax <- max(dataStats$max, na.rm = TRUE)
+  } else {
+    yAxisMax <- 90
+  }
   
   
   # Figure ----------
@@ -300,7 +305,7 @@ fxn_ectFigure <- function(inData) {
             x1 = 1,
             xref = "paper",
             y0 = 86.0, # Level 2 Heat Stress min
-            y1 = 500, # Level 2 Heat Stress max
+            y1 = 120, # Level 2 Heat Stress max
             yref = "y"
           )
         ),
@@ -324,10 +329,10 @@ fxn_ectFigure <- function(inData) {
         zeroline = FALSE
       ),
       yaxis = list(
-        #fixedrange = TRUE,
+        fixedrange = TRUE,
         range = list(
           min(dataStats$min, na.rm = TRUE) - 0.5,
-          max(dataStats$max, na.rm = TRUE) + 0.5
+          yAxisMax + 0.5
         ),
         title = list(
           font = list(size = 14),

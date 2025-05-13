@@ -1,8 +1,8 @@
-#' `fxn_slfFigureSummary.R` - Build summary of figure for stress-level frequencies based on user input
+#' `fxn_slfFigureSummary.R` - Build summary of figure for stress-level frequency based on selected station
 #' 
 #' @param azmetStation - AZMet station selection by user
 #' @param inData - data table from `fxn_dataETL()`
-#' @return `slfFigureSummary` - Summary of figure for stress-level frequencies based on user inputs
+#' @return `slfFigureSummary` - Summary of figure for stress-level frequency based on selected station
 
 
 fxn_slfFigureSummary <- function(azmetStation, inData) {
@@ -31,9 +31,9 @@ fxn_slfFigureSummary <- function(azmetStation, inData) {
     reshape2::dcast(date_doy ~ heatstress_categories, value.var = "count") %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
-      rel_freqNone = format(round(None / sum(None, `Level 1`, `Level 2`), digits = 2), nsmall = 2),
-      rel_freqL1 = format(round(`Level 1` / sum(None, `Level 1`, `Level 2`), digits = 2), nsmall = 2),
-      rel_freqL2 = format(round(`Level 2` / sum(None, `Level 1`, `Level 2`), digits = 2), nsmall = 2)
+      rel_freqNone = (None / sum(None, `Level 1`, `Level 2`)),
+      rel_freqL1 = (`Level 1` / sum(None, `Level 1`, `Level 2`)),
+      rel_freqL2 = (`Level 2` / sum(None, `Level 1`, `Level 2`))
     )
   
   if (doyLevel == "no heat stress") {
@@ -51,7 +51,7 @@ fxn_slfFigureSummary <- function(azmetStation, inData) {
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "Day-of-year estimated canopy temperatures for ", doyMonthDay, " at the AZMet ", azmetStation, " station indicate a relativive frequency, or empirical probability, of <b>", doyRelFreq, "</b> for <b>", doyLevel, "</b>."
+          "Day-of-year estimated canopy temperatures for ", doyMonthDay, " at the AZMet ", azmetStation, " station indicate a relativive frequency, or empirical probability, of <b>", format(round(doyRelFreq, digits = 2), nsmall = 2), "</b> for <b>", doyLevel, "</b>."
         )
       ),
       

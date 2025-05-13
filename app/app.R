@@ -32,22 +32,16 @@ ui <- htmltools::htmlTemplate(
 # Server --------------------
 
 server <- function(input, output, session) {
-  #shinyjs::useShinyjs(html = TRUE)
-  #shinyjs::hideElement("navsetCardTab")
   
   
   # Observables -----
   
-  #shiny::observeEvent(dataMerge(), {
-  #  shinyjs::showElement("navsetCardTab")
-  #})
-  
   shiny::observe({
     if (shiny::req(input$navsetCardTab) == "estimatedCanopyTemperatures") {
-      message("estimatedCanopyTemperatures has been selected")
+      #message("estimatedCanopyTemperatures has been selected")
       selectedTab <- selectedTab("estimatedCanopyTemperatures")
     } else if (shiny::req(input$navsetCardTab) == "stressLevelFrequency") {
-      message("stressLevelFrequency has been selected")
+      #message("stressLevelFrequency has been selected")
       selectedTab <- selectedTab("stressLevelFrequency")
     }
   })
