@@ -1,11 +1,14 @@
-#' `fxnFigureFooter.R` - Build footer for figure
+#' `fxn_pageSupportText.R` - Build supporting text for page
 #' 
 #' @param timeStep - AZMet data time step
-#' @return `figureFooter` - Footer for figure
+#' @return `pageSupportText` - Supporting text for page
 
 
-fxnFigureFooter <- function(timeStep) {
-  # Inputs
+fxn_pageSupportText <- function(timeStep) {
+  
+  
+  # Define inputs -----
+  
   apiURL <- a(
     "api.azmet.arizona.edu", 
     href="https://api.azmet.arizona.edu/v1/observations/daily", # Daily data
@@ -64,8 +67,9 @@ fxnFigureFooter <- function(timeStep) {
     target="_blank"
   )
   
-  # Footer text
-  figureFooter <- 
+  # Build text -----
+  
+  pageSupportText <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
@@ -79,8 +83,8 @@ fxnFigureFooter <- function(timeStep) {
         )
       ),
       
-      class = "figure-footer"
+      class = "page-support-text"
     )
   
-  return(figureFooter)
+  return(pageSupportText)
 }

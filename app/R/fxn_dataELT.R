@@ -1,37 +1,38 @@
-#' `fxnAZMetDataELT.R` AZMet hourly or daily data download from API-based database
+#' `fxn_dataELT.R` AZMet hourly or daily data download from API-based database
 #' 
 #' @param azmetStation - AZMet station name
 #' @param timeStep - AZMet data time step
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
-#' @return `dataAZMetDataELT` - Transformed data table
+#' @return `dataELT` - Transformed data table
 
 
-fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
+fxn_dataELT <- function(azmetStation, timeStep, startDate, endDate) {
   
   # HOURLY
   if (timeStep == "Hourly") {
-    dataAZMetDataELT <- azmetr::az_hourly(
-      station_id = dplyr::filter(stationNames, stationName == azmetStation)$stationID,
+    dataELT <- azmetr::az_hourly(
+      station_id = dplyr::filter(azmetStations, stationName == azmetStation)$stationID,
       start_date_time = paste(startDate, "01", sep = " "),
       end_date_time = paste(endDate, "24", sep = " ")
     )
     
     # Set identification variables of interest from the following hourly data variables: 
     # c("date_datetime", "date_doy", "date_hour", "date_year", "meta_needs_review", "meta_station_id", "meta_station_name", "meta_version")
-    varsID <- c("meta_needs_review", "meta_station_id", "meta_station_name", "meta_version", "date_datetime", "date_doy", "date_hour", "date_year")
+    varsID <- 
+      c("meta_needs_review", "meta_station_id", "meta_station_name", "meta_version", "date_datetime", "date_doy", "date_hour", "date_year")
     
     # Set hourly measured variables of interest from the following:
     # c("dwpt", "dwptF", "eto_azmet", "eto_azmet_in", "heatstress_cottonC", "heatstress_cottonF", "meta_bat_volt", "precip_total", "precip_total_in", "relative_humidity", "sol_rad_total", "sol_rad_total_ly", "temp_airC", "temp_airF", "temp_soil_10cmC", "temp_soil_10cmF", "temp_soil_50cmC", "temp_soil_50cmF", "vp_actual", "vp_deficit", "wind_2min_spd_max_mph", "wind_2min_spd_max_mps", "wind_2min_spd_mean_mph", "wind_2min_spd_mean_mps", "wind_2min_timestamp", "wind_2min_vector_dir", "wind_spd_max_mph", "wind_spd_max_mps", "wind_spd_mph", "wind_spd_mps", "wind_vector_dir", "wind_vector_dir_stand_dev", "wind_vector_magnitude", "wind_vector_magnitude_mph")
     varsMeasure <- c("dwpt", "dwptF", "eto_azmet", "eto_azmet_in", "heatstress_cottonC", "heatstress_cottonF", "meta_bat_volt", "precip_total", "precip_total_in", "relative_humidity", "sol_rad_total", "sol_rad_total_ly", "temp_airC", "temp_airF", "temp_soil_10cmC", "temp_soil_10cmF", "temp_soil_50cmC", "temp_soil_50cmF", "vp_actual", "vp_deficit", "wind_2min_spd_max_mph", "wind_2min_spd_max_mps", "wind_2min_spd_mean_mph", "wind_2min_spd_mean_mps", "wind_2min_timestamp", "wind_2min_vector_dir", "wind_spd_max_mph", "wind_spd_max_mps", "wind_spd_mph", "wind_spd_mps", "wind_vector_dir", "wind_vector_dir_stand_dev", "wind_vector_magnitude", "wind_vector_magnitude_mph")
-    
+   
     # For case of empty data return
-    if (nrow(dataAZMetDataELT) == 0) {
-      dataAZMetDataELT <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
-      colnames(dataAZMetDataELT) <- c(varsID, varsMeasure)
+    if (nrow(dataELT) == 0) {
+      dataELT <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
+      colnames(dataELT) <- c(varsID, varsMeasure)
     } else {
       # Tidy data
-      dataAZMetDataELT <- dataAZMetDataELT %>%
+      dataELT <- dataELT %>%
         dplyr::select(all_of(c(varsID, varsMeasure))) %>%
         dplyr::mutate(dplyr::across(c("date_datetime", "wind_2min_timestamp"), as.character))
     } 
@@ -39,8 +40,8 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
   
   # DAILY
   if (timeStep == "Daily") {
-    dataAZMetDataELT <- azmetr::az_daily(
-      station_id = dplyr::filter(stationNames, stationName == azmetStation)$stationID, 
+    dataELT <- azmetr::az_daily(
+      station_id = dplyr::filter(azmetStations, stationName == azmetStation)$stationID, 
       start_date = startDate, 
       end_date = endDate
     )
@@ -55,30 +56,30 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
     varsMeasure <- c("heatstress_cotton_meanF")
     
     # For case of empty data return
-    if (nrow(dataAZMetDataELT) == 0) {
-      dataAZMetDataELT <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
-      colnames(dataAZMetDataELT) <- c(varsID, varsMeasure)
+    if (nrow(dataELT) == 0) {
+      dataELT <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
+      colnames(dataELT) <- c(varsID, varsMeasure)
     } else {
-      # Tidy data
-      dataAZMetDataELT <- dataAZMetDataELT %>%
-        dplyr::select(all_of(c(varsID, varsMeasure))) #%>%
-        #dplyr::mutate(dplyr::across("wind_2min_timestamp", as.character))
+    # Tidy data
+      dataELT <- dataELT %>%
+        dplyr::mutate(datetime = lubridate::ymd(datetime)) %>% 
+        dplyr::select(dplyr::all_of(c(varsID, varsMeasure)))
     }
-    
-    # Add cotton heat stress categories
-    dataAZMetDataELT <- dataAZMetDataELT %>%
-      dplyr::mutate(heatstress_categories = dplyr::if_else(
-        heatstress_cotton_meanF > 86.0, "LEVEL 2 HEAT STRESS", dplyr::if_else(
-          heatstress_cotton_meanF < 82.4, "NO HEAT STRESS", "LEVEL 1 HEAT STRESS"
-        )
-      )) %>%
-      dplyr::mutate(
-        heatstress_categories = factor(
-          heatstress_categories, 
-          levels = c("LEVEL 2 HEAT STRESS", "LEVEL 1 HEAT STRESS", "NO HEAT STRESS")
-        )
-      )
   }
   
-  return(dataAZMetDataELT)
+  # Add cotton heat stress categories
+  dataELT <- dataELT %>%
+    dplyr::mutate(heatstress_categories = dplyr::if_else(
+      heatstress_cotton_meanF > 86.0, "Level 2", dplyr::if_else(
+        heatstress_cotton_meanF < 82.4, "None", "Level 1"
+      )
+    )) %>%
+    dplyr::mutate(
+      heatstress_categories = factor(
+        heatstress_categories, 
+        levels = c("Level 2", "Level 1", "None")
+      )
+    )
+  
+  return(dataELT)
 }
