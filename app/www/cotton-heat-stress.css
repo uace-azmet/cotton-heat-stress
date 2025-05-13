@@ -275,6 +275,28 @@
   padding-top: 48px !important;
 }
 
+.slf-figure-footer {
+  color: #606060; 
+  font-size: 0.85rem;
+  font-style: normal;
+  margin-top: 0.5rem;
+}
+
+.slf-figure-help-text {
+  color: #989898 !important;
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: normal;
+  padding-top: 8px;
+}
+
+.slf-figure-summary {
+  color: #191919;
+  font-weight: plain;
+  margin-bottom: 0px!important;
+  margin-top: 4px !important;
+}
+
 .table-condensed {
   background-color: #FFFFFF; 
   color: var(--bs-body-color);

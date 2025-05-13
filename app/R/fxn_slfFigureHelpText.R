@@ -1,17 +1,17 @@
-#' `fxn_ectFigureHelpText.R` - Build help text for figure of estimated canopy temperatures
+#' `fxn_slfFigureHelpText.R` - Build help text for figure of stress level frequencies
 #' 
-#' @return `ectFigureHelpText` - Help text for figure of estimated canopy temperatures
+#' @return `slfFigureHelpText` - Help text for figure of stress level frequencies
 
 
-fxn_ectFigureHelpText <- function() {
-  ectFigureHelpText <- 
+fxn_slfFigureHelpText <- function() {
+  slfFigureHelpText <- 
     htmltools::p(
       htmltools::HTML(
         "Hover over data for variable values. Click or tap on legend items to toggle data visibility. Click or tap and drag to zoom into an area of interest. Select from the icons to the right of the graph for additional functionality."
       ), 
       
-      class = "ect-figure-help-text"
+      class = "slf-figure-help-text"
     )
   
-  return(ectFigureHelpText)
+  return(slfFigureHelpText)
 }
