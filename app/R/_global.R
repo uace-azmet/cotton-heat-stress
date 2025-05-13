@@ -2,10 +2,12 @@
 
 library(azmetr)
 library(bslib)
+library(bsicons)
 library(dplyr)
 library(english)
 library(htmltools)
 library(lubridate)
+library(plotly)
 library(reshape2)
 library(shiny)
 #library(shinyjs)
