@@ -14,11 +14,16 @@ sidebar <- bslib::sidebar(
   htmltools::p(
     bsicons::bs_icon("sliders"), 
     htmltools::HTML("&nbsp;"), 
-    "DATA OPTIONS"
-  ),
-  
-  shiny::helpText(
-    "Select an AZMet station. Then, click or tap 'RETRIEVE DATA'."
+    "DATA OPTIONS",
+    htmltools::HTML("&nbsp;&nbsp;&nbsp;&nbsp;"),
+    bslib::tooltip(
+      bsicons::bs_icon("info-circle"),
+      "Select an AZMet station. Then, click or tap 'RETRIEVE DATA'.",
+      id = "infoDataOptions",
+      placement = "right"
+    ),
+    
+    class = "data-options-title"
   ),
   
   shiny::selectInput(

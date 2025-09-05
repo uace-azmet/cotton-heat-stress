@@ -81,6 +81,10 @@
   font-weight: bold;
 }
 
+.data-options-title {
+  padding-bottom: 1rem !important;
+}
+
 .datepicker {
   background-color: #FFFFFF !important;
   box-shadow: 0 -6px 12px rgb(var(--bs-body-color-rgb, 0, 0, 0), 0.1);
@@ -135,14 +139,6 @@
   margin-top: 0.5rem;
 }
 
-.ect-figure-help-text {
-  color: #989898 !important;
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: normal;
-  padding-top: 8px;
-}
-
 .ect-figure-summary {
   color: #191919;
   font-weight: plain;
@@ -153,13 +149,6 @@
 .form-control:focus {
   border: 1px solid #CCCCCC !important;
   box-shadow: 0 0 0 0.1rem #0000001A;
-}
-
-.help-block {
-  color: #989898 !important;
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: normal;
 }
 
 .main.bslib-gap-spacing.html-fill-container {
@@ -280,14 +269,6 @@
   font-size: 0.85rem;
   font-style: normal;
   margin-top: 0.5rem;
-}
-
-.slf-figure-help-text {
-  color: #989898 !important;
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: normal;
-  padding-top: 8px;
 }
 
 .slf-figure-summary {
