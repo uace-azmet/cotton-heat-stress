@@ -90,10 +90,6 @@ server <- function(input, output, session) {
     )
   })
 
-  ectFigureHelpText <- shiny::eventReactive(dataELT(), {
-   fxn_ectFigureHelpText()
-  })
-
   ectFigureSummary <- shiny::eventReactive(dataELT(), {
     fxn_ectFigureSummary(
       azmetStation = input$azmetStation,
@@ -133,10 +129,6 @@ server <- function(input, output, session) {
     )
   })
   
-  slfFigureHelpText <- shiny::eventReactive(dataELT(), {
-    fxn_slfFigureHelpText()
-  })
-  
   slfFigureSummary <- shiny::eventReactive(dataELT(), {
     fxn_slfFigureSummary(
       azmetStation = input$azmetStation,
@@ -153,10 +145,6 @@ server <- function(input, output, session) {
 
   output$ectFigureFooter <- shiny::renderUI({
    ectFigureFooter()
-  })
-
-  output$ectFigureHelpText <- shiny::renderUI({
-   ectFigureHelpText()
   })
 
   output$ectFigureSummary <- shiny::renderUI({
@@ -181,10 +169,6 @@ server <- function(input, output, session) {
   
   output$slfFigureFooter <- shiny::renderUI({
     slfFigureFooter()
-  })
-  
-  output$slfFigureHelpText <- shiny::renderUI({
-    slfFigureHelpText()
   })
   
   output$slfFigureSummary <- shiny::renderUI({
