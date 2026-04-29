@@ -3,30 +3,30 @@
 
 # UI --------------------
 
-ui <- htmltools::htmlTemplate(
-  
-  filename = "azmet-shiny-template.html",
-  
-  pageFluid = bslib::page_fluid(
-    title = NULL,
-    theme = theme, # `scr##_theme.R`
+ui <- 
+  htmltools::htmlTemplate(
     
-    bslib::layout_sidebar(
-      sidebar = sidebar, # `scr##_sidebar.R`
-      
-      shiny::htmlOutput(outputId = "navsetCardTabTitle"),
-      shiny::htmlOutput(outputId = "navsetCardTab"),
-      
-      #height = "800px"
-    ) |>
-      htmltools::tagAppendAttributes(
-        #https://getbootstrap.com/docs/5.0/utilities/api/
-        class = "border-0 rounded-0 shadow-none"
-      ),
+    filename = "azmet-shiny-template.html",
     
-    shiny::htmlOutput(outputId = "pageSupportText")
-  )
-) # htmltools::htmlTemplate()
+    pageFluid = 
+      bslib::page_fluid(
+        title = NULL,
+        theme = theme, # `scr##_theme.R`
+        
+        bslib::layout_sidebar(
+          sidebar = sidebar, # `scr##_sidebar.R`
+          
+          shiny::htmlOutput(outputId = "navsetCardTabTitle"),
+          shiny::htmlOutput(outputId = "navsetCardTab")
+        ) |>
+        htmltools::tagAppendAttributes(
+          #https://getbootstrap.com/docs/5.0/utilities/api/
+          class = "border-0 rounded-0 shadow-none"
+        ),
+      
+      shiny::htmlOutput(outputId = "pageSupportText")
+    )
+  ) # htmltools::htmlTemplate()
 
 
 # Server --------------------
@@ -49,133 +49,167 @@ server <- function(input, output, session) {
   
   # Reactives -----
   
-  dataELT <- shiny::eventReactive(input$retrieveData, {
-    idRetrievingHeatStressData <- shiny::showNotification(
-      ui = "Retrieving heat stress data . . .",
-      action = NULL,
-      duration = NULL,
-      closeButton = FALSE,
-      id = "idRetrievingHeatStressData",
-      type = "message"
-    )
+  azDaily <- 
+    shiny::eventReactive(input$retrieveData, {
+      idRetrievingHeatStressData <- 
+        shiny::showNotification(
+          ui = "Retrieving heat stress data . . .",
+          action = NULL,
+          duration = NULL,
+          closeButton = FALSE,
+          id = "idRetrievingHeatStressData",
+          type = "message"
+        )
+  
+      on.exit(shiny::removeNotification(id = idRetrievingHeatStressData), add = TRUE)
+  
+      fxn_azDaily(
+        azmetStation = input$azmetStation,
+        startDate = 
+          dplyr::filter(
+            azmetStationMetadata, 
+            meta_station_name == input$azmetStation
+          ) |>
+          dplyr::pull(start_date),
+        endDate = 
+          dplyr::filter(
+            azmetStationMetadata, 
+            meta_station_name == input$azmetStation
+          ) |>
+          dplyr::pull(end_date)
+      )
+    })
+  
+  ectFigure <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_ectFigure(inData = azDaily())
+    })
 
-    on.exit(
-      shiny::removeNotification(id = idRetrievingHeatStressData),
-      add = TRUE
-    )
+  ectFigureFooter <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_ectFigureFooter(
+        azmetStation = input$azmetStation,
+        startDate = 
+          dplyr::filter(
+            azmetStationMetadata, 
+            meta_station_name == input$azmetStation
+          ) |>
+          dplyr::pull(start_date),
+        endDate = 
+          dplyr::filter(
+            azmetStationMetadata, 
+            meta_station_name == input$azmetStation
+          ) |>
+          dplyr::pull(end_date)
+      )
+    })
 
-    fxn_dataELT(
-      azmetStation = input$azmetStation,
-      timeStep = "Daily",
-      startDate = 
-        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationStartDate,
-      endDate = 
-        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationEndDate
-    )
-  })
+  ectFigureSummary <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_ectFigureSummary(
+        azmetStation = input$azmetStation,
+        inData = azDaily()
+      )
+    })
   
-  ectFigure <- shiny::eventReactive(dataELT(), {
-    fxn_ectFigure(
-      inData = dataELT()
-    )
-  })
-
-  ectFigureFooter <- shiny::eventReactive(dataELT(), {
-    fxn_ectFigureFooter(
-      azmetStation = input$azmetStation,
-      startDate =
-        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationStartDate,
-      endDate =
-        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationEndDate
-    )
-  })
-
-  ectFigureSummary <- shiny::eventReactive(dataELT(), {
-    fxn_ectFigureSummary(
-      azmetStation = input$azmetStation,
-      inData = dataELT()
-    )
-  })
+  navsetCardTab <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_navsetCardTab()
+    })
   
-  navsetCardTab <- shiny::eventReactive(dataELT(), {
-    fxn_navsetCardTab()
-  })
+  navsetCardTabTitle <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_navsetCardTabTitle(azmetStation = input$azmetStation)
+    })
   
-  navsetCardTabTitle <- shiny::eventReactive(dataELT(), {
-    fxn_navsetCardTabTitle(
-      azmetStation = input$azmetStation
-    )
-  })
+  pageSupportText <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_pageSupportText()
+    })
   
-  pageSupportText <- shiny::eventReactive(dataELT(), {
-    fxn_pageSupportText(
-      timeStep = "Daily"
-    )
-  })
+  slfFigure <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_slfFigure(inData = azDaily())
+    })
   
-  slfFigure <- shiny::eventReactive(dataELT(), {
-    fxn_slfFigure(
-      inData = dataELT()
-    )
-  })
+  slfFigureFooter <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_slfFigureFooter(
+        azmetStation = input$azmetStation,
+        startDate = 
+          dplyr::filter(
+            azmetStationMetadata, 
+            meta_station_name == input$azmetStation
+          ) |>
+          dplyr::pull(start_date),
+        endDate = 
+          dplyr::filter(
+            azmetStationMetadata, 
+            meta_station_name == input$azmetStation
+          ) |>
+          dplyr::pull(end_date)
+      )
+    })
   
-  slfFigureFooter <- shiny::eventReactive(dataELT(), {
-    fxn_slfFigureFooter(
-      azmetStation = input$azmetStation,
-      startDate =
-        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationStartDate,
-      endDate =
-        dplyr::filter(azmetStations, stationName == input$azmetStation)$stationEndDate
-    )
-  })
-  
-  slfFigureSummary <- shiny::eventReactive(dataELT(), {
-    fxn_slfFigureSummary(
-      azmetStation = input$azmetStation,
-      inData = dataELT()
-    )
-  })
+  slfFigureSummary <- 
+    shiny::eventReactive(azDaily(), {
+      fxn_slfFigureSummary(
+        azmetStation = input$azmetStation,
+        inData = azDaily()
+      )
+    })
   
   
   # Outputs -----
   
-  output$ectFigure <- plotly::renderPlotly({
-    ectFigure()
-  })
+  output$ectFigure <- 
+    plotly::renderPlotly({
+      ectFigure()
+    })
 
-  output$ectFigureFooter <- shiny::renderUI({
-   ectFigureFooter()
-  })
+  output$ectFigureFooter <- 
+    shiny::renderUI({
+      ectFigureFooter()
+    })
 
-  output$ectFigureSummary <- shiny::renderUI({
-    ectFigureSummary()
-  })
+  output$ectFigureSummary <- 
+    shiny::renderUI({
+      ectFigureSummary()
+    })
   
-  output$pageSupportText <- shiny::renderUI({
-    pageSupportText()
-  })
+  output$pageSupportText <- 
+    shiny::renderUI({
+      pageSupportText()
+    })
 
-  output$navsetCardTab <- shiny::renderUI({
-    navsetCardTab()
-  })
+  output$navsetCardTab <- 
+    shiny::renderUI({
+      navsetCardTab()
+    })
   
-  output$navsetCardTabTitle <- shiny::renderUI({
-    navsetCardTabTitle()
-  })
+  output$navsetCardTabTitle <- 
+    shiny::renderUI({
+      navsetCardTabTitle()
+    })
   
-  output$slfFigure <- plotly::renderPlotly({
-    slfFigure()
-  })
+  output$slfFigure <- 
+    plotly::renderPlotly({
+      slfFigure()
+    })
   
-  output$slfFigureFooter <- shiny::renderUI({
-    slfFigureFooter()
-  })
+  output$slfFigureFooter <- 
+    shiny::renderUI({
+      slfFigureFooter()
+    })
   
-  output$slfFigureSummary <- shiny::renderUI({
-    slfFigureSummary()
-  })
+  output$slfFigureSummary <- 
+    shiny::renderUI({
+      slfFigureSummary()
+    })
 }
 
+
 # Run --------------------
+
 
 shinyApp(ui = ui, server = server)

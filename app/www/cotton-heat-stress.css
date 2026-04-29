@@ -14,9 +14,26 @@
     content: attr(data-title);
 }
 
+.bolder-icon {
+  stroke-width: 0.5;
+  stroke: currentColor; /* Inherits the 'color' property of the parent */
+}
+
 /* https://stackoverflow.com/questions/77114751/is-it-possible-to-modify-the-arrow-that-collapses-the-sidebar */
 .bslib-sidebar-layout > .collapse-toggle > .collapse-icon {
   fill: #989898 !important;
+}
+
+.bslib-sidebar-layout > .collapse-toggle:hover {
+  background-color: #f8f8f8 !important;
+}
+
+.bslib-sidebar-layout > .collapse-toggle:hover > .collapse-icon {
+  fill: #191919 !important;
+}
+
+.bslib-sidebar-resize-handle {
+  display: none;
 }
 
 .btn {
@@ -57,20 +74,6 @@
   padding-top: 4px;
 }
 
-.century.active.disabled.focused {
-  background-color: rgb(226, 233, 235) !important;
-  border-color: none !important;
-  color: var(--bs-body-color) !important;
-  text-shadow: none !important;
-}
-
-.century.active.disabled.focused:hover {
-  background-color: rgb(226, 233, 235) !important;
-  border-color: none !important;
-  color: var(--bs-body-color) !important;
-  text-shadow: none !important;
-}
-
 .container-fluid {
   padding-left: 0px !important;
   padding-right: 0px !important;
@@ -83,53 +86,6 @@
 
 .data-options-title {
   padding-bottom: 1rem !important;
-}
-
-.datepicker {
-  background-color: #FFFFFF !important;
-  box-shadow: 0 -6px 12px rgb(var(--bs-body-color-rgb, 0, 0, 0), 0.1);
-  border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
-  color: var(--bs-body-color);
-}
-
-.datepicker table tr td.active.day { /* current month and selected day, no hover */
-  background-color: rgb(226, 233, 235);
-  border-color: none;
-  color: var(--bs-body-color);
-  text-shadow: none;
-}
-
-.datepicker table tr td.active.day:hover { /*  current month and selected day, hover */
-  background-color: rgb(226, 233, 235);
-  border-color: none;
-  color: var(--bs-body-color);
-  text-shadow: none;
-}
-
-.datepicker table tr td.day:hover { /*  unselected month and day, hover */
-  background-color: rgb(226, 233, 235);
-}
-
-.datepicker table tr td.disabled.day:hover { /*  unselected disabled month and day, hover */
-  background-color: #FFFFFF;
-}
-
-.datepicker-switch:hover {
-  background-color: rgb(226, 233, 235) !important;
-}
-
-.decade.active.disabled.focused {
-  background-color: rgb(226, 233, 235) !important;
-  border-color: none !important;
-  color: var(--bs-body-color) !important;
-  text-shadow: none !important;
-}
-
-.decade.active.disabled.focused:hover {
-  background-color: rgb(226, 233, 235) !important;
-  border-color: none !important;
-  color: var(--bs-body-color) !important;
-  text-shadow: none !important;
 }
 
 .ect-figure-footer {

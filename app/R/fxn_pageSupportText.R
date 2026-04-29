@@ -1,10 +1,9 @@
 #' `fxn_pageSupportText.R` - Build supporting text for page
 #' 
-#' @param timeStep - AZMet data time step
 #' @return `pageSupportText` - Supporting text for page
 
 
-fxn_pageSupportText <- function(timeStep) {
+fxn_pageSupportText <- function() {
   
   
   # Define inputs -----
@@ -75,7 +74,7 @@ fxn_pageSupportText <- function(timeStep) {
         paste0(
           "Estimated canopy temperatures below 82.4 °F indicate no cotton heat stress, between 82.4 and 86.0 °F Level 1 heat stress, and above 86.0 °F Level 2 heat stress. Tables of daily values of estimated canopy temperatures and stress levels for individual stations and the current growing season currently are available from the AZMet webpage with ", cottonWebpageURL, ".", " ", "More information about cotton heat stress is in Extension bulletin", " ", bulletinURL, ".",
           br(), br(), 
-          timeStep, " ", "AZMet data are from", " ", apiURL, " and accessed using the ", azmetrURL, " R package. Values from recent dates may be based on provisional data", ".", " ", "More information about", " ", webpageDataVariables, ",", " ", webpageNetworkMap, ",", " ", "and", " ", webpageStationMetadata, " ", "is available on the", " ", webpageAZMet, ".", " ", "Users of AZMet data and related information assume all risks of its use", ".",
+          "Daily AZMet data are from", " ", apiURL, " and accessed using the ", azmetrURL, " R package. Values from recent dates may be based on provisional data", ".", " ", "More information about", " ", webpageDataVariables, ",", " ", webpageNetworkMap, ",", " ", "and", " ", webpageStationMetadata, " ", "is available on the", " ", webpageAZMet, ".", " ", "Users of AZMet data and related information assume all risks of its use", ".",
           br(), br(),
           "To cite the above AZMet data, please use: 'Arizona Meteorological Network (", todayYear, ") Arizona Meteorological Network (AZMet) Data. https://azmet.arizona.edu. Accessed ", todayDate, "', along with 'Arizona Meteorological Network (", todayYear, ") Cotton Heat Stress. https://viz.datascience.arizona.edu/azmet/cotton-heat-stress. Accessed ", todayDate, "'.",
           br(), br(),
