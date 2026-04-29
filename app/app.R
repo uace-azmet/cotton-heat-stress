@@ -24,7 +24,7 @@ ui <-
           class = "border-0 rounded-0 shadow-none"
         ),
       
-      shiny::htmlOutput(outputId = "pageSupportText")
+      shiny::htmlOutput(outputId = "pageBottomText")
     )
   ) # htmltools::htmlTemplate()
 
@@ -122,9 +122,9 @@ server <- function(input, output, session) {
       fxn_navsetCardTabTitle(azmetStation = input$azmetStation)
     })
   
-  pageSupportText <- 
+  pageBottomText <- 
     shiny::eventReactive(azDaily(), {
-      fxn_pageSupportText()
+      fxn_pageBottomText()
     })
   
   slfFigure <- 
@@ -179,7 +179,7 @@ server <- function(input, output, session) {
   
   output$pageBottomText <- 
     shiny::renderUI({
-      pageSupportText()
+      pageBottomText()
     })
 
   output$navsetCardTab <- 

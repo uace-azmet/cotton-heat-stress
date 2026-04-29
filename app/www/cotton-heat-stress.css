@@ -166,11 +166,11 @@
   background-color: rgb(226, 233, 235) !important;
 }
 
-.page-support-text {
+.page-bottom-text {
   color: #191919;
   padding-left: 24px;
   padding-right: 24px;
-  padding-top: 24px !important;
+  padding-top: 32px !important;
 }
 
 .prev:hover {
