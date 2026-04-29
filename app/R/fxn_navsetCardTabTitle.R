@@ -5,19 +5,22 @@
 
 
 fxn_navsetCardTabTitle <- function(azmetStation) {
+  
   navsetCardTabTitle <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          bsicons::bs_icon("graph-up"), 
+          bsicons::bs_icon("graph-up", class = "bolder-icon"), 
           htmltools::HTML("&nbsp;"),
           htmltools::HTML("&nbsp;"),
           toupper(
-            paste0(
-              "Cotton Heat Stress Data at the AZMet ", azmetStation, " Station"
+            htmltools::HTML(
+              paste0(
+                "<strong>Cotton Heat Stress Data at the AZMet ", azmetStation, " Station</strong>"
+              )
             )
           ),
-          htmltools::HTML("&nbsp;&nbsp;&nbsp;&nbsp;"),
+          htmltools::HTML("&nbsp;"),
           bslib::tooltip(
             bsicons::bs_icon("info-circle"),
             "Click or tap and drag to zoom into an area of interest. Hover over data for variable values. Click or tap on legend items to toggle data visibility. Select from the icons to the right of the graph for additional functionality.",
