@@ -177,7 +177,7 @@ server <- function(input, output, session) {
       ectFigureSummary()
     })
   
-  output$pageSupportText <- 
+  output$pageBottomText <- 
     shiny::renderUI({
       pageSupportText()
     })

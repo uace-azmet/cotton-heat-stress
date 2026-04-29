@@ -1,74 +1,84 @@
-#' `fxn_pageSupportText.R` - Build supporting text for page
+#' `fxn_pageBottomText.R` - Build supporting text for page
 #' 
-#' @return `pageSupportText` - Supporting text for page
+#' @return `pageBottomText` - Supporting text for page
 
 
-fxn_pageSupportText <- function() {
+fxn_pageBottomText <- function() {
   
   
   # Define inputs -----
   
-  apiURL <- a(
-    "api.azmet.arizona.edu", 
-    href="https://api.azmet.arizona.edu/v1/observations/daily", # Daily data
-    target="_blank"
-  )
+  apiURL <- 
+    htmltools::a(
+      "api.azmet.arizona.edu", 
+      href="https://api.azmet.arizona.edu/v1/observations/daily",
+      target="_blank"
+    )
   
-  azmetrURL <- a(
-    "azmetr", 
-    href="https://uace-azmet.github.io/azmetr/",
-    target="_blank"
-  )
+  azmetrURL <- 
+    htmltools::a(
+      "azmetr", 
+      href="https://uace-azmet.github.io/azmetr/",
+      target="_blank"
+    )
   
-  bulletinURL <- a(
-    "AZ1448 'Cotton Heat Stress'",
-    href="https://staging.azmet.arizona.edu/sites/default/files/2022-07/az1448.pdf",
-    target="_blank"
-  )
+  bulletinURL <- 
+    htmltools::a(
+      "AZ1448 'Cotton Heat Stress'",
+      href="https://azmet.arizona.edu/sites/default/files/2022-07/az1448.pdf",
+      target="_blank"
+    )
   
-  cottonWebpageURL <- a(
-    "cotton-related information",
-    href="https://azmet.arizona.edu/application-areas/cotton",
-    target="_blank"
-  )
+  cottonWebpageURL <- 
+    htmltools::a(
+      "cotton-related information",
+      href="https://azmet.arizona.edu/application-areas/cotton",
+      target="_blank"
+    )
   
   todayDate <- gsub(" 0", " ", format(lubridate::today(), "%B %d, %Y"))
   
   todayYear <- lubridate::year(lubridate::today())
   
-  webpageCode <- a(
-    "GitHub page", 
-    href="https://github.com/uace-azmet/cotton-heat-stress", 
-    target="_blank"
-  )
+  webpageCode <- 
+    htmltools::a(
+      "GitHub page", 
+      href="https://github.com/uace-azmet/cotton-heat-stress", 
+      target="_blank"
+    )
   
-  webpageDataVariables <- a(
-    "data variables", 
-    href="https://azmet.arizona.edu/about/data-variables", 
-    target="_blank"
-  )
+  webpageDataVariables <- 
+    htmltools::a(
+      "data variables", 
+      href="https://azmet.arizona.edu/about/data-variables", 
+      target="_blank"
+    )
   
-  webpageNetworkMap <- a(
-    "station locations", 
-    href="https://azmet.arizona.edu/about/network-map", 
-    target="_blank"
-  )
+  webpageNetworkMap <- 
+    htmltools::a(
+      "station locations", 
+      href="https://azmet.arizona.edu/about/network-map", 
+      target="_blank"
+    )
   
-  webpageStationMetadata <- a(
-    "station metadata", 
-    href="https://azmet.arizona.edu/about/station-metadata", 
-    target="_blank"
-  )
+  webpageStationMetadata <- 
+    htmltools::a(
+      "station metadata", 
+      href="https://azmet.arizona.edu/about/station-metadata", 
+      target="_blank"
+    )
   
-  webpageAZMet <- a(
-    "AZMet website", 
-    href="https://azmet.arizona.edu/", 
-    target="_blank"
-  )
+  webpageAZMet <- 
+    htmltools::a(
+      "AZMet website", 
+      href="https://azmet.arizona.edu/", 
+      target="_blank"
+    )
+  
   
   # Build text -----
   
-  pageSupportText <- 
+  pageBottomText <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
@@ -85,5 +95,5 @@ fxn_pageSupportText <- function() {
       class = "page-support-text"
     )
   
-  return(pageSupportText)
+  return(pageBottomText)
 }
