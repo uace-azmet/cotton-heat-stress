@@ -36,17 +36,4 @@ fxn_azDaily <- function(azmetStation, startDate, endDate) {
     )
   
   return(azDaily)
-  
-  
- # # For case of empty data return
- #    if (nrow(azDaily) == 0) {
- #      azDaily <- data.frame(matrix(nrow = 0, ncol = length(c(varsID, varsMeasure))))
- #      colnames(azDaily) <- c(varsID, varsMeasure)
- #    } else {
- #    # Tidy data
- #      azDaily <- azDaily %>%
- #        dplyr::mutate(datetime = lubridate::ymd(datetime)) %>% 
- #        dplyr::select(dplyr::all_of(c(varsID, varsMeasure)))
- #    }
- #  }
 }

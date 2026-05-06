@@ -7,11 +7,12 @@
 
 
 fxn_ectFigureFooter <- function(azmetStation, startDate, endDate) {
+  
   ectFigureFooter <- 
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "Day-of-year average and range statistics for the AZMet ", azmetStation, " station are based on data from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Data in the new AZMet database currently start on ", gsub(" 0", " ", format(apiStartDate, "%B %d, %Y")), "."
+          "Day-of-year average and range statistics for the AZMet ", azmetStation, " station are based on data from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Data for the ", azmetStation, " station in the new AZMet database currently go back to ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), "."
         )
       ), 
       

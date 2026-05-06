@@ -77,52 +77,60 @@ fxn_slfFigure <- function(inData) {
       type = "scatter",
       mode = "lines+markers",
       hoverinfo = "text",
-      legendgroup = paste(
-        min(inData$date_year, na.rm = TRUE),
-        max(inData$date_year, na.rm = TRUE),
-        sep = "-"
-      ),
-      line = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        shape = "hvh", # https://plotly.com/python/line-charts/
-        width = 1.0
-      ),
-      marker = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        size = 2
-      ),
-      name = paste(
-        min(inData$date_year, na.rm = TRUE),
-        max(inData$date_year, na.rm = TRUE),
-        sep = "-"
-      ),
+      legendgroup = 
+        paste(
+          min(inData$date_year, na.rm = TRUE),
+          max(inData$date_year, na.rm = TRUE),
+          sep = "-"
+        ),
+      line = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          shape = "hvh", # https://plotly.com/python/line-charts/
+          width = 1.0
+        ),
+      marker = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          size = 2
+        ),
+      name = 
+        paste(
+          min(inData$date_year, na.rm = TRUE),
+          max(inData$date_year, na.rm = TRUE),
+          sep = "-"
+        ),
       showlegend = TRUE,
-      text = ~paste0(
-        "<b>Day-of-year:</b>  ", date_doy,
-        "<br><b>Day-of-year Frequency:</b>  ", `Level 2`,
-        "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqL2, digits = 2), nsmall = 2)
-      )
+      text = 
+        ~paste0(
+          "<b>Day-of-year:</b>  ", date_doy,
+          "<br><b>Day-of-year Frequency:</b>  ", `Level 2`,
+          "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqL2, digits = 2), nsmall = 2)
+        )
     ) %>% 
     plotly::add_trace(
       inherit = TRUE,
       data = dataCountsCurrentYear,
       hoverinfo = "text",
       legendgroup = max(inData$date_year, na.rm = TRUE),
-      line = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        shape = "hvh", # https://plotly.com/python/line-charts/
-        width = 1.0
-      ),
-      marker = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        size = 2
-      ),
+      line = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          shape = "hvh", # https://plotly.com/python/line-charts/
+          width = 1.0
+        ),
+      marker = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          size = 2
+        ),
       name = max(inData$date_year, na.rm = TRUE),
       showlegend = TRUE,
-      text = ~paste0(
-        "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
-        "<br><b>Frequency:</b>  ", `Level 2`, "<br>"
-      )
+      text = 
+        ~paste0(
+          "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
+          "<br><b>Frequency:</b>  ", `Level 2`, "<br>"
+        )
     )
   
   # Level 1 heat stress -----
@@ -135,52 +143,60 @@ fxn_slfFigure <- function(inData) {
       type = "scatter",
       mode = "lines+markers",
       hoverinfo = "text",
-      legendgroup = paste(
-        min(inData$date_year, na.rm = TRUE),
-        max(inData$date_year, na.rm = TRUE),
-        sep = "-"
-      ),
-      line = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        shape = "hvh", # https://plotly.com/python/line-charts/
-        width = 1.0
-      ),
-      marker = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        size = 2
-      ),
-      name = paste(
-        min(inData$date_year, na.rm = TRUE),
-        max(inData$date_year, na.rm = TRUE),
-        sep = "-"
-      ),
+      legendgroup = 
+        paste(
+          min(inData$date_year, na.rm = TRUE),
+          max(inData$date_year, na.rm = TRUE),
+          sep = "-"
+        ),
+      line = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          shape = "hvh", # https://plotly.com/python/line-charts/
+          width = 1.0
+        ),
+      marker = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          size = 2
+        ),
+      name = 
+        paste(
+          min(inData$date_year, na.rm = TRUE),
+          max(inData$date_year, na.rm = TRUE),
+          sep = "-"
+        ),
       showlegend = FALSE,
-      text = ~paste0(
-        "<b>Day-of-year:</b>  ", date_doy,
-        "<br><b>Day-of-year Frequency:</b>  ", `Level 1`,
-        "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqL1, digits = 2), nsmall = 2)
-      )
+      text = 
+        ~paste0(
+          "<b>Day-of-year:</b>  ", date_doy,
+          "<br><b>Day-of-year Frequency:</b>  ", `Level 1`,
+          "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqL1, digits = 2), nsmall = 2)
+        )
     ) %>% 
     plotly::add_trace(
       inherit = TRUE,
       data = dataCountsCurrentYear,
       hoverinfo = "text",
       legendgroup = max(inData$date_year, na.rm = TRUE),
-      line = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        shape = "hvh", # https://plotly.com/python/line-charts/
-        width = 1.0
-      ),
-      marker = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        size = 2
-      ),
+      line = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          shape = "hvh", # https://plotly.com/python/line-charts/
+          width = 1.0
+        ),
+      marker = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          size = 2
+        ),
       name = max(inData$date_year, na.rm = TRUE),
       showlegend = FALSE,
-      text = ~paste0(
-        "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
-        "<br><b>Frequency:</b>  ", `Level 1`, "<br>"
-      )
+      text = 
+        ~paste0(
+          "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
+          "<br><b>Frequency:</b>  ", `Level 1`, "<br>"
+        )
     )
   
   # No heat stress -----
@@ -193,52 +209,60 @@ fxn_slfFigure <- function(inData) {
       type = "scatter",
       mode = "lines+markers",
       hoverinfo = "text",
-      legendgroup = paste(
-        min(inData$date_year, na.rm = TRUE),
-        max(inData$date_year, na.rm = TRUE),
-        sep = "-"
-      ),
-      line = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        shape = "hvh", # https://plotly.com/python/line-charts/
-        width = 1.0
-      ),
-      marker = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        size = 2
-      ),
-      name = paste(
-        min(inData$date_year, na.rm = TRUE),
-        max(inData$date_year, na.rm = TRUE),
-        sep = "-"
-      ),
+      legendgroup = 
+        paste(
+          min(inData$date_year, na.rm = TRUE),
+          max(inData$date_year, na.rm = TRUE),
+          sep = "-"
+        ),
+      line = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          shape = "hvh", # https://plotly.com/python/line-charts/
+          width = 1.0
+        ),
+      marker = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          size = 2
+        ),
+      name = 
+        paste(
+          min(inData$date_year, na.rm = TRUE),
+          max(inData$date_year, na.rm = TRUE),
+          sep = "-"
+        ),
       showlegend = FALSE,
-      text = ~paste0(
-        "<b>Day-of-year:</b>  ", date_doy,
-        "<br><b>Day-of-year Frequency:</b>  ", `None`,
-        "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqNone, digits = 2), nsmall = 2)
-      )
+      text = 
+        ~paste0(
+          "<b>Day-of-year:</b>  ", date_doy,
+          "<br><b>Day-of-year Frequency:</b>  ", `None`,
+          "<br><b>Day-of-year Relative Frequency:</b>  ", format(round(rel_freqNone, digits = 2), nsmall = 2)
+        )
     ) %>% 
     plotly::add_trace(
       inherit = TRUE,
       data = dataCountsCurrentYear,
       hoverinfo = "text",
       legendgroup = max(inData$date_year, na.rm = TRUE),
-      line = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        shape = "hvh", # https://plotly.com/python/line-charts/
-        width = 1.0
-      ),
-      marker = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        size = 2
-      ),
+      line = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          shape = "hvh", # https://plotly.com/python/line-charts/
+          width = 1.0
+        ),
+      marker = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          size = 2
+        ),
       name = max(inData$date_year, na.rm = TRUE),
       showlegend = FALSE,
-      text = ~paste0(
-        "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
-        "<br><b>Frequency:</b>  ", `None`, "<br>"
-      )
+      text = 
+        ~paste0(
+          "<b>Date:</b>  ", gsub(" 0", " ", format(pseudo_date, "%b %d, %Y")),
+          "<br><b>Frequency:</b>  ", `None`, "<br>"
+        )
     )
   
   
@@ -262,168 +286,191 @@ fxn_slfFigure <- function(inData) {
     plotly::config(
       displaylogo = FALSE,
       displayModeBar = TRUE,
-      modeBarButtonsToRemove = c(
-        "autoScale2d",
-        "hoverClosestCartesian",
-        "hoverCompareCartesian",
-        "lasso2d",
-        "select"
-      ),
+      modeBarButtonsToRemove = 
+        c(
+          "autoScale2d",
+          "hoverClosestCartesian",
+          "hoverCompareCartesian",
+          "lasso2d",
+          "select"
+        ),
       scrollZoom = FALSE,
-      toImageButtonOptions = list(
-        format = "png", # Either png, svg, jpeg, or webp
-        filename = "AZMet-cotton-heat-stress",
-        height = 400,
-        width = 700,
-        scale = 5
-      )
+      toImageButtonOptions = 
+        list(
+          format = "png", # Either png, svg, jpeg, or webp
+          filename = "AZMet-cotton-heat-stress",
+          height = 400,
+          width = 700,
+          scale = 5
+        )
     ) %>%
     
     plotly::layout(
-      annotations = list(
-        list( # No Heat Stress
-          align = "left",
-          font = list(
-            color = "#3b3b3b",
-            family = layoutFontFamily,
-            size = 12
+      annotations = 
+        list(
+          list( # No Heat Stress
+            align = "left",
+            font = 
+              list(
+                color = "#3b3b3b",
+                family = layoutFontFamily,
+                size = 12
+              ),
+            showarrow = FALSE,
+            text = "<b>LEVEL 2 HEAT STRESS</b>",
+            x = 0,
+            xanchor = "left",
+            xref = "paper",
+            xshift = 24,
+            y = max(dataCountsAllYears$None, na.rm = TRUE),
+            yanchor = "top",
+            yref = "y1"  
           ),
-          showarrow = FALSE,
-          text = "LEVEL 2 HEAT STRESS",
-          x = 0,
-          xanchor = "left",
-          xref = "paper",
-          xshift = 24,
-          y = max(dataCountsAllYears$None, na.rm = TRUE),
-          yanchor = "top",
-          yref = "y1"  
+          list( # No Heat Stress
+            align = "left",
+            font = 
+              list(
+                color = "#3b3b3b",
+                family = layoutFontFamily,
+                size = 12
+              ),
+            showarrow = FALSE,
+            text = "<b>LEVEL 1 HEAT STRESS</b>",
+            x = 0,
+            xanchor = "left",
+            xref = "paper",
+            xshift = 24,
+            y = max(dataCountsAllYears$None, na.rm = TRUE),
+            yanchor = "top",
+            yref = "y2"  
+          ),
+          list( # No Heat Stress
+            align = "left",
+            font = 
+              list(
+                color = "#3b3b3b",
+                family = layoutFontFamily,
+                size = 12
+              ),
+            showarrow = FALSE,
+            text = "<b>NO HEAT STRESS</b>",
+            x = 0,
+            xanchor = "left",
+            xref = "paper",
+            xshift = 24,
+            y = max(dataCountsAllYears$None, na.rm = TRUE),
+            yanchor = "top",
+            yref = "y3"  
+          )
         ),
-        list( # No Heat Stress
-          align = "left",
-          font = list(
-            color = "#3b3b3b",
-            family = layoutFontFamily,
-            size = 12
-          ),
-          showarrow = FALSE,
-          text = "LEVEL 1 HEAT STRESS",
-          x = 0,
-          xanchor = "left",
-          xref = "paper",
-          xshift = 24,
-          y = max(dataCountsAllYears$None, na.rm = TRUE),
-          yanchor = "top",
-          yref = "y2"  
-        ),
-        list( # No Heat Stress
-          align = "left",
-          font = list(
-            color = "#3b3b3b",
-            family = layoutFontFamily,
-            size = 12
-          ),
-          showarrow = FALSE,
-          text = "NO HEAT STRESS",
-          x = 0,
-          xanchor = "left",
-          xref = "paper",
-          xshift = 24,
-          y = max(dataCountsAllYears$None, na.rm = TRUE),
-          yanchor = "top",
-          yref = "y3"  
-        )
-      ),
-      font = list(
-        color = "#191919",
-        family = layoutFontFamily,
-        size = 13
-      ),
-      hoverdistance = 1,
-      hoverlabel = list(
-        bgcolor = "rgba(255, 255, 255, 0.75)",
-        bordercolor = "transparent",
-        font = list(
+      font = 
+        list(
           color = "#191919",
           family = layoutFontFamily,
-          size = 14
-        )
-      ),
+          size = 13
+        ),
+      hoverdistance = 1,
+      hoverlabel = 
+        list(
+          bgcolor = "rgba(255, 255, 255, 0.75)",
+          bordercolor = "transparent",
+          font = 
+            list(
+              color = "#191919",
+              family = layoutFontFamily,
+              size = 14
+            )
+        ),
       hovermode = "x unified",
-      legend = list(
-        orientation = "h",
-        traceorder = "reversed",
-        x = 0.00,
-        xanchor = "left",
-        xref = "container",
-        y = 1.05,
-        yanchor = "bottom",
-        yref = "container"
-      ),
-      margin = list(
-        l = 0,
-        r = 50, # For space between plot and modebar
-        b = 80, # For space between x-axis title and caption or figure help text
-        t = 0,
-        pad = 3
-      ),
-      modebar = list(
-        bgcolor = "#FFFFFF",
-        orientation = "v"
-      ),
+      legend = 
+        list(
+          orientation = "h",
+          traceorder = "reversed",
+          x = 0.00,
+          xanchor = "left",
+          xref = "container",
+          # y = 1.05,
+          # yanchor = "bottom",
+          y = 1.0,
+          yanchor = "top",
+          yref = "container"
+        ),
+      margin = 
+        list(
+          l = 0,
+          r = 50, # For space between plot and modebar
+          b = 80, # For space between x-axis title and caption or figure help text
+          t = 0,
+          pad = 3
+        ),
+      modebar = 
+        list(
+          bgcolor = "#FFFFFF",
+          orientation = "v"
+        ),
       spikedistance = 1,
-      xaxis = list(
-        range = list(
-          min(dataCountsAllYears$pseudo_date) - 0.5, 
-          max(dataCountsAllYears$pseudo_date) + 0.5
+      xaxis = 
+        list(
+          range = 
+            list(
+              min(dataCountsAllYears$pseudo_date) - 0.5, 
+              max(dataCountsAllYears$pseudo_date) + 0.5
+            ),
+          spikecolor = "#a6a6a6",
+          spikedash = "dot",
+          spikemode = "across+marker",
+          spikesnap = "hovered data",
+          spikethickness = "-2",
+          tickformat = format("%b %e"),
+          title = 
+            list(
+              font = list(size = 14),
+              standoff = 25,
+              text = "<b>Month and Day</b>"
+            ),
+          zeroline = FALSE
         ),
-        spikecolor = "#a6a6a6",
-        spikedash = "dot",
-        spikemode = "across+marker",
-        spikesnap = "hovered data",
-        spikethickness = "-2",
-        tickformat = format("%b %e"),
-        title = list(
-          font = list(size = 14),
-          standoff = 25,
-          text = "Month and Day"
+      yaxis = 
+        list(
+          fixedrange = TRUE,
+          range = 
+            list(
+              0 - 0.1, 
+              max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
+            ),
+          zeroline = TRUE,
+          zerolinecolor = "#eee",
+          zerolinewidth = 0.5
         ),
-        zeroline = FALSE
-      ),
-      yaxis = list(
-        fixedrange = TRUE,
-        range = list(
-          0 - 0.1, 
-          max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
+      yaxis2 = 
+        list(
+          fixedrange = TRUE,
+          range = 
+            list(
+              0 - 0.1, 
+              max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
+            ),
+          title = 
+            list(
+              font = list(size = 14),
+              standoff = 25,
+              text = "<b>Number of Times in Level (Frequency)</b>"
+            ),
+          zeroline = TRUE,
+          zerolinecolor = "#eee",
+          zerolinewidth = 0.5
         ),
-        zeroline = TRUE,
-        zerolinecolor = "#eee",
-        zerolinewidth = 0.5
-      ),
-      yaxis2 = list(
-        fixedrange = TRUE,
-        range = list(
-          0 - 0.1, 
-          max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
-        ),
-        title = list(
-          font = list(size = 14),
-          standoff = 25,
-          text = "Number of Times in Level (Frequency)"
-        ),
-        zeroline = TRUE,
-        zerolinecolor = "#eee",
-        zerolinewidth = 0.5
-      ),
-      yaxis3 = list(
-        fixedrange = TRUE,
-        range = list(
-          0 - 0.1, 
-          max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
-        ),
-        zeroline = TRUE,
-        zerolinecolor = "#eee",
-        zerolinewidth = 0.5
-      )
+      yaxis3 = 
+        list(
+          fixedrange = TRUE,
+          range = list(
+            0 - 0.1, 
+            max(dataCountsAllYears$None, na.rm = TRUE) + 0.1
+          ),
+          zeroline = TRUE,
+          zerolinecolor = "#eee",
+          zerolinewidth = 0.5
+        )
     )
   
   return(slfFigure)

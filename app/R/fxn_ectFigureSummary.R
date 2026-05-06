@@ -6,6 +6,7 @@
 
 
 fxn_ectFigureSummary <- function(azmetStation, inData) {
+  
   doyValue <-
     format(
       round(

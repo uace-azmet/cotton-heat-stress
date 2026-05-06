@@ -92,7 +92,7 @@ fxn_pageBottomText <- function() {
         )
       ),
       
-      class = "page-support-text"
+      class = "page-bottom-text"
     )
   
   return(pageBottomText)
