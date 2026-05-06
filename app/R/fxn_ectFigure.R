@@ -25,33 +25,39 @@ fxn_ectFigure <- function(inData) {
     ) %>% 
     dplyr::ungroup() %>% 
     dplyr::mutate(
-      heatstress_categories_max = dplyr::if_else(
-        max > 86.0, "Level 2", dplyr::if_else(
-          max < 82.4, "None", "Level 1"
-        )
-      ),
-      heatstress_categories_mean = dplyr::if_else(
-        mean > 86.0, "Level 2", dplyr::if_else(
-          mean < 82.4, "None", "Level 1"
-        )
-      ),
-      heatstress_categories_min = dplyr::if_else(
-        min > 86.0, "Level 2", dplyr::if_else(
-          min < 82.4, "None", "Level 1"
-        )
-      ),
-      heatstress_categories_max = factor(
-        heatstress_categories_max, 
-        levels = c("Level 2", "Level 1", "None")
-      ),
-      heatstress_categories_mean = factor(
-        heatstress_categories_mean, 
-        levels = c("Level 2", "Level 1", "None")
-      ),
-      heatstress_categories_min = factor(
-        heatstress_categories_min, 
-        levels = c("Level 2", "Level 1", "None")
-      ),
+      heatstress_categories_max = 
+        dplyr::if_else(
+          max > 86.0, "Level 2", dplyr::if_else(
+            max < 82.4, "None", "Level 1"
+          )
+        ),
+      heatstress_categories_mean = 
+        dplyr::if_else(
+          mean > 86.0, "Level 2", dplyr::if_else(
+            mean < 82.4, "None", "Level 1"
+          )
+        ),
+      heatstress_categories_min = 
+        dplyr::if_else(
+          min > 86.0, "Level 2", dplyr::if_else(
+            min < 82.4, "None", "Level 1"
+          )
+        ),
+      heatstress_categories_max = 
+        factor(
+          heatstress_categories_max, 
+          levels = c("Level 2", "Level 1", "None")
+        ),
+      heatstress_categories_mean = 
+        factor(
+          heatstress_categories_mean, 
+          levels = c("Level 2", "Level 1", "None")
+        ),
+      heatstress_categories_min = 
+        factor(
+          heatstress_categories_min, 
+          levels = c("Level 2", "Level 1", "None")
+        ),
       pseudoDate = 
         as.Date(
           date_doy,
@@ -106,12 +112,13 @@ fxn_ectFigure <- function(inData) {
       fillcolor = "rgba(227, 227, 227, 1.0)",
       name = "Day-of-year Range",
       hoverinfo = "text",
-      text = ~paste0(
-        "<b>Day-of-year Maximum:</b>  ", format(round(max, digits = 1), nsmall = 1), " °F",
-        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_max,
-        "<br><b>Day-of-year Minimum:</b>  ", format(round(min, digits = 1), nsmall = 1), " °F",
-        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_min
-      ),
+      text = 
+        ~paste0(
+          "<b>Day-of-year Maximum:</b>  ", format(round(max, digits = 1), nsmall = 1), " °F",
+          "<br><b>Heat Stress Level:</b>  ", heatstress_categories_max,
+          "<br><b>Day-of-year Minimum:</b>  ", format(round(min, digits = 1), nsmall = 1), " °F",
+          "<br><b>Heat Stress Level:</b>  ", heatstress_categories_min
+        ),
       showlegend = TRUE,
       legendgroup = "dataStats-range"
     ) %>% 
@@ -123,20 +130,23 @@ fxn_ectFigure <- function(inData) {
       y = ~mean,
       # type = "scatter",
       mode = "lines+markers",
-      marker = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        size = 2
-      ),
-      line = list(
-        color = "rgba(166, 166, 166, 1.0)",
-        width = 1.0
-      ),
+      marker = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          size = 2
+        ),
+      line = 
+        list(
+          color = "rgba(166, 166, 166, 1.0)",
+          width = 1.0
+        ),
       name = "Day-of-year Average",
       hoverinfo = "text",
-      text = ~paste0(
-        "<b>Day-of-year Average:</b>  ", format(round(mean, digits = 1), nsmall = 1), " °F",
-        "<br><b>Heat Stress Level:</b>  ", heatstress_categories_mean, "<br>"
-      ),
+      text = 
+        ~paste0(
+          "<b>Day-of-year Average:</b>  ", format(round(mean, digits = 1), nsmall = 1), " °F",
+          "<br><b>Heat Stress Level:</b>  ", heatstress_categories_mean, "<br>"
+        ),
       showlegend = TRUE,
       legendgroup = "dataStats-mean"
     ) %>%
@@ -148,21 +158,24 @@ fxn_ectFigure <- function(inData) {
       y = ~heatstress_cotton_meanF,
       type = "scatter",
       mode = "lines+markers",
-      marker = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        size = 2
-      ),
-      line = list(
-        color = "rgba(25, 25, 25, 1.0)",
-        width = 1.0
-      ),
+      marker = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          size = 2
+        ),
+      line = 
+        list(
+          color = "rgba(25, 25, 25, 1.0)",
+          width = 1.0
+        ),
       name = ~date_year,
       hoverinfo = "text",
-      text = ~paste0(
-        "<b>Date:</b>  ", gsub(" 0", " ", format(datetime, "%b %d, %Y")),
-        "<br><b>Estimated Canopy Temperature:</b>  ", format(round(heatstress_cotton_meanF, digits = 1), nsmall = 1), " °F",
-        "<br><b>Heat Stress Level:</b>  ", heatstress_categories, "<br>"
-      ),
+      text = 
+        ~paste0(
+          "<b>Date:</b>  ", gsub(" 0", " ", format(datetime, "%b %d, %Y")),
+          "<br><b>Estimated Canopy Temperature:</b>  ", format(round(heatstress_cotton_meanF, digits = 1), nsmall = 1), " °F",
+          "<br><b>Heat Stress Level:</b>  ", heatstress_categories, "<br>"
+        ),
       showlegend = TRUE,
       legendgroup = NULL
     ) %>%
@@ -170,114 +183,128 @@ fxn_ectFigure <- function(inData) {
     plotly::config(
       displaylogo = FALSE,
       displayModeBar = TRUE,
-      modeBarButtonsToRemove = c(
-        "autoScale2d",
-        "hoverClosestCartesian",
-        "hoverCompareCartesian",
-        "lasso2d",
-        "select"
-      ),
+      modeBarButtonsToRemove = 
+        c(
+          "autoScale2d",
+          "hoverClosestCartesian",
+          "hoverCompareCartesian",
+          "lasso2d",
+          "select"
+        ),
       scrollZoom = FALSE,
-      toImageButtonOptions = list(
-        format = "png", # Either png, svg, jpeg, or webp
-        filename = "AZMet-cotton-heat-stress",
-        height = 400,
-        width = 700,
-        scale = 5
-      )
+      toImageButtonOptions = 
+        list(
+          format = "png", # Either png, svg, jpeg, or webp
+          filename = "AZMet-cotton-heat-stress",
+          height = 400,
+          width = 700,
+          scale = 5
+        )
     ) %>%
     
     plotly::layout(
-      annotations = list(
-        list( # No Heat Stress
-          align = "left",
-          font = list(
-            color = "#3b3b3b",
-            family = layoutFontFamily,
-            size = 12
+      annotations = 
+        list(
+          list( # No Heat Stress
+            align = "left",
+            font = 
+              list(
+                color = "#3b3b3b",
+                family = layoutFontFamily,
+                size = 12
+              ),
+            showarrow = FALSE,
+            text = "<b>NO HEAT STRESS</b>",
+            x = 0,
+            xanchor = "left",
+            xref = "paper",
+            xshift = 24,
+            y = 78.8,
+            yanchor = "bottom",
+            yref = "y"
           ),
-          showarrow = FALSE,
-          text = "NO HEAT STRESS",
-          x = 0,
-          xanchor = "left",
-          xref = "paper",
-          xshift = 24,
-          y = 78.8,
-          yanchor = "bottom",
-          yref = "y"
+          list( # Level 1 Heat Stress
+            align = "left",
+            font = 
+              list(
+                color = "#3b3b3b",
+                family = layoutFontFamily,
+                size = 12
+              ),
+            showarrow = FALSE,
+            text = "<b>LEVEL 1 HEAT STRESS</b>",
+            x = 0,
+            xanchor = "left",
+            xref = "paper",
+            xshift = 24,
+            y = 82.4,
+            yanchor = "bottom",
+            yref = "y"
+          ),
+          list( # Level 2 Heat Stress
+            align = "left",
+            font = 
+              list(
+                color = "#3b3b3b",
+                family = layoutFontFamily,
+                size = 12
+              ),
+            showarrow = FALSE,
+            text = "<b>LEVEL 2 HEAT STRESS</b>",
+            x = 0,
+            xanchor = "left",
+            xref = "paper",
+            xshift = 24,
+            y = 86.0,
+            yanchor = "bottom",
+            yref = "y"
+          )
         ),
-        list( # Level 1 Heat Stress
-          align = "left",
-          font = list(
-            color = "#3b3b3b",
-            family = layoutFontFamily,
-            size = 12
-          ),
-          showarrow = FALSE,
-          text = "LEVEL 1 HEAT STRESS",
-          x = 0,
-          xanchor = "left",
-          xref = "paper",
-          xshift = 24,
-          y = 82.4,
-          yanchor = "bottom",
-          yref = "y"
-        ),
-        list( # Level 2 Heat Stress
-          align = "left",
-          font = list(
-            color = "#3b3b3b",
-            family = layoutFontFamily,
-            size = 12
-          ),
-          showarrow = FALSE,
-          text = "LEVEL 2 HEAT STRESS",
-          x = 0,
-          xanchor = "left",
-          xref = "paper",
-          xshift = 24,
-          y = 86.0,
-          yanchor = "bottom",
-          yref = "y"
-        )
-      ),
-      font = list(
-        color = "#191919",
-        family = layoutFontFamily,
-        size = 13
-      ),
-      hoverlabel = list(
-        bgcolor = "rgba(255, 255, 255, 0.75)",
-        bordercolor = "transparent",
-        font = list(
+      font = 
+        list(
           color = "#191919",
           family = layoutFontFamily,
-          size = 14
-        )
-      ),
+          size = 13
+        ),
+      hoverlabel = 
+        list(
+          bgcolor = "rgba(255, 255, 255, 0.75)",
+          bordercolor = "transparent",
+          font = 
+            list(
+              color = "#191919",
+              family = layoutFontFamily,
+              size = 14
+            )
+        ),
       hoverdistance = 1,
       hovermode = "x unified",
-      legend = list(
-        orientation = "h",
-        traceorder = "reversed",
-        x = 0.00,
-        xanchor = "left",
-        xref = "container",
-        y = 1.05,
-        yanchor = "bottom",
-        yref = "container"
-      ),
-      margin = list(
-        l = 0,
-        r = 50, # For space between plot and modebar
-        b = 80, # For space between x-axis title and caption or figure help text
-        t = 0,
-        pad = 3
-      ),
-      modebar = list(
-        bgcolor = "#FFFFFF",
-        orientation = "v"
-      ),
+      legend = 
+        list(
+          orientation = "h",
+          traceorder = "reversed",
+          x = 0.00,
+          xanchor = "left",
+          xref = "container",
+          # y = 1.05,
+          # yanchor = "bottom",
+          y = 1.0,
+          yanchor = "top",
+          yref = "container"
+        ),
+      margin = 
+        list(
+          l = 0,
+          r = 50, # For space between plot and modebar
+          b = 80, # For space between x-axis title and caption or figure help text
+          t = 0,
+          pad = 3
+        ),
+      modebar = 
+        list(
+          bgcolor = "#FFFFFF",
+          orientation = "v"
+        ),
       shapes = 
         list(
           list(
@@ -310,37 +337,43 @@ fxn_ectFigure <- function(inData) {
           )
         ),
       spikedistance = 1,
-      xaxis = list(
-        range = list(
-          min(dataStats$pseudoDate) - 0.5, 
-          max(dataStats$pseudoDate) + 0.5
+      xaxis = 
+        list(
+          range = 
+            list(
+              min(dataStats$pseudoDate) - 0.5, 
+              max(dataStats$pseudoDate) + 0.5
+            ),
+          spikecolor = "#a6a6a6",
+          spikedash = "dot",
+          spikemode = "across+marker",
+          spikesnap = "hovered data",
+          spikethickness = "-2",
+          tickformat = format("%b %e"),
+          title = 
+            list(
+              font = list(size = 14),
+              standoff = 25,
+              text = "<b>Month and Day</b>"
+            ),
+          zeroline = FALSE
         ),
-        spikecolor = "#a6a6a6",
-        spikedash = "dot",
-        spikemode = "across+marker",
-        spikesnap = "hovered data",
-        spikethickness = "-2",
-        tickformat = format("%b %e"),
-        title = list(
-          font = list(size = 14),
-          standoff = 25,
-          text = "Month and Day"
-        ),
-        zeroline = FALSE
-      ),
-      yaxis = list(
-        fixedrange = TRUE,
-        range = list(
-          min(dataStats$min, na.rm = TRUE) - 0.5,
-          yAxisMax + 0.5
-        ),
-        title = list(
-          font = list(size = 14),
-          standoff = 25,
-          text = "Estimated Canopy Temperature (°F)"
-        ),
-        zeroline = FALSE
-      )
+      yaxis = 
+        list(
+          fixedrange = TRUE,
+          range = 
+            list(
+              min(dataStats$min, na.rm = TRUE) - 0.5,
+              yAxisMax + 0.5
+            ),
+          title = 
+            list(
+              font = list(size = 14),
+              standoff = 25,
+              text = "<b>Estimated Canopy Temperature (°F)</b>"
+            ),
+          zeroline = FALSE
+        )
     )
   
   return(ectFigure)
