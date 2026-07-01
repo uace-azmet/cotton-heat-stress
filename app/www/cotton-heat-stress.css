@@ -92,7 +92,7 @@
   color: #606060; 
   font-size: 0.85rem;
   font-style: normal;
-  margin-top: 0.5rem;
+  padding-top: 8px;
 }
 
 .ect-figure-summary {
@@ -224,7 +224,7 @@
   color: #606060; 
   font-size: 0.85rem;
   font-style: normal;
-  margin-top: 0.5rem;
+  padding-top: 8px;
 }
 
 .slf-figure-summary {
